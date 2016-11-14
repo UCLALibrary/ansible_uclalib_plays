@@ -12,11 +12,11 @@ dspace_ui: jspui
 dspace_solr_server: http://localhost:8081/solr
 dspace_default_language: en_US
 
-dspace_mail_from_address: hpottinger@library.ucla.edu
-dspace_mail_feedback_recipient: hpottinger@library.ucla.edu
-dspace_mail_admin: hpottinger@library.ucla.edu
-dspace_mail_alert_recipient: hpottinger@library.ucla.edu
-dspace_mail_registration_notify: hpottinger@library.ucla.edu
+dspace_mail_from_address: dataden@library.ucla.edu
+dspace_mail_feedback_recipient: dataden@library.ucla.edu
+dspace_mail_admin: dataden@library.ucla.edu
+dspace_mail_alert_recipient: dataden@library.ucla.edu
+dspace_mail_registration_notify: dataden@library.ucla.edu
 
 dspace_loglevel_other: INFO
 dspace_loglevel_dspace: INFO
