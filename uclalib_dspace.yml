@@ -37,10 +37,10 @@
         lc_ctype: 'en_US.UTF-8'
 
     # OPTIONAL: you can specify database extensions here (like pgcrypto, which is required for DSapce 6)
-    # postgresql_database_extensions:
-    #    - db: "{{ dspace_db_name }}"
-    #      extensions:
-    #          - pgcrypto
+    postgresql_database_extensions:
+      - db: "{{ dspace_db_name }}"
+        extensions:
+          - pgcrypto
 
     # database privileges for the dspace user
     postgresql_user_privileges:
