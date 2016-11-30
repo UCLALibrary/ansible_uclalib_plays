@@ -55,6 +55,7 @@
   roles:
     - { role: uclalib_role_java }
     - { role: uclalib_role_vim }
+    - { role: uclalib_role_imagemagick }
     - { role: uclalib_role_clamav }
     - { role: uclalib_role_java_maven }
     - { role: uclalib_role_java_ant }
