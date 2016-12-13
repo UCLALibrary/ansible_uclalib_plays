@@ -12,8 +12,11 @@
   # ANXS/PostgreSQL role (https://github.com/ANXS/postgresql)
 
   vars:
-    java_package: java-1.7.0-openjdk-devel.x86_64
+    java_package: java-1.8.0-openjdk-devel.x86_64
 
+    handle_version: 8.1.1
+    tomcat_major_version: 7
+    tomcat_version: 7.0.73
     postgresql_version: 9.5
     postgresql_encoding: 'UTF-8'
     postgresql_locale: 'en_US.UTF-8'
@@ -64,5 +67,6 @@
     - { role: uclalib_role_apache }
     - { role: uclalib_role_tomcat }
     - { role: uclalib_role_dspace }
+    - { role: uclalib_role_handle }
 
 
