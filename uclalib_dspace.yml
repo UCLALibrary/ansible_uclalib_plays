@@ -12,8 +12,11 @@
   # ANXS/PostgreSQL role (https://github.com/ANXS/postgresql)
 
   vars:
-    java_package: java-1.7.0-openjdk-devel.x86_64
+    java_package: java-1.8.0-openjdk-devel.x86_64
 
+    handle_version: 8.1.1
+    tomcat_major_version: 7
+    tomcat_version: 7.0.73
     postgresql_version: 9.5
     postgresql_encoding: 'UTF-8'
     postgresql_locale: 'en_US.UTF-8'
@@ -37,10 +40,10 @@
         lc_ctype: 'en_US.UTF-8'
 
     # OPTIONAL: you can specify database extensions here (like pgcrypto, which is required for DSapce 6)
-    # postgresql_database_extensions:
-    #    - db: "{{ dspace_db_name }}"
-    #      extensions:
-    #          - pgcrypto
+    postgresql_database_extensions:
+      - db: "{{ dspace_db_name }}"
+        extensions:
+          - pgcrypto
 
     # database privileges for the dspace user
     postgresql_user_privileges:
@@ -55,6 +58,7 @@
   roles:
     - { role: uclalib_role_java }
     - { role: uclalib_role_vim }
+    - { role: uclalib_role_imagemagick }
     - { role: uclalib_role_clamav }
     - { role: uclalib_role_java_maven }
     - { role: uclalib_role_java_ant }
@@ -63,5 +67,6 @@
     - { role: uclalib_role_apache }
     - { role: uclalib_role_tomcat }
     - { role: uclalib_role_dspace }
+    - { role: uclalib_role_handle }
 
 
