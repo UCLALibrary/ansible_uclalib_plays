@@ -3,6 +3,7 @@
 # Public vars for the DSpace playbook go here
 
 dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
+rhr_git_repo: http://github.com/UCLALibrary/Remote-Handle-Resolver.git
 dspace_env_build_name: uclalib_dspilot
 
 dspace_name: UCLA Library DSpace Pilot
