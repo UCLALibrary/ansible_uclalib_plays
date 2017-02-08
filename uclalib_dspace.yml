@@ -5,8 +5,8 @@
   hosts: all
 
   vars_files:
-    - vars/dspace_vars_private.yml
-    - vars/dspace_vars_open.yml
+    - [ "vars/travis-builds/{{ travischeck }}", "vars/dspace_vars_private.yml" ]
+    - "vars/dspace_vars_open.yml"
 
   # Dependencies:
   # ANXS/PostgreSQL role (https://github.com/ANXS/postgresql)
@@ -15,40 +15,90 @@
     java_package: java-1.8.0-openjdk-devel.x86_64
 
     handle_version: 8.1.1
-    tomcat_major_version: 7
-    tomcat_version: 7.0.73
     postgresql_version: 9.5
     postgresql_encoding: 'UTF-8'
     postgresql_locale: 'en_US.UTF-8'
     postgresql_ctype: 'en_US.UTF-8'
     postgresql_admin_user: "postgres"
-    postgresql_default_auth_method: "trust"
+    postgresql_default_auth_method: "md5"
     postgresql_service_enabled: true
+    postgresql_pg_hba_default:
+      - { type: local, database: all, user: '{{ postgresql_admin_user }}', address: '', method: trust, comment: 'PostgreSQL admin user' }
+      - { type: local, database: all, user: all, address: '', method: trust, comment: 'Unix socket connections' }
+      - { type: host, database: all, user: all, address: '127.0.0.1/32', method: trust, comment: 'IPv4 local connections' }
+    postgresql_pg_hba_passwd_hosts:
+      - t-w-dspace01.library.ucla.edu
+      - p-w-dspace01.library.ucla.edu
 
     # create a postgresql user for dspace
     postgresql_users:
-      - name: "{{ dspace_db_username }}"
-        pass: "{{ dspace_db_password }}"
-        encrypted: no
+      - name: "{{ postgres_build['test']['dataden']['users']['username'] }}"
+        pass: "{{ postgres_build['test']['dataden']['users']['password'] }}"
+        encrypted: yes
+      - name: "{{ postgres_build['test']['vsim']['users']['username'] }}"
+        pass: "{{ postgres_build['test']['vsim']['users']['password'] }}"
+        encrypted: yes
+      - name: "{{ postgres_build['prod']['dataden']['users']['username'] }}"
+        pass: "{{ postgres_build['prod']['dataden']['users']['password'] }}"
+        encrypted: yes
+      - name: "{{ postgres_build['prod']['vsim']['users']['username'] }}"
+        pass: "{{ postgres_build['prod']['vsim']['users']['password'] }}"
+        encrypted: yes
 
     # create a database for dspace
     postgresql_databases:
-      - name: "{{ dspace_db_name }}"
-        owner: "{{ dspace_db_username }}"
+      - name: "{{ postgres_build['test']['dataden']['dbname'] }}"
+        owner: "{{ postgres_build['test']['dataden']['users']['username'] }}"
+        encoding: 'UTF-8'
+        lc_collate: 'en_US.UTF-8'
+        lc_ctype: 'en_US.UTF-8'
+      - name: "{{ postgres_build['test']['vsim']['dbname'] }}"
+        owner: "{{ postgres_build['test']['vsim']['users']['username'] }}"
+        encoding: 'UTF-8'
+        lc_collate: 'en_US.UTF-8'
+        lc_ctype: 'en_US.UTF-8'
+      - name: "{{ postgres_build['prod']['dataden']['dbname'] }}"
+        owner: "{{ postgres_build['prod']['dataden']['users']['username'] }}"
+        encoding: 'UTF-8'
+        lc_collate: 'en_US.UTF-8'
+        lc_ctype: 'en_US.UTF-8'
+      - name: "{{ postgres_build['prod']['vsim']['dbname'] }}"
+        owner: "{{ postgres_build['prod']['vsim']['users']['username'] }}"
         encoding: 'UTF-8'
         lc_collate: 'en_US.UTF-8'
         lc_ctype: 'en_US.UTF-8'
 
     # OPTIONAL: you can specify database extensions here (like pgcrypto, which is required for DSapce 6)
     postgresql_database_extensions:
-      - db: "{{ dspace_db_name }}"
+      - db: "{{ postgres_build['test']['dataden']['dbname'] }}"
+        extensions:
+          - pgcrypto
+      - db: "{{ postgres_build['test']['vsim']['dbname'] }}"
+        extensions:
+          - pgcrypto
+      - db: "{{ postgres_build['prod']['dataden']['dbname'] }}"
+        extensions:
+          - pgcrypto
+      - db: "{{ postgres_build['prod']['vsim']['dbname'] }}"
         extensions:
           - pgcrypto
 
     # database privileges for the dspace user
     postgresql_user_privileges:
-      - name: "{{ dspace_db_username }}"
-        db: "{{ dspace_db_name }}"
+      - name: "{{ postgres_build['test']['dataden']['users']['username'] }}"
+        db: "{{ postgres_build['test']['dataden']['dbname'] }}"
+        priv: "ALL"
+        role_attr_flags: "CREATEDB"
+      - name: "{{ postgres_build['test']['vsim']['users']['username'] }}"
+        db: "{{ postgres_build['test']['vsim']['dbname'] }}"
+        priv: "ALL"
+        role_attr_flags: "CREATEDB"
+      - name: "{{ postgres_build['prod']['dataden']['users']['username'] }}"
+        db: "{{ postgres_build['prod']['dataden']['dbname'] }}"
+        priv: "ALL"
+        role_attr_flags: "CREATEDB"
+      - name: "{{ postgres_build['prod']['vsim']['users']['username'] }}"
+        db: "{{ postgres_build['prod']['vsim']['dbname'] }}"
         priv: "ALL"
         role_attr_flags: "CREATEDB"
 
@@ -63,9 +113,8 @@
     - { role: uclalib_role_java_maven }
     - { role: uclalib_role_java_ant }
     - { role: uclalib_role_git }
-    - { role: anxs_role_postgresql, when: ansible_virtualization_type != "VMware" }
+    - { role: uclalib_role_postgres, when: ansible_virtualization_type != "VMware" }
     - { role: uclalib_role_apache }
     - { role: uclalib_role_tomcat }
     - { role: uclalib_role_dspace }
     - { role: uclalib_role_handle }
-

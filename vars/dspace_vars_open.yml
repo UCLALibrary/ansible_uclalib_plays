@@ -3,13 +3,7 @@
 # Public vars for the DSpace playbook go here
 
 tomcat_major_version: 8
-
-# Define the version of Apache Tomcat to download
-# Will obtain from this URL:
-# http://archive.apache.org/dist/tomcat/tomcat-{{ tomcat_major_version }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.zip
 tomcat_version: 8.5.9
-
-
 
 dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
 dspace_git_branch: ucla-dr-6_x
@@ -34,11 +28,16 @@ dspace_mail_registration_notify: dataden@library.ucla.edu
 dspace_loglevel_other: INFO
 dspace_loglevel_dspace: INFO
 tomcat_applications:
-  - app_name: dspace
+  - app_name: dataden
     shut_port: 8006
     ajp_conn_port: 8010
     conn_port: 8081
-    rproxy_path: dspace
+    rproxy_path: dataden
+  - app_name: vsim
+    shut_port: 8007
+    ajp_conn_port: 8011
+    conn_port: 8082
+    rproxy_path: vsim
 
 dspace_shut_port: 8006
 dspace_ajp_conn_port: 8010
