@@ -116,5 +116,6 @@
     - { role: uclalib_role_postgres, when: ansible_virtualization_type != "VMware" }
     - { role: uclalib_role_apache }
     - { role: uclalib_role_tomcat }
-    - { role: uclalib_role_dspace }
+    - { role: uclalib_role_dspace, dspaceinstance: vsim, env: "{{ env|default('test') }}" }
+    - { role: uclalib_role_dspace, dspaceinstance: dataden, env: "{{ env|default('test') }}" }
     - { role: uclalib_role_handle }
