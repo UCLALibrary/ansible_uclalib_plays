@@ -10,14 +10,14 @@ rhr_git_repo: http://github.com/UCLALibrary/Remote-Handle-Resolver.git
 dspace:
   vsim:
     dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
-    dspace_git_branch: ucla-dr-6_x
+    dspace_git_branch: ucla-vsim-6_x
     dspace_env_build_name: uclalib_vsim
     dspace_name: UCLA VSim
     dspace_assetstrore_dir: /data/assetstore
     dspace_hostname: vsim.library.ucla.edu
     dspace_baseUrl: http://vsim.library.ucla.edu
     dspace_localUrl: http://localhost:8081
-    dspace_ui: jspui
+    dspace_ui: xmlui
     dspace_solr_server: http://localhost:8081/solr
     dspace_default_language: en_US
     dspace_mail_from_address: vsim@library.ucla.edu
@@ -66,16 +66,16 @@ dspace:
     dspace_db_poolname: datadenpool
 
 tomcat_applications:
-  - app_name: dataden
+  - app_name: vsim
     shut_port: 8006
     ajp_conn_port: 8010
     conn_port: 8081
-    rproxy_path: dataden
-  - app_name: vsim
+    rproxy_path: vsim
+  - app_name: dataden
     shut_port: 8007
     ajp_conn_port: 8011
     conn_port: 8082
-    rproxy_path: vsim 
+    rproxy_path: dataden 
 dspace_apps: 
     - probe
     - jspui
@@ -83,11 +83,12 @@ dspace_apps:
     - solr
     - rest
     - oai
+    - xmlui
 
 # DSpace Handle endpoints for use with the multi-remote handle resolver, multiple entries allowed, in the case of multiple Tomcat instances on the same server, you'll probably
 # want to use the port number for each instance, eg: 8081, 8082, etc.
 endpoints:
-    - http://127.0.0.1:8081/jspui/json/hdlresolver
+    - http://127.0.0.1:8082/jspui/json/hdlresolver
 
 public_keys_for_dspace_login: |
   ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCkq8Aa3Ms01Pa5kxorfHzZl/FkLCAvVbCnC3TSQGpjVqhhhsXivJs7DtO+ibgs8kjbW8s/dLtbT68CUdhyJh9nMQLQVceahC+MMQ1TwqjO4acmjBcqiecnyF7vMjAXXDp7hfwF05hTQoM7xCWjBpdbVpLWKnyqhv2ZQbtjGm00JRxaju1QZniPlNIsj7jCBv7en7PcU+pfx83RA2NkQbZKnJ3yfFAVGLUzeyevIIIpfHSqJTxZMff34kNEScSN4MO0JRQP0b4qcIoQoGBikAA47YQMQwJzcU2fg5/exZczzG5dbl+s1Ph5aGixGUhSXvOjjrxD43i3uq2C3z6+OJC1 hpottinger@Hardys-MacBook-Air.local
