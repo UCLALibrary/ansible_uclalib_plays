@@ -5,28 +5,66 @@
 tomcat_major_version: 8
 tomcat_version: 8.5.9
 
-dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
-dspace_git_branch: ucla-dr-6_x
 rhr_git_repo: http://github.com/UCLALibrary/Remote-Handle-Resolver.git
-dspace_env_build_name: uclalib_dspilot
 
-dspace_name: UCLA Library DSpace Pilot
-dspace_assetstrore_dir: /data/assetstore
-dspace_hostname: dspilot.library.ucla.edu
-dspace_baseUrl: https://dspilot.library.ucla.edu
-dspace_localUrl: http://localhost:8081
-dspace_ui: jspui
-dspace_solr_server: http://localhost:8081/solr
-dspace_default_language: en_US
+dspace:
+  vsim:
+    dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
+    dspace_git_branch: ucla-dr-6_x
+    dspace_env_build_name: uclalib_vsim
+    dspace_name: UCLA VSim
+    dspace_assetstrore_dir: /data/assetstore
+    dspace_hostname: vsim.library.ucla.edu
+    dspace_baseUrl: http://vsim.library.ucla.edu
+    dspace_localUrl: http://localhost:8081
+    dspace_ui: jspui
+    dspace_solr_server: http://localhost:8081/solr
+    dspace_default_language: en_US
+    dspace_mail_from_address: vsim@library.ucla.edu
+    dspace_mail_feedback_recipient: vsim@library.ucla.edu
+    dspace_mail_admin: vsim@library.ucla.edu
+    dspace_mail_alert_recipient: vsim@library.ucla.edu
+    dspace_mail_registration_notify: vsim@library.ucla.edu
+    dspace_loglevel_other: INFO
+    dspace_loglevel_dspace: INFO
+    dspace_shut_port: 8006
+    dspace_ajp_conn_port: 8010
+    dspace_conn_port: 8081
+    dspace_install_dir: /usr/local/vsim/vsim
+    dspace_home: /usr/local/vsim
+    dspace_base: /usr/local/vsim
+    dspace_db_server_url: jdbc:postgresql://postgres.library.ucla.edu:5432/
+    dspace_service_user: vsim
+    dspace_db_poolname: vsimpool
+  dataden:
+    dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
+    dspace_git_branch: ucla-dr-6_x
+    dspace_env_build_name: uclalib_dataden
+    dspace_name: UCLA Dataden
+    dspace_assetstrore_dir: /data/assetstore
+    dspace_hostname: dataden.library.ucla.edu
+    dspace_baseUrl: http://dataden.library.ucla.edu
+    dspace_localUrl: http://localhost:8081
+    dspace_ui: jspui
+    dspace_solr_server: http://localhost:8081/solr
+    dspace_default_language: en_US
+    dspace_mail_from_address: dataden@library.ucla.edu
+    dspace_mail_feedback_recipient: dataden@library.ucla.edu
+    dspace_mail_admin: dataden@library.ucla.edu
+    dspace_mail_alert_recipient: dataden@library.ucla.edu
+    dspace_mail_registration_notify: dataden@library.ucla.edu
+    dspace_loglevel_other: INFO
+    dspace_loglevel_dspace: INFO
+    dspace_shut_port: 8007
+    dspace_ajp_conn_port: 8011
+    dspace_conn_port: 8082
+    dspace_install_dir: /usr/local/dataden/dataden
+    dspace_home: /usr/local/dataden
+    dspace_base: /usr/local/dataden
+    dspace_db_server_url: jdbc:postgresql://postgres.library.ucla.edu:5432/
+    dspace_service_user: dataden
+    dspace_db_poolname: datadenpool
 
-dspace_mail_from_address: dataden@library.ucla.edu
-dspace_mail_feedback_recipient: dataden@library.ucla.edu
-dspace_mail_admin: dataden@library.ucla.edu
-dspace_mail_alert_recipient: dataden@library.ucla.edu
-dspace_mail_registration_notify: dataden@library.ucla.edu
-
-dspace_loglevel_other: INFO
-dspace_loglevel_dspace: INFO
 tomcat_applications:
   - app_name: dataden
     shut_port: 8006
@@ -37,13 +75,7 @@ tomcat_applications:
     shut_port: 8007
     ajp_conn_port: 8011
     conn_port: 8082
-    rproxy_path: vsim
-
-dspace_shut_port: 8006
-dspace_ajp_conn_port: 8010
-dspace_conn_port: 8081
-
-
+    rproxy_path: vsim 
 dspace_apps: 
     - probe
     - jspui
