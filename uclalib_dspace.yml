@@ -33,38 +33,38 @@
 
     # create a postgresql user for dspace
     postgresql_users:
-      - name: "{{ postgres_build['test']['dataden']['users']['username'] }}"
-        pass: "{{ postgres_build['test']['dataden']['users']['password'] }}"
+      - name: "{{ postgres_build['test']['dataden']['user']['username'] }}"
+        pass: "{{ postgres_build['test']['dataden']['user']['password'] }}"
         encrypted: yes
-      - name: "{{ postgres_build['test']['vsim']['users']['username'] }}"
-        pass: "{{ postgres_build['test']['vsim']['users']['password'] }}"
+      - name: "{{ postgres_build['test']['vsim']['user']['username'] }}"
+        pass: "{{ postgres_build['test']['vsim']['user']['password'] }}"
         encrypted: yes
-      - name: "{{ postgres_build['prod']['dataden']['users']['username'] }}"
-        pass: "{{ postgres_build['prod']['dataden']['users']['password'] }}"
+      - name: "{{ postgres_build['prod']['dataden']['user']['username'] }}"
+        pass: "{{ postgres_build['prod']['dataden']['user']['password'] }}"
         encrypted: yes
-      - name: "{{ postgres_build['prod']['vsim']['users']['username'] }}"
-        pass: "{{ postgres_build['prod']['vsim']['users']['password'] }}"
+      - name: "{{ postgres_build['prod']['vsim']['user']['username'] }}"
+        pass: "{{ postgres_build['prod']['vsim']['user']['password'] }}"
         encrypted: yes
 
     # create a database for dspace
     postgresql_databases:
       - name: "{{ postgres_build['test']['dataden']['dbname'] }}"
-        owner: "{{ postgres_build['test']['dataden']['users']['username'] }}"
+        owner: "{{ postgres_build['test']['dataden']['user']['username'] }}"
         encoding: 'UTF-8'
         lc_collate: 'en_US.UTF-8'
         lc_ctype: 'en_US.UTF-8'
       - name: "{{ postgres_build['test']['vsim']['dbname'] }}"
-        owner: "{{ postgres_build['test']['vsim']['users']['username'] }}"
+        owner: "{{ postgres_build['test']['vsim']['user']['username'] }}"
         encoding: 'UTF-8'
         lc_collate: 'en_US.UTF-8'
         lc_ctype: 'en_US.UTF-8'
       - name: "{{ postgres_build['prod']['dataden']['dbname'] }}"
-        owner: "{{ postgres_build['prod']['dataden']['users']['username'] }}"
+        owner: "{{ postgres_build['prod']['dataden']['user']['username'] }}"
         encoding: 'UTF-8'
         lc_collate: 'en_US.UTF-8'
         lc_ctype: 'en_US.UTF-8'
       - name: "{{ postgres_build['prod']['vsim']['dbname'] }}"
-        owner: "{{ postgres_build['prod']['vsim']['users']['username'] }}"
+        owner: "{{ postgres_build['prod']['vsim']['user']['username'] }}"
         encoding: 'UTF-8'
         lc_collate: 'en_US.UTF-8'
         lc_ctype: 'en_US.UTF-8'
@@ -86,19 +86,19 @@
 
     # database privileges for the dspace user
     postgresql_user_privileges:
-      - name: "{{ postgres_build['test']['dataden']['users']['username'] }}"
+      - name: "{{ postgres_build['test']['dataden']['user']['username'] }}"
         db: "{{ postgres_build['test']['dataden']['dbname'] }}"
         priv: "ALL"
         role_attr_flags: "CREATEDB"
-      - name: "{{ postgres_build['test']['vsim']['users']['username'] }}"
+      - name: "{{ postgres_build['test']['vsim']['user']['username'] }}"
         db: "{{ postgres_build['test']['vsim']['dbname'] }}"
         priv: "ALL"
         role_attr_flags: "CREATEDB"
-      - name: "{{ postgres_build['prod']['dataden']['users']['username'] }}"
+      - name: "{{ postgres_build['prod']['dataden']['user']['username'] }}"
         db: "{{ postgres_build['prod']['dataden']['dbname'] }}"
         priv: "ALL"
         role_attr_flags: "CREATEDB"
-      - name: "{{ postgres_build['prod']['vsim']['users']['username'] }}"
+      - name: "{{ postgres_build['prod']['vsim']['user']['username'] }}"
         db: "{{ postgres_build['prod']['vsim']['dbname'] }}"
         priv: "ALL"
         role_attr_flags: "CREATEDB"
@@ -107,17 +107,17 @@
     template: src=templates/dspace_pgpass.j2 dest="~/.pgpass" mode=0600
 
   roles:
-#    - { role: uclalib_role_java }
-#    - { role: uclalib_role_vim }
-#    - { role: uclalib_role_imagemagick }
-#    - { role: uclalib_role_clamav }
-#    - { role: uclalib_role_java_maven }
-#    - { role: uclalib_role_java_ant }
-#    - { role: uclalib_role_git }
-#    - { role: uclalib_role_postgres, when: ansible_virtualization_type != "VMware" }
-#    - { role: uclalib_role_apache }
-#    - { role: uclalib_role_tomcat }
-#    - { role: uclalib_role_dspace, env: "{{ env|default('test') }}", app: "{{ dspace.vsim }}" }
+    - { role: uclalib_role_java }
+    - { role: uclalib_role_vim }
+    - { role: uclalib_role_imagemagick }
+    - { role: uclalib_role_clamav }
+    - { role: uclalib_role_java_maven }
+    - { role: uclalib_role_java_ant }
+    - { role: uclalib_role_git }
+    - { role: uclalib_role_postgres, when: ansible_virtualization_type != "VMware" }
+    - { role: uclalib_role_apache }
+    - { role: uclalib_role_tomcat }
+    - { role: uclalib_role_git }
     - { role: uclalib_role_dspace, 
               dspace_git_repo: "{{ dspace[env].vsim.dspace_git_repo }}",
               dspace_git_branch: "{{ dspace[env].vsim.dspace_git_branch }}",
@@ -144,7 +144,10 @@
               dspace_base: "{{ dspace[env].vsim.dspace_base }}",
               dspace_db_server_url: "{{ dspace[env].vsim.dspace_db_server_url }}",
               dspace_service_user: "{{ dspace[env].vsim.dspace_service_user }}",
-              dspace_db_poolname: "{{ dspace[env].vsim.dspace_db_poolname }}" }
+              dspace_db_poolname: "{{ dspace[env].vsim.dspace_db_poolname }}",
+              dspace_db_name: "{{ postgres_build[env].vsim.dbname }}",
+              dspace_db_username: "{{ postgres_build[env].vsim.user.username }}",
+              dspace_db_password: "{{ postgres_build[env].vsim.user.password }}" }
     - { role: uclalib_role_dspace, 
               dspace_git_repo: "{{ dspace[env].dataden.dspace_git_repo }}",
               dspace_git_branch: "{{ dspace[env].dataden.dspace_git_branch }}",
@@ -171,40 +174,8 @@
               dspace_base: "{{ dspace[env].dataden.dspace_base }}",
               dspace_db_server_url: "{{ dspace[env].dataden.dspace_db_server_url }}",
               dspace_service_user: "{{ dspace[env].dataden.dspace_service_user }}",
-              dspace_db_poolname: "{{ dspace[env].dataden.dspace_db_poolname }}" }
-#    - { role: uclalib_role_dspace, env: "{{ env|default('test') }}", appinstance: dspace.dataden }
-#    - { role: uclalib_role_handle }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+              dspace_db_poolname: "{{ dspace[env].dataden.dspace_db_poolname }}",
+              dspace_db_name: "{{ postgres_build[env].dataden.dbname }}",
+              dspace_db_username: "{{ postgres_build[env].dataden.user.username }}",
+              dspace_db_password: "{{ postgres_build[env].dataden.user.username }}" }
+    - { role: uclalib_role_handle }
