@@ -30,6 +30,8 @@
     postgresql_pg_hba_passwd_hosts:
       - t-w-dspace01.library.ucla.edu
       - p-w-dspace01.library.ucla.edu
+    postgresql_listen_addresses:
+      - *
 
     # create a postgresql user for dspace
     postgresql_users:
@@ -103,9 +105,6 @@
         priv: "ALL"
         role_attr_flags: "CREATEDB"
 
-    # drop a pgpass file in our own user folder, to make working with PostgreSQL via the command line slightly easier
-    template: src=templates/dspace_pgpass.j2 dest="~/.pgpass" mode=0600
-
   roles:
     - { role: uclalib_role_java }
     - { role: uclalib_role_vim }
@@ -117,7 +116,6 @@
     - { role: uclalib_role_postgres, when: ansible_virtualization_type != "VMware" }
     - { role: uclalib_role_apache }
     - { role: uclalib_role_tomcat }
-    - { role: uclalib_role_git }
     - { role: uclalib_role_dspace, 
               dspace_git_repo: "{{ dspace[env].vsim.dspace_git_repo }}",
               dspace_git_branch: "{{ dspace[env].vsim.dspace_git_branch }}",
