@@ -175,5 +175,5 @@
               dspace_db_poolname: "{{ dspace[env].dataden.dspace_db_poolname }}",
               dspace_db_name: "{{ postgres_build[env].dataden.dbname }}",
               dspace_db_username: "{{ postgres_build[env].dataden.user.username }}",
-              dspace_db_password: "{{ postgres_build[env].dataden.user.username }}" }
+              dspace_db_password: "{{ postgres_build[env].dataden.user.password }}" }
     - { role: uclalib_role_handle }
