@@ -14,56 +14,56 @@ dspace:
       dspace_git_branch: ucla-vsim-6_x
       dspace_env_build_name: uclalib_vsim
       dspace_name: Test UCLA VSim
-      dspace_assetstore_dir: /data/assetstore/vsim
-      dspace_hostname: vsim.library.ucla.edu
-      dspace_baseUrl: http://vsim.library.ucla.edu
+      dspace_assetstore_dir: /data/assetstore/testvsim
+      dspace_hostname: test-vsim.library.ucla.edu
+      dspace_baseUrl: http://test-vsim.library.ucla.edu
       dspace_localUrl: http://localhost:8081
       dspace_ui: xmlui
       dspace_solr_server: http://localhost:8081/solr
       dspace_default_language: en_US
-      dspace_mail_from_address: vsim@library.ucla.edu
-      dspace_mail_feedback_recipient: vsim@library.ucla.edu
-      dspace_mail_admin: vsim@library.ucla.edu
-      dspace_mail_alert_recipient: vsim@library.ucla.edu
-      dspace_mail_registration_notify: vsim@library.ucla.edu
+      dspace_mail_from_address: testvsim@library.ucla.edu
+      dspace_mail_feedback_recipient: testvsim@library.ucla.edu
+      dspace_mail_admin: testvsim@library.ucla.edu
+      dspace_mail_alert_recipient: testvsim@library.ucla.edu
+      dspace_mail_registration_notify: testvsim@library.ucla.edu
       dspace_loglevel_other: INFO
       dspace_loglevel_dspace: INFO
       dspace_shut_port: 8006
       dspace_ajp_conn_port: 8010
       dspace_conn_port: 8081
-      dspace_install_dir: /usr/local/vsim/vsim
-      dspace_home: /usr/local/vsim
-      dspace_base: /usr/local/vsim
+      dspace_install_dir: /usr/local/testvsim/testvsim
+      dspace_home: /usr/local/testvsim
+      dspace_base: /usr/local/testvsim
       dspace_db_server_url: jdbc:postgresql://postgres.library.ucla.edu:5432/
-      dspace_service_user: vsim
-      dspace_db_poolname: vsimpool
+      dspace_service_user: testvsim
+      dspace_db_poolname: testvsimpool
     dataden:
       dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
       dspace_git_branch: ucla-dr-6_x
       dspace_env_build_name: uclalib_dataden
       dspace_name: Test UCLA Dataden
-      dspace_assetstore_dir: /data/assetstore/dataden
-      dspace_hostname: dataden.library.ucla.edu
-      dspace_baseUrl: http://dataden.library.ucla.edu
+      dspace_assetstore_dir: /data/assetstore/testdataden
+      dspace_hostname: test-dataden.library.ucla.edu
+      dspace_baseUrl: http://test-dataden.library.ucla.edu
       dspace_localUrl: http://localhost:8081
       dspace_ui: jspui
       dspace_solr_server: http://localhost:8081/solr
       dspace_default_language: en_US
-      dspace_mail_from_address: dataden@library.ucla.edu
-      dspace_mail_feedback_recipient: dataden@library.ucla.edu
-      dspace_mail_admin: dataden@library.ucla.edu
-      dspace_mail_alert_recipient: dataden@library.ucla.edu
-      dspace_mail_registration_notify: dataden@library.ucla.edu
+      dspace_mail_from_address: testdataden@library.ucla.edu
+      dspace_mail_feedback_recipient: testdataden@library.ucla.edu
+      dspace_mail_admin: testdataden@library.ucla.edu
+      dspace_mail_alert_recipient: testdataden@library.ucla.edu
+      dspace_mail_registration_notify: testdataden@library.ucla.edu
       dspace_loglevel_other: INFO
       dspace_loglevel_dspace: INFO
       dspace_shut_port: 8007
       dspace_conn_port: 8082
-      dspace_install_dir: /usr/local/dataden/dataden
-      dspace_home: /usr/local/dataden
-      dspace_base: /usr/local/dataden
+      dspace_install_dir: /usr/local/testdataden/testdataden
+      dspace_home: /usr/local/testdataden
+      dspace_base: /usr/local/testdataden
       dspace_db_server_url: jdbc:postgresql://postgres.library.ucla.edu:5432/
-      dspace_service_user: dataden
-      dspace_db_poolname: datadenpool
+      dspace_service_user: testdataden
+      dspace_db_poolname: testdatadenpool
 
 tomcat_applications:
   - app_name: vsim
