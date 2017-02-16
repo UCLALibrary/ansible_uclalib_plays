@@ -14,7 +14,7 @@ dspace:
       dspace_git_branch: ucla-vsim-6_x
       dspace_env_build_name: uclalib_vsim
       dspace_name: Test UCLA VSim
-      dspace_assetstore_dir: /data/assetstore/testvsim
+      dspace_assetstore_dir: /data/assetstore/vsim
       dspace_hostname: test-vsim.library.ucla.edu
       dspace_baseUrl: http://test-vsim.library.ucla.edu
       dspace_localUrl: http://localhost:8081
@@ -31,18 +31,18 @@ dspace:
       dspace_shut_port: 8006
       dspace_ajp_conn_port: 8010
       dspace_conn_port: 8081
-      dspace_install_dir: /usr/local/testvsim/testvsim
-      dspace_home: /usr/local/testvsim
-      dspace_base: /usr/local/testvsim
+      dspace_install_dir: /usr/local/vsim/vsim
+      dspace_home: /usr/local/vsim
+      dspace_base: /usr/local/vsim
       dspace_db_server_url: jdbc:postgresql://postgres.library.ucla.edu:5432/
-      dspace_service_user: testvsim
-      dspace_db_poolname: testvsimpool
+      dspace_service_user: vsim
+      dspace_db_poolname: vsimpool
     dataden:
       dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
       dspace_git_branch: ucla-dr-6_x
       dspace_env_build_name: uclalib_dataden
       dspace_name: Test UCLA Dataden
-      dspace_assetstore_dir: /data/assetstore/testdataden
+      dspace_assetstore_dir: /data/assetstore/dataden
       dspace_hostname: test-dataden.library.ucla.edu
       dspace_baseUrl: http://test-dataden.library.ucla.edu
       dspace_localUrl: http://localhost:8081
@@ -58,12 +58,12 @@ dspace:
       dspace_loglevel_dspace: INFO
       dspace_shut_port: 8007
       dspace_conn_port: 8082
-      dspace_install_dir: /usr/local/testdataden/testdataden
-      dspace_home: /usr/local/testdataden
-      dspace_base: /usr/local/testdataden
+      dspace_install_dir: /usr/local/dataden/dataden
+      dspace_home: /usr/local/dataden
+      dspace_base: /usr/local/dataden
       dspace_db_server_url: jdbc:postgresql://postgres.library.ucla.edu:5432/
-      dspace_service_user: testdataden
-      dspace_db_poolname: testdatadenpool
+      dspace_service_user: dataden
+      dspace_db_poolname: datadenpool
 
 tomcat_applications:
   - app_name: vsim
