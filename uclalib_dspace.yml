@@ -180,4 +180,4 @@
               dspace_db_username: "{{ postgres_build[env].dataden.user.username }}",
               dspace_db_password: "{{ postgres_build[env].dataden.user.password }}" }
     - { role: uclalib_role_handle }
-    - { role: uclalib_role_iptables }
+    - { role: uclalib_role_iptables, when: ansible_virtualization_type != "VMware"}
