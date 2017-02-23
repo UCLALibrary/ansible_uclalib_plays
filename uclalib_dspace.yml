@@ -13,7 +13,10 @@
 
   vars:
     java_package: java-1.8.0-openjdk-devel.x86_64
-
+    iptables_allowed_input_rules:
+      - src_ip: 164.67.0.0/16
+        dest_port: 80
+        protocol: tcp
     env: 'test'
     handle_version: 8.1.1
     postgresql_version: 9.5
@@ -177,3 +180,4 @@
               dspace_db_username: "{{ postgres_build[env].dataden.user.username }}",
               dspace_db_password: "{{ postgres_build[env].dataden.user.password }}" }
     - { role: uclalib_role_handle }
+    - { role: uclalib_role_iptables }
