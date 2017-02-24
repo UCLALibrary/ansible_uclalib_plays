@@ -26,6 +26,8 @@
     postgresql_pg_hba_passwd_hosts:
       - t-w-dspace01.library.ucla.edu
       - p-w-dspace01.library.ucla.edu
+    postgresql_listen_addresses:
+      - "*"
 
     # create a postgresql user for dspace
     postgresql_users:
