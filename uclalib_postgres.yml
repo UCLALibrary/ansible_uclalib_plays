@@ -29,38 +29,38 @@
 
     # create a postgresql user for dspace
     postgresql_users:
-      - name: "{{ postgres_build['test']['dataden']['users']['username'] }}"
-        pass: "{{ postgres_build['test']['dataden']['users']['password'] }}"
+      - name: "{{ postgres_build['test']['dataden']['user']['username'] }}"
+        pass: "{{ postgres_build['test']['dataden']['user']['password'] }}"
         encrypted: yes
-      - name: "{{ postgres_build['test']['vsim']['users']['username'] }}"
-        pass: "{{ postgres_build['test']['vsim']['users']['password'] }}"
+      - name: "{{ postgres_build['test']['vsim']['user']['username'] }}"
+        pass: "{{ postgres_build['test']['vsim']['user']['password'] }}"
         encrypted: yes
-      - name: "{{ postgres_build['prod']['dataden']['users']['username'] }}"
-        pass: "{{ postgres_build['prod']['dataden']['users']['password'] }}"
+      - name: "{{ postgres_build['prod']['dataden']['user']['username'] }}"
+        pass: "{{ postgres_build['prod']['dataden']['user']['password'] }}"
         encrypted: yes
-      - name: "{{ postgres_build['prod']['vsim']['users']['username'] }}"
-        pass: "{{ postgres_build['prod']['vsim']['users']['password'] }}"
+      - name: "{{ postgres_build['prod']['vsim']['user']['username'] }}"
+        pass: "{{ postgres_build['prod']['vsim']['user']['password'] }}"
         encrypted: yes
 
     # create a database for dspace
     postgresql_databases:
       - name: "{{ postgres_build['test']['dataden']['dbname'] }}"
-        owner: "{{ postgres_build['test']['dataden']['users']['username'] }}" 
+        owner: "{{ postgres_build['test']['dataden']['user']['username'] }}" 
         encoding: 'UTF-8'
         lc_collate: 'en_US.UTF-8'
         lc_ctype: 'en_US.UTF-8'
       - name: "{{ postgres_build['test']['vsim']['dbname'] }}"
-        owner: "{{ postgres_build['test']['vsim']['users']['username'] }}" 
+        owner: "{{ postgres_build['test']['vsim']['user']['username'] }}" 
         encoding: 'UTF-8'
         lc_collate: 'en_US.UTF-8'
         lc_ctype: 'en_US.UTF-8'
       - name: "{{ postgres_build['prod']['dataden']['dbname'] }}"
-        owner: "{{ postgres_build['prod']['dataden']['users']['username'] }}" 
+        owner: "{{ postgres_build['prod']['dataden']['user']['username'] }}" 
         encoding: 'UTF-8'
         lc_collate: 'en_US.UTF-8'
         lc_ctype: 'en_US.UTF-8'
       - name: "{{ postgres_build['prod']['vsim']['dbname'] }}"
-        owner: "{{ postgres_build['prod']['vsim']['users']['username'] }}" 
+        owner: "{{ postgres_build['prod']['vsim']['user']['username'] }}" 
         encoding: 'UTF-8'
         lc_collate: 'en_US.UTF-8'
         lc_ctype: 'en_US.UTF-8'
@@ -82,19 +82,19 @@
 
     # database privileges for the dspace user
     postgresql_user_privileges:
-      - name: "{{ postgres_build['test']['dataden']['users']['username'] }}"
+      - name: "{{ postgres_build['test']['dataden']['user']['username'] }}"
         db: "{{ postgres_build['test']['dataden']['dbname'] }}"
         priv: "ALL"
         role_attr_flags: "CREATEDB"
-      - name: "{{ postgres_build['test']['vsim']['users']['username'] }}"
+      - name: "{{ postgres_build['test']['vsim']['user']['username'] }}"
         db: "{{ postgres_build['test']['vsim']['dbname'] }}"
         priv: "ALL"
         role_attr_flags: "CREATEDB"
-      - name: "{{ postgres_build['prod']['dataden']['users']['username'] }}"
+      - name: "{{ postgres_build['prod']['dataden']['user']['username'] }}"
         db: "{{ postgres_build['prod']['dataden']['dbname'] }}"
         priv: "ALL"
         role_attr_flags: "CREATEDB"
-      - name: "{{ postgres_build['prod']['vsim']['users']['username'] }}"
+      - name: "{{ postgres_build['prod']['vsim']['user']['username'] }}"
         db: "{{ postgres_build['prod']['vsim']['dbname'] }}"
         priv: "ALL"
         role_attr_flags: "CREATEDB"
