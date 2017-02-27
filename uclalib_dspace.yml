@@ -150,7 +150,7 @@
               dspace_db_username: "{{ postgres_build[env].vsim.user.username }}",
               dspace_db_password: "{{ postgres_build[env].vsim.user.password }}",
               dspace_xms: "{{ postgres_build[env].vsim.dspace_xms }}",
-              dspace_xmx: "{{ postgres_build[env].vsim.dspace_xmx }}"
+              dspace_xmx: "{{ postgres_build[env].vsim.dspace_xmx }}" }
     - { role: uclalib_role_dspace, 
               dspace_git_repo: "{{ dspace[env].dataden.dspace_git_repo }}",
               dspace_git_branch: "{{ dspace[env].dataden.dspace_git_branch }}",
@@ -182,6 +182,6 @@
               dspace_db_username: "{{ postgres_build[env].dataden.user.username }}",
               dspace_db_password: "{{ postgres_build[env].dataden.user.password }}",
               dspace_xms: "{{ postgres_build[env].dataden.dspace_xms }}",
-              dspace_xmx: "{{ postgres_build[env].dataden.dspace_xmx }}"
+              dspace_xmx: "{{ postgres_build[env].dataden.dspace_xmx }}" }
     - { role: uclalib_role_handle }
     - { role: uclalib_role_iptables, when: ansible_virtualization_type == "VMware"}
