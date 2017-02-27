@@ -37,6 +37,8 @@ dspace:
       dspace_db_server_url: jdbc:postgresql://postgres.library.ucla.edu:5432/
       dspace_service_user: vsim
       dspace_db_poolname: vsimpool
+      dspace_xms: 4096m
+      dspace_xmx: 4096m
     dataden:
       dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
       dspace_git_branch: ucla-dr-6_x
@@ -64,6 +66,8 @@ dspace:
       dspace_db_server_url: jdbc:postgresql://postgres.library.ucla.edu:5432/
       dspace_service_user: dataden
       dspace_db_poolname: datadenpool
+      dspace_xms: 4096m
+      dspace_xmx: 4096m
 
 tomcat_applications:
   - app_name: vsim
