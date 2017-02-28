@@ -4,6 +4,7 @@
 
 tomcat_major_version: 8
 tomcat_version: 8.5.9
+maven_version: 3.3.9
 
 rhr_git_repo: http://github.com/UCLALibrary/Remote-Handle-Resolver.git
 
@@ -14,7 +15,7 @@ dspace:
       dspace_git_branch: ucla-vsim-6_x
       dspace_env_build_name: uclalib_vsim
       dspace_name: Test UCLA VSim
-      dspace_assetstore_dir: /data/assetstore/vsim
+      dspace_assetstore_dir: /data/vsim/assetstore
       dspace_hostname: test-vsim.library.ucla.edu
       dspace_baseUrl: http://test-vsim.library.ucla.edu
       dspace_localUrl: http://localhost:8081
@@ -44,7 +45,7 @@ dspace:
       dspace_git_branch: ucla-dr-6_x
       dspace_env_build_name: uclalib_dataden
       dspace_name: Test UCLA Dataden
-      dspace_assetstore_dir: /data/assetstore/dataden
+      dspace_assetstore_dir: /data/dataden/assetstore
       dspace_hostname: test-dataden.library.ucla.edu
       dspace_baseUrl: http://test-dataden.library.ucla.edu
       dspace_localUrl: http://localhost:8081
@@ -74,7 +75,7 @@ dspace:
       dspace_git_branch: ucla-vsim-6_x
       dspace_env_build_name: uclalib_vsim
       dspace_name: UCLA VSim
-      dspace_assetstore_dir: /data/assetstore/vsim
+      dspace_assetstore_dir: /data/vsim/assetstore
       dspace_hostname: vsim.library.ucla.edu
       dspace_baseUrl: http://vsim.library.ucla.edu
       dspace_localUrl: http://localhost:8081
@@ -104,7 +105,7 @@ dspace:
       dspace_git_branch: ucla-dr-6_x
       dspace_env_build_name: uclalib_dataden
       dspace_name: UCLA Dataden
-      dspace_assetstore_dir: /data/assetstore/dataden
+      dspace_assetstore_dir: /data/dataden/assetstore
       dspace_hostname: dataden.library.ucla.edu
       dspace_baseUrl: http://dataden.library.ucla.edu
       dspace_localUrl: http://localhost:8081
