@@ -46,6 +46,8 @@
         type: 'dd_statistics'
       - ident: 'sinaiusers'
         type: 'sinaiusers'
+      - ident: 'sinaistageusers'
+        type: 'sinaiusers'
 # Use 1 for master and 2 for slave
     solr_instance_type: 1
 # Uncomment variable below when solr_instance_type is 2 enter correct FQDN for solr master
