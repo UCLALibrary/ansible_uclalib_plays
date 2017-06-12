@@ -40,6 +40,13 @@ dspace:
       dspace_db_poolname: vsimpool
       dspace_xms: 4096m
       dspace_xmx: 4096m
+      extra_configs: |2
+  solr.authority.server=${solr.server}/vsim-authority
+  choices.plugin.dc.contributor.author = SolrAuthorAuthority
+  choices.presentation.dc.contributor.author = authorLookup
+  authority.controlled.dc.contributor.author = true
+  authority.author.indexer.field.1=dc.contributor.author 
+
     dataden:
       dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
       dspace_git_branch: ucla-dr-6_x
@@ -100,6 +107,13 @@ dspace:
       dspace_db_poolname: vsimprodpool
       dspace_xms: 4096m
       dspace_xmx: 4096m
+      extra_configs: |2
+  solr.authority.server=${solr.server}/vsim-authority
+  choices.plugin.dc.contributor.author = SolrAuthorAuthority
+  choices.presentation.dc.contributor.author = authorLookup
+  authority.controlled.dc.contributor.author = true
+  authority.author.indexer.field.1=dc.contributor.author 
+
     dataden:
       dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
       dspace_git_branch: ucla-dr-6_x
