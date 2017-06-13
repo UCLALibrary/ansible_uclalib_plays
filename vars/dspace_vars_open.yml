@@ -41,11 +41,27 @@ dspace:
       dspace_xms: 4096m
       dspace_xmx: 4096m
       extra_configs: |2
-  solr.authority.server=${solr.server}/vsim-authority
+  #####  Authority Control Settings  #####
+  plugin.named.org.dspace.content.authority.ChoiceAuthority = \
+  org.dspace.content.authority.TGNAuthority = TGNAuthority
+  #
+  # enable ORCID authority control
+  plugin.named.org.dspace.content.authority.ChoiceAuthority = \
+      org.dspace.content.authority.SolrAuthority = SolrAuthorAuthority
+  #
+  # Configuration settings for ORCID based authority control, uncomment the lines below to enable configuration
+  solr.authority.server=http://test-solr.library.ucla.edu/solr/vsim_authority
   choices.plugin.dc.contributor.author = SolrAuthorAuthority
   choices.presentation.dc.contributor.author = authorLookup
   authority.controlled.dc.contributor.author = true
-  authority.author.indexer.field.1=dc.contributor.author 
+  authority.author.indexer.field.1=dc.contributor.author
+  #
+  authority.minconfidence = ambiguous
+  #
+  #enable the TGN Authority plugin
+  authority.controlled.dc.coverage.spatial = true
+  choices.plugin.dc.coverage.spatial = TGNAuthority
+  choices.presentation.dc.coverage.spatial = suggest
 
     dataden:
       dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
