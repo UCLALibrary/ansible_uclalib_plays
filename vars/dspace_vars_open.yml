@@ -41,27 +41,48 @@ dspace:
       dspace_xms: 4096m
       dspace_xmx: 4096m
       extra_configs: |2
-  #####  Authority Control Settings  #####
-  plugin.named.org.dspace.content.authority.ChoiceAuthority = \
-  org.dspace.content.authority.TGNAuthority = TGNAuthority
-  #
-  # enable ORCID authority control
-  plugin.named.org.dspace.content.authority.ChoiceAuthority = \
-      org.dspace.content.authority.SolrAuthority = SolrAuthorAuthority
-  #
-  # Configuration settings for ORCID based authority control, uncomment the lines below to enable configuration
-  solr.authority.server=http://test-solr.library.ucla.edu/solr/vsim_authority
-  choices.plugin.dc.contributor.author = SolrAuthorAuthority
-  choices.presentation.dc.contributor.author = authorLookup
-  authority.controlled.dc.contributor.author = true
-  authority.author.indexer.field.1=dc.contributor.author
-  #
-  authority.minconfidence = ambiguous
-  #
-  #enable the TGN Authority plugin
-  authority.controlled.dc.coverage.spatial = true
-  choices.plugin.dc.coverage.spatial = TGNAuthority
-  choices.presentation.dc.coverage.spatial = suggest
+#####  Authority Control Settings  #####
+plugin.named.org.dspace.content.authority.ChoiceAuthority = \
+org.dspace.content.authority.TGNAuthority = TGNAuthority
+
+# enable ORCID authority control
+plugin.named.org.dspace.content.authority.ChoiceAuthority = \
+    org.dspace.content.authority.SolrAuthority = SolrAuthorAuthority
+
+# Configuration settings for ORCID based authority control, uncomment the lines below to enable configuration
+solr.authority.server=http://test-solr.library.ucla.edu/solr/vsim_authority
+
+# ORCID lookup for dc.contributor.author VSIM-21
+choices.plugin.dc.contributor.author = SolrAuthorAuthority
+choices.presentation.dc.contributor.author = authorLookup
+authority.controlled.dc.contributor.author = true
+authority.author.indexer.field.1=dc.contributor.author 
+
+# ORCID lookup for dc.contributor.other VSIM-39
+choices.plugin.dc.contributor.other = SolrAuthorAuthority
+choices.presentation.dc.contributor.other = authorLookup
+authority.controlled.dc.contributor.other = true
+authority.author.indexer.field.2=dc.contributor.other 
+
+# ORCID lookup for dc.contributor.advisor VSIM-39
+choices.plugin.dc.contributor.advisor = SolrAuthorAuthority
+choices.presentation.dc.contributor.advisor = authorLookup
+authority.controlled.dc.contributor.advisor = true
+authority.author.indexer.field.2=dc.contributor.advisor 
+
+authority.minconfidence = ambiguous
+
+#enable the TGN Authority plugin
+authority.controlled.dc.coverage.spatial = true
+choices.plugin.dc.coverage.spatial = TGNAuthority
+choices.presentation.dc.coverage.spatial = suggest
+
+##### LCONZ-event configuration #####
+# queue name to which to add tasks when an item is installed
+lconz-event.queue.install.name = continually
+
+# Tasks to queue when an item is installed
+lconz-event.queue.install.tasks = vsiminit,\
 
     dataden:
       dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
@@ -124,11 +145,49 @@ dspace:
       dspace_xms: 4096m
       dspace_xmx: 4096m
       extra_configs: |2
-  solr.authority.server=${solr.server}/vsim-authority
-  choices.plugin.dc.contributor.author = SolrAuthorAuthority
-  choices.presentation.dc.contributor.author = authorLookup
-  authority.controlled.dc.contributor.author = true
-  authority.author.indexer.field.1=dc.contributor.author 
+#####  Authority Control Settings  #####
+plugin.named.org.dspace.content.authority.ChoiceAuthority = \
+org.dspace.content.authority.TGNAuthority = TGNAuthority
+
+# enable ORCID authority control
+plugin.named.org.dspace.content.authority.ChoiceAuthority = \
+    org.dspace.content.authority.SolrAuthority = SolrAuthorAuthority
+
+# Configuration settings for ORCID based authority control, uncomment the lines below to enable configuration
+solr.authority.server=http://test-solr.library.ucla.edu/solr/vsim_authority
+
+# ORCID lookup for dc.contributor.author VSIM-21
+choices.plugin.dc.contributor.author = SolrAuthorAuthority
+choices.presentation.dc.contributor.author = authorLookup
+authority.controlled.dc.contributor.author = true
+authority.author.indexer.field.1=dc.contributor.author 
+
+# ORCID lookup for dc.contributor.other VSIM-39
+choices.plugin.dc.contributor.other = SolrAuthorAuthority
+choices.presentation.dc.contributor.other = authorLookup
+authority.controlled.dc.contributor.other = true
+authority.author.indexer.field.2=dc.contributor.other 
+
+# ORCID lookup for dc.contributor.advisor VSIM-39
+choices.plugin.dc.contributor.advisor = SolrAuthorAuthority
+choices.presentation.dc.contributor.advisor = authorLookup
+authority.controlled.dc.contributor.advisor = true
+authority.author.indexer.field.2=dc.contributor.advisor 
+
+
+authority.minconfidence = ambiguous
+
+#enable the TGN Authority plugin
+authority.controlled.dc.coverage.spatial = true
+choices.plugin.dc.coverage.spatial = TGNAuthority
+choices.presentation.dc.coverage.spatial = suggest
+
+##### LCONZ-event configuration #####
+# queue name to which to add tasks when an item is installed
+lconz-event.queue.install.name = continually
+
+# Tasks to queue when an item is installed
+lconz-event.queue.install.tasks = vsiminit,\
 
     dataden:
       dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
