@@ -16,6 +16,7 @@ dspace:
       dspace_env_build_name: uclalib_vsim
       dspace_name: Test UCLA VSim
       dspace_assetstore_dir: /data/vsim/assetstore
+      dspace_handle_canonical_prefix: https://test-vsim.library.ucla.edu/xmlui/handle/
       dspace_hostname: test-vsim.library.ucla.edu
       dspace_baseUrl: http://test-vsim.library.ucla.edu
       dspace_localUrl: http://localhost:8081
@@ -46,6 +47,7 @@ dspace:
       dspace_env_build_name: uclalib_dataden
       dspace_name: Test UCLA Dataden
       dspace_assetstore_dir: /data/dataden/assetstore
+      dspace_handle_canonical_prefix: https://test-dataden.library.ucla.edu/xmlui/handle/
       dspace_hostname: test-dataden.library.ucla.edu
       dspace_baseUrl: http://test-dataden.library.ucla.edu
       dspace_localUrl: http://localhost:8081
