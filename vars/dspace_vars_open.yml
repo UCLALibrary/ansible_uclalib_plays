@@ -47,7 +47,7 @@ dspace:
       dspace_env_build_name: uclalib_dataden
       dspace_name: Test UCLA Dataden
       dspace_assetstore_dir: /data/dataden/assetstore
-      dspace_handle_canonical_prefix: https://test-dataden.library.ucla.edu/xmlui/handle/
+      dspace_handle_canonical_prefix: https://test-dataden.library.ucla.edu/jspui/handle/
       dspace_hostname: test-dataden.library.ucla.edu
       dspace_baseUrl: http://test-dataden.library.ucla.edu
       dspace_localUrl: http://localhost:8081
