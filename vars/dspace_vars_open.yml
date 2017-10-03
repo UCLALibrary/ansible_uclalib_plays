@@ -85,6 +85,9 @@ lconz-event.queue.install.name = continually
 # Tasks to queue when an item is installed
 lconz-event.queue.install.tasks = vsiminit,\
 
+# Handle for the VSim Project Masters collection
+vsim.project.masters.handle = 20.500.11930/1015
+
     dataden:
       dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
       dspace_git_branch: ucla-dr-6_x
