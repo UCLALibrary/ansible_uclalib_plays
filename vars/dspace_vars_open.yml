@@ -11,6 +11,12 @@ rhr_git_repo: http://github.com/UCLALibrary/Remote-Handle-Resolver.git
 dspace:
   test:
     vsim:
+      dspace_apps:
+    - probe
+    - swordv2
+    - rest
+    - oai
+    - xmlui
       dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
       dspace_git_branch: ucla-vsim-6_x
       dspace_env_build_name: uclalib_vsim
@@ -89,6 +95,12 @@ lconz-event.queue.install.tasks = vsiminit,\
 vsim.project.masters.handle = 20.500.11930/1015
 
     dataden:
+      dspace_apps:
+    - probe
+    - jspui
+    - swordv2
+    - rest
+    - oai
       dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
       dspace_git_branch: ucla-dr-6_x
       dspace_env_build_name: uclalib_dataden
@@ -120,6 +132,12 @@ vsim.project.masters.handle = 20.500.11930/1015
       dspace_xmx: 4096m
   prod:
     vsim:
+      dspace_apps:
+    - probe
+    - swordv2
+    - rest
+    - oai
+    - xmlui
       dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
       dspace_git_branch: ucla-vsim-6_x
       dspace_env_build_name: uclalib_vsim
@@ -195,6 +213,12 @@ lconz-event.queue.install.name = continually
 lconz-event.queue.install.tasks = vsiminit,\
 
     dataden:
+      dspace_apps:
+    - probe
+    - jspui
+    - swordv2
+    - rest
+    - oai
       dspace_git_repo: http://github.com/UCLALibrary/DSpace.git
       dspace_git_branch: ucla-dr-6_x
       dspace_env_build_name: uclalib_dataden
@@ -234,14 +258,6 @@ tomcat_applications:
     shut_port: 8007
     conn_port: 8082
     rproxy_path: dataden 
-dspace_apps: 
-    - probe
-    - jspui
-    - swordv2
-    - solr
-    - rest
-    - oai
-    - xmlui
 
 # DSpace Handle endpoints for use with the multi-remote handle resolver, multiple entries allowed, in the case of multiple Tomcat instances on the same server, you'll probably
 # want to use the port number for each instance, eg: 8081, 8082, etc.
