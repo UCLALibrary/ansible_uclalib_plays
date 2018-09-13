@@ -1,0 +1,16 @@
+- name: localdevplaybook.yml
+  hosts: localhost
+  connection: localhost
+  become: yes
+  become_method: sudo
+
+  vars:
+    ssl: False
+    drush_pub_keys: |
+      ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDYBUqu5G5+Qmu8mWma8FcjiU8akfChh4kAXKgY4PDeJ29buhyKQlXaAwGrcwe/O3U8Niz7piOJWqkV0nHjvo/oV8BVrjkYzRhkXDhSX52nSHHNqYGuy619/mT4owmaBegTFwiQWWPh/wCYNpzQEX28DOe+4Ekc3gTwHwhjg+vFM3UTFnfg5ikYzhF1O6gz3W9AweGNkPHuIZpY8YH5ROrzreV9K9GIYGRICrHXWYP60JRxYWSITbUvbx40xBKwO85HrnPST2AOv+yrmpfHDEDt8d3ZD4lLbcTAu9rylVPEg63wD6zVw2spzdBp+rmMs9dsP2PBOUdVawId4J0tsN9v cgrzecka@library.ucla.edu
+
+  roles:
+    - { role: ansible_uclalib_role_apache }
+    - { role: ansible_uclalib_role_php }
+    - { role: ansible_uclalib_role_mysql }
+    - { role: ansible_uclalib_role_drupal }
