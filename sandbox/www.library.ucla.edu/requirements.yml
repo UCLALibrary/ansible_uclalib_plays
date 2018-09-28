@@ -1,5 +1,4 @@
 - src: https://github.com/UCLALibrary/uclalib_role_apache
-  version: vhost_optional
 
 - src: https://github.com/UCLALibrary/uclalib_role_mysql.git
 
