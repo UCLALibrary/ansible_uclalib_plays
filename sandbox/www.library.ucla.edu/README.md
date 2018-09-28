@@ -8,8 +8,9 @@ This documentation is still in development. We're looking for ideas/ways to make
 
 ### Prerequisites
 
-* git v1.8.x+
-* ansible v2.6.x+
+* *git v1.8.x+*
+* *ansible v2.6.x+*
+* *CentOS 7 VM (RHEL supported, but haven't test just yet, will add to documentation after test completed)*
 
 ```
 I should dump some instructions here for ansible on different distributions/OS's
