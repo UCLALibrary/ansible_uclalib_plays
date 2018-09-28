@@ -1,0 +1,54 @@
+- name: localdev-build.yml
+  hosts: localhost
+  connection: localhost
+
+  vars:
+    ssl: False
+    scl: False
+    lib_weburl: www-dev.local
+    php_pkgs:
+      - php
+      - php-ldap
+      - php-cli
+      - php-xml
+      - php-mysql
+      - php-pecl-memcache
+      - php-pecl-apc
+      - php-gd
+      - php-mcrypt
+      - php-pear
+      - php-pdo
+      - php-mbstring
+      - php-common
+# Replacement for php-suhosin? Needs testing
+      - php-phpseclib-crypt-hash
+
+    vhosts:
+      "{{ lib_weburl }}":
+        vhost_root: "/opt/www/{{ lib_weburl }}"
+        access_log: "/etc/httpd/logs/{{ lib_weburl }}-access.log"
+        error_log: "/etc/httpd/logs/{{ lib_weburl }}-error.log"
+        listen_port: 80
+        force_https: True
+    project_name: drupal
+    env_name: sandbox
+
+    mysql_databases:
+      - name: sandboxdrupal
+        collation: utf8_bin
+        encoding: utf8
+        state: present
+
+    mysql_users:
+      - name: drupaluser
+        host: localhost
+        password: dummypw
+        priv: sandboxdrupal.*:ALL
+        state: present
+
+  roles:
+#    - { role: uclalib_role_scl, when scl: True }
+    - { role: uclalib_role_rhel7repos }
+    - { role: uclalib_role_apache }
+    - { role: uclalib_role_php }
+    - { role: uclalib_role_mysql, tags: ['client', 'server'], mysql_install_version: '5.6' }
