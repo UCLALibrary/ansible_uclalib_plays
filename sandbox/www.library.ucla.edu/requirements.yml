@@ -5,3 +5,5 @@
 - src: https://github.com/UCLALibrary/uclalib_role_rhel7repos.git
 
 - src: https://github.com/UCLALibrary/uclalib_role_php.git
+
+- src: https://github.com/UCLALibrary/uclalib_role_drush.git
