@@ -52,3 +52,4 @@
     - { role: uclalib_role_apache }
     - { role: uclalib_role_php }
     - { role: uclalib_role_mysql, tags: ['client', 'server'], mysql_install_version: '5.6' }
+    - { role: uclalib_role_drush }
