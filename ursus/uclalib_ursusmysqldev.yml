@@ -1,0 +1,12 @@
+---
+
+- name: uclalib_ursusmysqldev.yml
+  become: yes
+  become_method: sudo
+  hosts: all
+  user: ansible
+
+  roles:
+    - { role: uclalib_role_rhel7repos }
+    - { role: uclalib_role_epel }
+    - { role: uclalib_role_mysql, mysql_install_version: '5.6' }

@@ -1,0 +1,10 @@
+---
+
+- name: install_rhel_insights.yml
+  become: yes
+  become_method: sudo
+  hosts: all
+
+  roles:
+    - { role: uclalib_role_rhelinsights, when: ansible_distribution == "RedHat" }
+

@@ -1,0 +1,15 @@
+---
+
+- name: uclalib_californicamysqldev.yml
+  become: yes
+  become_method: sudo
+  hosts: all
+  user: ansible
+  vars:
+    project_name: californica
+    env_name: dev
+
+  roles:
+    - { role: uclalib_role_rhel7repos }
+    - { role: uclalib_role_epel }
+    - { role: uclalib_role_mysql, mysql_install_version: '5.6' }

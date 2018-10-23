@@ -1,0 +1,21 @@
+---
+
+- name: uclalib_ursuswebdev.yml
+  become: yes
+  become_method: sudo
+  hosts: all
+  user: ansible
+
+  roles:
+    - { role: uclalib_role_rhel7repos }
+    - { role: uclalib_role_epel }
+    - { role: uclalib_role_uclalibrepo }
+    - { role: uclalib_role_samvera_basepackages }
+    - { role: uclalib_role_apache }
+    - { role: uclalib_role_pip }
+    - { role: uclalib_role_ruby, ruby_version: '2.5.1' }
+    - { role: uclalib_role_passenger, passenger_version: '5.3.3' }
+    - { role: uclalib_role_nodejs, nodejs_version: '8' }
+    - { role: uclalib_role_yarn }
+    - { role: uclalib_role_redis }
+    - { role: uclalib_role_blacklight_capdeploy }
