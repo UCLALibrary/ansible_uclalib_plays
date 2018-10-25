@@ -1,0 +1,45 @@
+- name: lib_webservers.yml
+  hosts: all
+
+  vars:
+    ssl: False
+    scl: False
+    lib_weburl: overrideme
+    php_pkgs:
+      - php
+      - php-ldap
+      - php-cli
+      - php-xml
+      - php-mysql
+      - php-pecl-memcache
+      - php-pecl-apc
+      - php-gd
+      - php-mcrypt
+      - php-pear
+      - php-pdo
+      - php-mbstring
+      - php-common
+      - php-phpseclib-crypt-hash
+
+    vhosts:
+      "{{ lib_weburl }}":
+        vhost_root: "/opt/www/{{ lib_weburl }}"
+        access_log: "/etc/httpd/logs/{{ lib_weburl }}-access.log"
+        error_log: "/etc/httpd/logs/{{ lib_weburl }}-error.log"
+        listen_port: 80
+        force_https: True
+    project_name: drupal
+    env_name: sandbox
+
+  roles:
+    - role: uclalib_role_rhel7repos
+    - role: uclalib_role_apache
+    - role: uclalib_role_php
+#    - role: uclalib_role_mysql
+#      vars:
+#        mysql_install_version: '5.6'
+#      tags: [ 'client' ]
+    - role: uclalib_role_drush
+    - role: uclalib_role_varnish
+      vars:
+        varnish_vers: 61
