@@ -1,0 +1,7 @@
+# This playbooks heavily depends on hidden host_vars
+- name: uclalib_memcacheservers.yml
+  hosts: all
+
+  roles:
+    - role: uclalib_role_firewalld
+    - role: uclalib_role_memcached
