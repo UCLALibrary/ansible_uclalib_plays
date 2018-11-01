@@ -1,0 +1,16 @@
+---
+
+- name: uclalib_cantaloupeiiif.yml
+  become: yes
+  become_method: sudo
+  hosts: all
+  user: ansible
+
+  roles:
+    - { role: uclalib_role_rhel7repos }
+    - { role: uclalib_role_epel }
+    - { role: uclalib_role_uclalibrepo }
+    - { role: uclalib_role_java, oracle_java_version: '1.8.0_191' }
+    - { role: uclalib_role_apache }
+    - { role: uclalib_role_tomcat }
+    - { role: uclalib_role_cantaloupe }
