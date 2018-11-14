@@ -20,7 +20,8 @@
   - name: Clear cache directory
     shell: >
       rm -rf /var/cantaloupe/cache/image/* &&
-      rm -rf /var/cantaloupe/cache/info/*
+      rm -rf /var/cantaloupe/cache/info/* &&
+      rm -rf /var/cantaloupe/cache/source/*
 
   - name: Start Cantaloupe
     service:
