@@ -14,7 +14,7 @@
 
   - name: Delete all content from the Solr index
     command: >
-      curl {{ solr_index_url }}/update -H "Content-Type: text/xml" --data-binary '<delete><query>*:*</query></delete>'
+      curl {{ solr_index_url }}/update?commit=true -H "Content-Type: text/xml" --data-binary '<delete><query>*:*</query></delete>'
 
   - name: Delete all content in Redis
     command: >
