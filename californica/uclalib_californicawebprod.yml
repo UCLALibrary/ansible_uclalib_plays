@@ -1,6 +1,6 @@
 ---
 
-- name: uclalib_californicawebstage.yml
+- name: uclalib_californicawebprod.yml
   become: yes
   become_method: sudo
   hosts: all
