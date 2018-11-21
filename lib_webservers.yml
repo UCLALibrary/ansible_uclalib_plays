@@ -20,11 +20,8 @@
 
   roles:
     - role: uclalib_role_rhel7repos
+    - role: uclalib_role_users
     - role: uclalib_role_apache
     - role: uclalib_role_php
-#    - role: uclalib_role_mysql
-#      vars:
-#        mysql_install_version: '5.6'
-#      tags: [ 'client' ]
     - role: uclalib_role_drush
     - role: uclalib_role_varnish
