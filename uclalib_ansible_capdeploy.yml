@@ -11,9 +11,13 @@
     set_fact:
       ansible_username: "{{ ansible_user | default('ansible') }}"
 
+  - name: Ensure capistrano deploy user is defined
+    set_fact:
+      cap_user: "{{ capistrano_user | default('deploy') }}"
+
   - name: Determine if content ingest rake process is running
     command: >
-      pgrep -fau {{ capistrano_user }} rake
+      pgrep -fau {{ cap_user }} rake
     ignore_errors: yes
     changed_when: false
     register: ingest_rake_process
