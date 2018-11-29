@@ -1,13 +1,13 @@
 ---
 
-- name: uclalib_californicamysqldev.yml
+- name: uclalib_californicamysql.yml
   become: yes
   become_method: sudo
   hosts: all
   user: ansible
   vars:
     project_name: californica
-    env_name: dev
+    env_name: test
 
   roles:
     - { role: uclalib_role_rhel7repos }
