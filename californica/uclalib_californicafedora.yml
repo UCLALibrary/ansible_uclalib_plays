@@ -1,6 +1,6 @@
 ---
 
-- name: uclalib_californicafedoraprod.yml
+- name: uclalib_californicafedora.yml
   become: yes
   become_method: sudo
   hosts: all

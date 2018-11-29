@@ -1,6 +1,6 @@
 ---
 
-- name: uclalib_ursusmysqltest.yml
+- name: uclalib_ursusmysql.yml
   become: yes
   become_method: sudo
   hosts: all

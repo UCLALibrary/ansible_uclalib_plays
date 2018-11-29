@@ -1,6 +1,6 @@
 ---
 
-- name: uclalib_californicasolrdev.yml
+- name: uclalib_californicasolr.yml
   become: yes
   become_method: sudo
   hosts: all

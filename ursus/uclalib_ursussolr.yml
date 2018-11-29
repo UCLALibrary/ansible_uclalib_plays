@@ -1,6 +1,6 @@
 ---
 
-- name: uclalib_ursussolrprod.yml
+- name: uclalib_ursussolr.yml
   become: yes
   become_method: sudo
   hosts: all
