@@ -25,3 +25,4 @@
     - role: uclalib_role_users
     - role: uclalib_role_drush
     - role: uclalib_role_varnish
+    - role: uclalib_role_firewalld
