@@ -24,4 +24,4 @@
     shell: >
       RAILS_ENV=production bundle exec rake {{ rake_task }}
     args:
-      chdir: {{ project_base_dir }}/{{ project_name }}/current
+      chdir: "{{ project_base_dir }}/{{ project_name }}/current"
