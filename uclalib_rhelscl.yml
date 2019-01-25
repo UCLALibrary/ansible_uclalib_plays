@@ -1,0 +1,9 @@
+---
+
+- name: uclalib_rhelscl.yml
+  become: yes
+  become_method: sudo
+  hosts: all
+
+  roles:
+    - { role: uclalib_role_rhelscl }
