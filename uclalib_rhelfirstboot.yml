@@ -1,0 +1,14 @@
+---
+
+- name: uclalib_rhelfirstboot.yml
+  become: yes
+  become_method: sudo
+  hosts: all
+
+  roles:
+    - { role: uclalib_role_rhel7repos }
+    - { role: uclalib_role_epel }
+    - { role: uclalib_role_uclalibrepo }
+    - { role: uclalib_role_custom_facts }
+    - { role: uclalib_role_rhelinsights }
+    - { role: uclalib_role_firewalld }
