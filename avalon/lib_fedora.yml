@@ -1,6 +1,6 @@
 ---
 
-- name: uclalib_fedoratest.yml
+- name: lib_fedora.yml
   become: yes
   hosts: all
   vars:
