@@ -5,6 +5,6 @@
     ffmpeg_download_url: http://pkgs.library.ucla.edu/ffmpeg/ffmpeg-4.1-64bit-static.tar.xz
 
   roles:
-    - { role: uclalib_role_java, openjdk_java_version: '1.8.0_201' }
+    - { role: uclalib_role_java, openjdk_java_version: '1.8.0' }
     - { role: uclalib_role_ffmpeg }
     - { role: uclalib_role_matterhorn }
