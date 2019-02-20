@@ -1,6 +1,6 @@
 ---
 
-- name: uclalib_rhelfirstboot.yml
+- name: uclalib_rhelfirstbootvmware.yml
   become: yes
   become_method: sudo
   hosts: all
