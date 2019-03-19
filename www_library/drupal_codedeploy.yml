@@ -1,0 +1,5 @@
+- name: drupal_codedeploy.yml
+  hosts: all
+
+  roles:
+    - role: uclalib_role_www-library
