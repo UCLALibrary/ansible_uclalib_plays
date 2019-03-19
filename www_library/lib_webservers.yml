@@ -1,0 +1,29 @@
+- name: lib_webservers.yml
+  hosts: all
+
+  vars:
+    php_pkgs:
+      - php
+      - php-ldap
+      - php-cli
+      - php-xml
+      - php-mysql
+      - php-pecl-memcache
+      - php-pecl-apc
+      - php-gd
+      - php-mcrypt
+      - php-pear
+      - php-pdo
+      - php-mbstring
+      - php-common
+      - php-phpseclib-crypt-hash
+
+  roles:
+    - role: uclalib_role_rhel7repos
+    - role: uclalib_role_apache
+    - role: uclalib_role_php
+    - role: uclalib_role_users
+    - role: uclalib_role_drush
+    - role: uclalib_role_varnish
+    - role: uclalib_role_firewalld
+    - role: uclalib_role_www-library

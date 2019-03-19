@@ -26,3 +26,4 @@
     - role: uclalib_role_drush
     - role: uclalib_role_varnish
     - role: uclalib_role_firewalld
+    - role: uclalib_role_www-library
