@@ -1,0 +1,29 @@
+- name: drupal_deploy_post.yml
+  hosts: all
+
+  vars:
+    drush_path: /usr/local/bin/drush
+    drush_user: druadmin
+    test_www_webservers:
+      drush_alias: test-www
+    stage_www_webservers:
+      drush_alias: stage-www
+    prod_www_webservers:
+      drush_alias: prod-www
+
+  tasks:
+    - name: "Drush trigger updatedb on {{ APP_ENV }}"
+      shell: |
+        {{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} updatedb
+    - name: "Drush trigger cache clear on {{ APP_ENV }}"
+      shell: |
+        {{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} cc all
+    - name: "Drush trigger features revert on {{ APP_ENV }}"
+      shell: |
+        {{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} features revert
+    - name: "Drush trigger cache clear on {{ APP_ENV }}"
+      shell: |
+        {{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} cc all
+    - name: "Bring {{ APP_ENV }} out of maintenance mode"
+      shell: |
+        {{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} vset maintenance_mode 0

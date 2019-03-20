@@ -1,0 +1,17 @@
+- name: drupal_deploy_pre.yml
+  hosts: all
+
+  vars:
+    drush_path: /usr/local/bin/drush
+    drush_user: druadmin
+    test_www_webservers:
+      drush_alias: test-www
+    stage_www_webservers:
+      drush_alias: stage-www
+    prod_www_webservers:
+      drush_alias: prod-www
+
+  tasks:
+    - name: "Set maintenance mode on {{ APP_ENV }}"
+      shell: |
+        "{{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} vset maintenance_mode 1"
