@@ -14,16 +14,26 @@
   tasks:
     - name: "Drush trigger updatedb on {{ APP_ENV }}"
       shell: |
-        {{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} updatedb
+        "{{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} updatedb"
+      become: yes
+      become_user: "{{ drupal_user }}"
     - name: "Drush trigger cache clear on {{ APP_ENV }}"
       shell: |
-        {{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} cc all
+        "{{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} cc all"
+      become: yes
+      become_user: "{{ drupal_user }}"
     - name: "Drush trigger features revert on {{ APP_ENV }}"
       shell: |
-        {{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} features revert
+        "{{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} features revert"
+      become: yes
+      become_user: "{{ drupal_user }}"
     - name: "Drush trigger cache clear on {{ APP_ENV }}"
       shell: |
-        {{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} cc all
+        "{{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} cc all"
+      become: yes
+      become_user: "{{ drupal_user }}"
     - name: "Bring {{ APP_ENV }} out of maintenance mode"
       shell: |
-        {{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} vset maintenance_mode 0
+        "{{ drush_path }} @{{ APP_ENV }}.{{ drush_alias }} vset maintenance_mode 0"
+      become: yes
+      become_user: "{{ drupal_user }}"
