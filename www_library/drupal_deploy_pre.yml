@@ -4,11 +4,11 @@
   vars:
     drush_path: /usr/local/bin/drush
     drush_user: druadmin
-    test_www_webservers:
+    test_www:
       drush_alias: test-www
-    stage_www_webservers:
+    stage_www:
       drush_alias: stage-www
-    prod_www_webservers:
+    prod_www:
       drush_alias: prod-www
 
   tasks:
