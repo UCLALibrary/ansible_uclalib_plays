@@ -34,7 +34,7 @@
              --exclude "tmp"               \
              --exclude "Thumbs.db"         \
              --exclude "./.check_mount"    \
-             --exclude ".snapshot"
+             --exclude ".snapshot" > /dev/null 2>&1
       become: yes
       become_user: "{{ drush_user }}"
       no_log: True
@@ -48,7 +48,7 @@
              --exclude "tmp"               \
              --exclude "Thumbs.db"         \
              --exclude "./.check_mount"    \
-             --exclude ".snapshot"
-      become: yes
+             --exclude ".snapshot" > /dev/null 2>&1
+      become: yes 
       become_user: "{{ drush_user }}"
       no_log: True
