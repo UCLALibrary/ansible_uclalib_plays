@@ -1,0 +1,54 @@
+- name: drupal_backup.yml
+  hosts: all
+
+  vars:
+    drush_path: /usr/local/bin/drush
+    drush_user: druadmin
+    drupal_backupdir: /drupalbackups
+    drupal_sites_default_files_dir: /var/www/vhosts/webhead/sites_default_files
+    drupal_sourcecode_dir: /var/www/vhosts/webhead/drupal
+    drupal_sql_file: "{{ drupal_backupdir }}/{{ drush_configs[APP_ENV]['drush_alias'] }}_db_{{ ansible_date_time.date }}.sql"
+    drupal_sites_default_files_tar: "{{ drupal_backupdir }}/{{ drush_configs[APP_ENV]['drush_alias'] }}_sites_default_files_{{ ansible_date_time.date }}.tar.gz"
+    drupal_sourcecode_files_tar: "{{ drupal_backupdir }}/{{ drush_configs[APP_ENV]['drush_alias'] }}_drupal_{{ ansible_date_time.date }}.tar.gz"
+    drush_configs:
+      test_www:
+        drush_alias: test-www
+      stage_www:
+        drush_alias: stage-www
+      prod_www:
+        drush_alias: prod-www
+
+  tasks:
+    - name: "Dumping MySQL via drush on {{ APP_ENV }}"
+      shell: |
+        "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" sql-dump --result-file="{{ drush_sql_file }}" --gzip
+      become: yes
+      become_user: "{{ drush_user }}"
+
+    - name: "Compressing and storing sites_default_files on {{ APP_ENV }}"
+      shell: |
+             tar czf "{{ drupal_sites_default_files_tar }}" -C "{{ drupal_sites_default_files_dir }}" .    \
+             --exclude ".apdisk"           \
+             --exclude ".DS_Store"         \
+             --exclude ".TemporaryItems"   \
+             --exclude "tmp"               \
+             --exclude "Thumbs.db"         \
+             --exclude "./.check_mount"    \
+             --exclude ".snapshot"
+      become: yes
+      become_user: "{{ drush_user }}"
+      no_log: True
+
+    - name: "Compressing and storing drupal source code on {{ APP_ENV }}"
+      shell: |
+             tar czf "{{ drupal_sourcecode_tar }}" -C "{{ drupal_sourcecode_dir }}" .    \
+             --exclude ".apdisk"           \
+             --exclude ".DS_Store"         \
+             --exclude ".TemporaryItems"   \
+             --exclude "tmp"               \
+             --exclude "Thumbs.db"         \
+             --exclude "./.check_mount"    \
+             --exclude ".snapshot"
+      become: yes
+      become_user: "{{ drush_user }}"
+      no_log: True
