@@ -21,7 +21,7 @@
   tasks:
     - name: "Dumping MySQL via drush on {{ APP_ENV }}"
       shell: |
-        "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" sql-dump --result-file="{{ drush_sql_file }}" --gzip
+        "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" sql-dump --result-file="{{ drupal_sql_file }}" --gzip
       become: yes
       become_user: "{{ drush_user }}"
 
