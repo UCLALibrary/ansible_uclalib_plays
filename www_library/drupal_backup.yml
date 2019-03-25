@@ -9,7 +9,9 @@
     drupal_sourcecode_dir: /var/www/vhosts/webhead/drupal
     drupal_sql_file: "{{ drupal_backupdir }}/{{ drush_configs[APP_ENV]['drush_alias'] }}_db_{{ ansible_date_time.date }}.sql"
     drupal_sites_default_files_tar: "{{ drupal_backupdir }}/{{ drush_configs[APP_ENV]['drush_alias'] }}_sites_default_files_{{ ansible_date_time.date }}.tar.gz"
-    drupal_sourcecode_files_tar: "{{ drupal_backupdir }}/{{ drush_configs[APP_ENV]['drush_alias'] }}_drupal_{{ ansible_date_time.date }}.tar.gz"
+    drupal_sourcecode_tar: "{{ drupal_backupdir }}/{{ drush_configs[APP_ENV]['drush_alias'] }}_drupal_{{ ansible_date_time.date }}.tar.gz"
+    drupal_sites_default_files_latest_symlink: "{{ drupal_backupdir }}/{{ drush_configs[APP_ENV]['drush_alias'] }}_latest-sites-default-files.tar.gz"
+    drupal_sql_file_latest_symlink: "{{ drupal_backupdir }}/{{ drush_configs[APP_ENV]['drush_alias'] }}_latest-db.sql.gz"
     drush_configs:
       test_www:
         drush_alias: test-www
@@ -25,19 +27,21 @@
       become: yes
       become_user: "{{ drush_user }}"
 
-    - name: "Compressing and storing sites_default_files on {{ APP_ENV }}"
-      archive:
-        path: "{{ drupal_sites_default_files_dir }}"
-        dest: "{{ drupal_sites_default_files_tar }}"
-        exclude_path:
-        - "{{ drupal_sites_default_files_dir }}.apdisk"
-        - "{{ drupal_sites_default_files_dir }}.DS_Store"
-        - "{{ drupal_sites_default_files_dir }}.TemporaryItems"
-        - "{{ drupal_sites_default_files_dir }}.tmp"
-        - "{{ drupal_sites_default_files_dir }}.Thumbs.db"
-        - "{{ drupal_sites_default_files_dir }}.check_mount"
-        - "{{ drupal_sites_default_files_dir }}.snapshot"
-        format: gz
+    - name: "Compressing and storing drupal source sites_default_files on {{ APP_ENV }}"
+      shell: |
+             tar czf "{{ drupal_sites_default_files_tar }}" -C "{{ drupal_sites_default_files_dir }}" .    \
+             --exclude ".apdisk"           \
+             --exclude ".DS_Store"         \
+             --exclude ".TemporaryItems"   \
+             --exclude "tmp"               \
+             --exclude "Thumbs.db"         \
+             --exclude "./.check_mount"    \
+             --exclude ".snapshot"         \
+             --exclude "private-tmp/feeds/cache" \
+             || [[ $? -eq 1 ]]
+      become: yes 
+      become_user: "{{ drush_user }}"
+      no_log: True
 
     - name: "Compressing and storing drupal source code on {{ APP_ENV }}"
       shell: |
@@ -51,4 +55,20 @@
              --exclude ".snapshot" > /dev/null 2>&1
       become: yes 
       become_user: "{{ drush_user }}"
-      no_log: True
+      no_log: False
+
+    - name: "Update latest sites_default_files symlink"
+      file:
+        src: "{{ drush_configs[APP_ENV]['drush_alias'] }}_sites_default_files_{{ ansible_date_time.date }}.tar.gz"
+        dest: "{{ drupal_sites_default_files_latest_symlink }}"
+        state: link
+      become: yes 
+      become_user: "{{ drush_user }}"
+
+    - name: "Update latest sql file symlink"
+      file:
+        src: "{{ drush_configs[APP_ENV]['drush_alias'] }}_db_{{ ansible_date_time.date }}.sql.gz"
+        dest: "{{ drupal_sql_file_latest_symlink }}"
+        state: link
+      become: yes 
+      become_user: "{{ drush_user }}"
