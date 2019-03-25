@@ -55,7 +55,7 @@
              --exclude ".snapshot" > /dev/null 2>&1
       become: yes 
       become_user: "{{ drush_user }}"
-      no_log: False
+      no_log: True
 
     - name: "Update latest sites_default_files symlink"
       file:
