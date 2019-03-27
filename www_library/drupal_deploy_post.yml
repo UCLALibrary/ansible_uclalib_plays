@@ -15,7 +15,7 @@
   tasks:
     - name: "Drush trigger updatedb on {{ APP_ENV }}"
       shell: |
-        "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" updatedb
+        "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" updatedb -y
       become: yes
       become_user: "{{ drush_user }}"
     - name: "Drush trigger cache clear on {{ APP_ENV }}"
@@ -25,7 +25,7 @@
       become_user: "{{ drush_user }}"
     - name: "Drush trigger features revert on {{ APP_ENV }}"
       shell: |
-        "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" features revert
+        "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" features-revert-all -y
       become: yes
       become_user: "{{ drush_user }}"
     - name: "Drush trigger cache clear on {{ APP_ENV }}"
