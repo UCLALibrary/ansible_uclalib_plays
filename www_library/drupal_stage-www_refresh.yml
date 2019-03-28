@@ -29,7 +29,7 @@
       file:
         path: "{{ drupal_sync_scratch_path }}"
         mode: 0755
-        state: present
+        state: directory
       become: yes
       become_user: "{{ drush_user }}"
 
