@@ -21,7 +21,7 @@
   tasks:
     - name: "Drush drop {{ APP_ENV }} mysql tables"
       shell: |
-             "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" sql-drop -y --gzip
+             "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" sql-drop -y
       become: yes
       become_user: "{{ drush_user }}"
 
