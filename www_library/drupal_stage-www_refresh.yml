@@ -61,3 +61,5 @@
     - name: "Drush trigger cache clear on {{ APP_ENV }}"
       shell: |
              "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" cc all
+      become: yes
+      become_user: "{{ drush_user }}"
