@@ -35,7 +35,7 @@
 
     - name: "Extract latest sites_default_files backup into temporary location"
       shell: |
-             tar -zxf "{{ drupal_sites_default_files_latest_symlink }}/" -C "{{ drupal_sync_scratch_path }}"
+             tar -zxf "{{ drupal_sites_default_files_latest_symlink }}" -C "{{ drupal_sync_scratch_path }}"
 
     - name: "Sync extracted files into {{ drupal_sites_default_files_dir }} on {{ APP_ENV }}"
       shell: |
