@@ -28,6 +28,8 @@
     - name: "Create scratch space for syncing static files"
       file:
         path: "{{ drupal_sync_scratch_path }}"
+        mode: 0755
+        state: present
       become: yes
       become_user: "{{ drush_user }}"
 
