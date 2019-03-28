@@ -7,11 +7,11 @@
     drupal_backupdir: /drupalbackups
     drupal_sites_default_files_dir: /var/www/vhosts/webhead/sites_default_files
     drupal_sourcecode_dir: /var/www/vhosts/webhead/drupal
-    drupal_sql_file: "{{ drupal_backupdir }}/{{ drush_configs[APP_ENV]['drush_alias'] }}_db_{{ ansible_date_time.date }}.sql"
-    drupal_sites_default_files_tar: "{{ drupal_backupdir }}/{{ drush_configs[APP_ENV]['drush_alias'] }}_sites_default_files_{{ ansible_date_time.date }}.tar.gz"
-    drupal_sourcecode_tar: "{{ drupal_backupdir }}/{{ drush_configs[APP_ENV]['drush_alias'] }}_drupal_{{ ansible_date_time.date }}.tar.gz"
-    drupal_sites_default_files_latest_symlink: "{{ drupal_backupdir }}/{{ drush_configs[APP_ENV]['drush_alias'] }}_latest-sites-default-files.tar.gz"
-    drupal_sql_file_latest_symlink: "{{ drupal_backupdir }}/{{ drush_configs[APP_ENV]['drush_alias'] }}_latest-db.sql.gz"
+    drupal_sql_file: "{{ drupal_backupdir }}/dumps/{{ drush_configs[APP_ENV]['drush_alias'] }}_db_{{ ansible_date_time.date }}.sql"
+    drupal_sites_default_files_tar: "{{ drupal_backupdir }}/dumps/{{ drush_configs[APP_ENV]['drush_alias'] }}_sites_default_files_{{ ansible_date_time.date }}.tar.gz"
+    drupal_sourcecode_tar: "{{ drupal_backupdir }}/code/{{ drush_configs[APP_ENV]['drush_alias'] }}_drupal_{{ ansible_date_time.date }}.tar.gz"
+    drupal_sites_default_files_latest_symlink: "{{ drupal_backupdir }}/dumps/{{ drush_configs[APP_ENV]['drush_alias'] }}_latest-sites-default-files.tar.gz"
+    drupal_sql_file_latest_symlink: "{{ drupal_backupdir }}/dumps/{{ drush_configs[APP_ENV]['drush_alias'] }}_latest-db.sql.gz"
     drush_configs:
       test_www:
         drush_alias: test-www
