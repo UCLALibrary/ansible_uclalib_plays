@@ -48,7 +48,7 @@
 
     - name: "Import extracted latest database dump on {{ APP_ENV }}"
       shell: |
-             `"{{ drush_path }} @"{{ drush_configs[APP_ENV]['drush_alias'] }}" sql-connect` < "{{ drupal_sync_scratch_path }}"/"{{ drush_configs[APP_ENV]['drush_alias'] }}"_latest-db.sql
+             `"{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" sql-connect` < "{{ drupal_sync_scratch_path }}"/"{{ drush_configs[APP_ENV]['drush_alias'] }}"_latest-db.sql
       become: yes 
       become_user: "{{ drush_user }}"
 
