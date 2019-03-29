@@ -28,12 +28,14 @@
     - name: "Create scratch space for syncing static files"
       file:
         path: "{{ drupal_sync_scratch_path }}"
+        mode: 0755
+        state: directory
       become: yes
       become_user: "{{ drush_user }}"
 
     - name: "Extract latest sites_default_files backup into temporary location"
       shell: |
-             tar -zxf "{{ drupal_sites_default_files_latest_symlink }}/" -C "{{ drupal_sync_scratch_path }}"
+             tar -zxf "{{ drupal_sites_default_files_latest_symlink }}" -C "{{ drupal_sync_scratch_path }}"
 
     - name: "Sync extracted files into {{ drupal_sites_default_files_dir }} on {{ APP_ENV }}"
       shell: |
@@ -59,3 +61,5 @@
     - name: "Drush trigger cache clear on {{ APP_ENV }}"
       shell: |
              "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" cc all
+      become: yes
+      become_user: "{{ drush_user }}"
