@@ -1,0 +1,10 @@
+---
+
+- name: uclalib_services_cantaloupe.yml
+  hosts: all
+
+  vars:
+    docker_compose_install: true
+
+  roles:
+    - { role: uclalib_role_docker-ce }
