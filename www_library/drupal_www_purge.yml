@@ -1,0 +1,13 @@
+- name: drupal_www_purge.yml
+  hosts: 127.0.0.1
+  connection: local
+
+  tasks:
+    - name: "Purging {{ item }}..."
+      shell: |
+             curl -X PURGE -H "P-SERVER: 1" -I "{{ item }}"
+             curl -X PURGE -H "P-SERVER: 2" -I "{{ item }}"
+      loop:
+        - https://test-www.library.ucla.edu
+        - https://stage-www.library.ucla.edu
+        - https://www.library.ucla.edu
