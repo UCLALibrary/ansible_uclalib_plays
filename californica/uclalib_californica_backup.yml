@@ -111,6 +111,8 @@
         src: "/opt/fedora-data/"
         dest: "/mnt/samvera_backup/californica_{{ env_date_time }}/fedora_data_{{ansible_date_time.date}}"
         archive: "yes"
+        rsync_opts:
+          - "--exclude=.snapshot"
       delegate_to: "{{ inventory_hostname }}"
 
     - name: Unmount storage area for backups
