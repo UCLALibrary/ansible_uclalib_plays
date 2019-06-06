@@ -62,6 +62,7 @@
       archive:
         path: "/opt/derivatives"
         dest: "/mnt/samvera_backup/californica_{{ env_date_time }}/derivatives_{{ansible_date_time.date}}.tar.gz"
+        exclude_path: "/opt/derivatives/.snapshot"
         format: gz
 
 
