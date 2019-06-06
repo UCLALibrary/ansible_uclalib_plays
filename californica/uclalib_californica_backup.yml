@@ -1,0 +1,186 @@
+---
+
+- hosts: "{{ californicaweb_inventory_hosts }}"
+  become: yes
+  become_method: sudo
+  user: ansible
+
+  tasks:
+    - name: Ensure capistrano user is defined
+      set_fact:
+        cap_user: "{{ capistrano_user | default('deploy') }}"
+
+    - name: Set environment and date_time variable
+      set_fact:
+        env_date_time: "{{ server_environ }}_{{ansible_date_time.date}}"
+
+    - name: Ensure backup mount point exists
+      file:
+        path: "/mnt/samvera_backup"
+        owner: "root"
+        group: "root"
+        mode: "0750"
+        state: "directory"
+
+    - name: Mount storage area for backups
+      mount:
+        path: "/mnt/samvera_backup"
+        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        fstype: "nfs"
+        state: "mounted"
+
+    - name: Create directory to store backups on the mount point
+      file:
+        path: "/mnt/samvera_backup/californica_{{ env_date_time }}"
+        owner: "root"
+        group: "root"
+        mode: "0750"
+        state: "directory"
+
+    - name: Enable Californica read-only mode
+      become_user: "{{ cap_user }}"
+      shell: >
+        RAILS_ENV=production bundle exec rake californica:read_only:on
+      args:
+        chdir: "/opt/californica/current"
+
+    - name: Dump Californica Rails App database
+      shell: >
+        mysqldump {{ rails_db_name }} >
+        /mnt/samvera_backup/californica_{{ env_date_time }}/{{ rails_db_name }}_{{ansible_date_time.date}}.sql
+
+    - name: Copy Redis database
+      copy:
+        remote_src: "yes"
+        src: "/var/lib/redis/dump.rdb"
+        dest: "/mnt/samvera_backup/californica_{{ env_date_time }}/redis_db_{{ansible_date_time.date}}"
+        owner: "root"
+        group: "root"
+        mode: "0640"
+
+    - name: Create archive of Californica derivatives
+      archive:
+        path: "/opt/derivatives"
+        dest: "/mnt/samvera_backup/californica_{{ env_date_time }}/derivatives_{{ansible_date_time.date}}.tar.gz"
+        format: gz
+
+
+##############################################################################
+
+- hosts: "{{ californicafedora_inventory_hosts }}"
+  become: yes
+  become_method: sudo
+  user: ansible
+
+  tasks:
+    - name: Set environment and date_time variable
+      set_fact:
+        env_date_time: "{{ server_environ }}_{{ansible_date_time.date}}"
+
+    - name: Ensure backup mount point exists
+      file:
+        path: "/mnt/samvera_backup"
+        owner: "root"
+        group: "root"
+        mode: "0750"
+        state: "directory"
+
+    - name: Mount storage area for backups
+      mount:
+        path: "/mnt/samvera_backup"
+        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        fstype: "nfs"
+        state: "mounted"
+
+    - name: Dump fedora database
+      shell: >
+        mysqldump {{ fedora_db_name }} >
+        /mnt/samvera_backup/californica_{{ env_date_time }}/{{ fedora_db_name }}_{{ansible_date_time.date}}.sql
+
+    - name: Create fedora data store backup directory in backup mount
+      file:
+        path: "/mnt/samvera_backup/californica_{{ env_date_time }}/fedora_datastore_{{ansible_date_time.date}}"
+        owner: "root"
+        group: "root"
+        mode: "0750"
+        state: "directory"
+
+    - name: Copy contents of fedora datastore
+      synchronize:
+        src: "/opt/fedora-data/"
+        dest: "/mnt/samvera_backup/californica_{{ env_date_time }}/fedora_data_{{ansible_date_time.date}}"
+        archive: "yes"
+      delegate_to: "{{ inventory_hostname }}"
+
+    - name: Unmount storage area for backups
+      mount:
+        path: "/mnt/samvera_backup"
+        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        fstype: nfs
+        state: "absent"
+
+##############################################################################
+
+- hosts: "{{ californicasolr_inventory_hosts }}"
+  become: yes
+  become_method: sudo
+  user: ansible
+
+  tasks:
+    - name: Set environment and date_time variable
+      set_fact:
+        env_date_time: "{{ server_environ }}_{{ansible_date_time.date}}"
+
+    - name: Ensure backup mount point exists
+      file:
+        path: "/mnt/samvera_backup"
+        owner: "root"
+        group: "root"
+        mode: "0750"
+        state: "directory"
+
+    - name: Mount storage area for backups
+      mount:
+        path: "/mnt/samvera_backup"
+        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        fstype: "nfs"
+        state: "mounted"
+
+    - name: Create archive of solr core
+      archive:
+        path: "/var/solr/data"
+        dest: "/mnt/samvera_backup/californica_{{ env_date_time }}/calursus_{{ansible_date_time.date}}.tar.gz"
+        format: gz
+
+    - name: Unmount storage area for backups
+      mount:
+        path: "/mnt/samvera_backup"
+        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        fstype: nfs
+        state: "absent"
+
+##############################################################################
+
+- hosts: "{{ californicaweb_inventory_hosts }}"
+  become: yes
+  become_method: sudo
+  user: ansible
+
+  tasks:
+    - name: Ensure capistrano user is defined
+      set_fact:
+        cap_user: "{{ capistrano_user | default('deploy') }}"
+
+    - name: Disable Californica read-only mode
+      become_user: "{{ cap_user }}"
+      shell: >
+        RAILS_ENV=production bundle exec rake californica:read_only:off
+      args:
+        chdir: "/opt/californica/current"
+
+    - name: Unmount storage area for backups
+      mount:
+        path: "/mnt/samvera_backup"
+        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        fstype: nfs
+        state: "absent"
