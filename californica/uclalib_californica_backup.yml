@@ -59,12 +59,12 @@
         mode: "0640"
 
     - name: Create archive of Californica derivatives
-      archive:
-        path: "/opt/derivatives/"
-        dest: "/mnt/samvera_backup/californica_{{ env_date_time }}/derivatives_{{ansible_date_time.date}}.tar.gz"
-        exclude_path: ".snapshot"
-        format: gz
-
+      command: >
+        tar --exclude='.snapshot' -czf
+        /mnt/samvera_backup/californica_{{ env_date_time }}/derivatives_{{ansible_date_time.date}}.tar.gz
+        /opt/derivatives
+      args:
+        creates: "/mnt/samvera_backup/californica_{{ env_date_time }}/derivatives_{{ansible_date_time.date}}.tar.gz"
 
 ##############################################################################
 
