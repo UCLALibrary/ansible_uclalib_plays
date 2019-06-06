@@ -109,7 +109,7 @@
     - name: Copy contents of fedora datastore
       synchronize:
         src: "/opt/fedora-data/"
-        dest: "/mnt/samvera_backup/californica_{{ env_date_time }}/fedora_data_{{ansible_date_time.date}}"
+        dest: "/mnt/samvera_backup/californica_{{ env_date_time }}/fedora_datastore_{{ansible_date_time.date}}"
         archive: "yes"
         rsync_opts:
           - "--exclude=.snapshot"
