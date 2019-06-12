@@ -107,13 +107,10 @@
         state: "directory"
 
     - name: Copy contents of fedora datastore
-      synchronize:
-        src: "/opt/fedora-data/"
-        dest: "/mnt/samvera_backup/californica_{{ env_date_time }}/fedora_datastore_{{ansible_date_time.date}}"
-        archive: "yes"
-        rsync_opts:
-          - "--exclude=.snapshot"
-      delegate_to: "{{ inventory_hostname }}"
+      command: >
+        rsync --exclude=.snapshot --archive
+        /opt/fedora-data/
+        /mnt/samvera_backup/californica_{{ env_date_time }}/fedora_datastore_{{ansible_date_time.date}}
 
     - name: Unmount storage area for backups
       mount:
