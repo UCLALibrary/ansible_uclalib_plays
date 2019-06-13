@@ -33,6 +33,8 @@
       yum:
         name: "*"
         state: latest
+      register: update_status
 
     - name: Reboot RHEL system after yum update
       reboot:
+      when: update_status.changed
