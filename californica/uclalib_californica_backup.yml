@@ -171,12 +171,31 @@
       set_fact:
         cap_user: "{{ capistrano_user | default('deploy') }}"
 
+    - name: Set environment and date_time variable
+      set_fact:
+        env_date_time: "{{ server_environ }}_{{ansible_date_time.date}}"
+
     - name: Disable Californica read-only mode
       become_user: "{{ cap_user }}"
       shell: >
         RAILS_ENV=production bundle exec rake californica:read_only:off
       args:
         chdir: "/opt/californica/current"
+
+    - name: Find Californica back-up directories older than 3 weeks
+      find:
+        paths: "/mnt/samvera_backup"
+        patterns: "californica_*_*"
+        file_type: "directory"
+        age: "504h"
+        recurse: "no"
+      register: californica_remove_dirs
+
+    - name: Remove Californica back-up directories older than 3 weeks
+      file:
+        path: "{{ item.path }}"
+        state: "absent"
+      loop: "{{ californica_remove_dirs.files }}"
 
     - name: Unmount storage area for backups
       mount:
