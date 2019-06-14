@@ -175,6 +175,21 @@
       set_fact:
         env_date_time: "{{ server_environ }}_{{ansible_date_time.date}}"
 
+    - name: Ensure backup mount point exists
+      file:
+        path: "/mnt/samvera_backup"
+        owner: "root"
+        group: "root"
+        mode: "0750"
+        state: "directory"
+
+    - name: Mount storage area for backups
+      mount:
+        path: "/mnt/samvera_backup"
+        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        fstype: "nfs"
+        state: "mounted"
+
     - name: Disable Californica read-only mode
       become_user: "{{ cap_user }}"
       shell: >
