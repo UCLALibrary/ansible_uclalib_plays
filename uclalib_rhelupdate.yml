@@ -17,14 +17,18 @@
 # Sample command-line execution of this play is (assuming you are in the
 # /etc/ansible directory):
 #
-# ansible-playbook -i inventory.ini plays/uclalib_rhelupdate.yml -v
+# To run this play on non_prod_unattended_yum_update hosts:
+# ansible-playbook -i inventory.ini plays/uclalib_rhelupdate.yml -e rhel_inventory_host_group=non_prod_unattended_yum_update -v
+#
+# To run this play on prod_unattended_yum_update hosts:
+# ansible-playbook -i inventory.ini plays/uclalib_rhelupdate.yml -e rhel_inventory_host_group=prod_unattended_yum_update -v
 #
 ###############################################################################
 
 - name: uclalib_rhelupdate.yml
   become: yes
   become_method: sudo
-  hosts: unattended_yum_update
+  hosts: "{{ rhel_inventory_host_group }}"
   serial: 10
   any_errors_fatal: False
 
