@@ -22,6 +22,6 @@
   - name: Execute rails rake task
     become_user: "{{ capistrano_user }}"
     shell: >
-      RAILS_ENV=production bundle exec rake {{ rake_task }}
+      RAILS_ENV=production {{ cmdline_env_vars | default(None) }} bundle exec {{ rake_task }}
     args:
       chdir: "{{ project_base_dir }}/{{ project_name }}/current"
