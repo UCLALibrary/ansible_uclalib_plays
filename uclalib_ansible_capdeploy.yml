@@ -15,6 +15,10 @@
     set_fact:
       cap_user: "{{ capistrano_user | default('deploy') }}"
 
+  - name: Ensure capistrano base path is defined
+    set_fact:
+      cap_base: "{{ capistrano_base | default('/opt') }}"
+
   - name: Determine if content ingest rake process is running
     command: >
       pgrep -fau {{ cap_user }} rake
@@ -44,6 +48,25 @@
       BRANCH={{ git_repo_branch }} bundle exec cap localhost deploy
     args:
       chdir: /home/{{ ansible_username }}/{{ project_name }}
+
+  - name: Remove existing/default robots.txt file
+    file:
+      path: "{{ cap_base }}/{{ project_name }}/current/public/robots.txt"
+      state: "absent"
+
+  - name: Allow search engine crawling of this site
+    file:
+      src: "{{ cap_base }}/{{ project_name }}/current/public/robots_allow.txt"
+      path: "{{ cap_base }}/{{ project_name }}/current/public/robots.txt"
+      state: "link"
+    when: allow_web_crawl == "yes"
+
+  - name: Disallow search engine crawling of this site
+    file:
+      src: "{{ cap_base }}/{{ project_name }}/current/public/robots_disallow.txt"
+      path: "{{ cap_base }}/{{ project_name }}/current/public/robots.txt"
+      state: "link"
+    when: allow_web_crawl == "no"
 
   - name: Restart Apache HTTPD to reload passenger application
     systemd:
