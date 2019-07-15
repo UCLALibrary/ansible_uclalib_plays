@@ -47,22 +47,22 @@
     # create a database for dspace
     postgresql_databases:
       - name: "{{ postgres_build['test']['dataden']['dbname'] }}"
-        owner: "{{ postgres_build['test']['dataden']['user']['username'] }}" 
+        owner: "{{ postgres_build['test']['dataden']['user']['username'] }}"
         encoding: 'UTF-8'
         lc_collate: 'en_US.UTF-8'
         lc_ctype: 'en_US.UTF-8'
       - name: "{{ postgres_build['test']['vsim']['dbname'] }}"
-        owner: "{{ postgres_build['test']['vsim']['user']['username'] }}" 
+        owner: "{{ postgres_build['test']['vsim']['user']['username'] }}"
         encoding: 'UTF-8'
         lc_collate: 'en_US.UTF-8'
         lc_ctype: 'en_US.UTF-8'
       - name: "{{ postgres_build['prod']['dataden']['dbname'] }}"
-        owner: "{{ postgres_build['prod']['dataden']['user']['username'] }}" 
+        owner: "{{ postgres_build['prod']['dataden']['user']['username'] }}"
         encoding: 'UTF-8'
         lc_collate: 'en_US.UTF-8'
         lc_ctype: 'en_US.UTF-8'
       - name: "{{ postgres_build['prod']['vsim']['dbname'] }}"
-        owner: "{{ postgres_build['prod']['vsim']['user']['username'] }}" 
+        owner: "{{ postgres_build['prod']['vsim']['user']['username'] }}"
         encoding: 'UTF-8'
         lc_collate: 'en_US.UTF-8'
         lc_ctype: 'en_US.UTF-8'
@@ -106,4 +106,3 @@
 
   roles:
     - { role: uclalib_role_postgres }
-    - { role: uclalib_role_iptables }
