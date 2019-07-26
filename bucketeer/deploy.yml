@@ -18,21 +18,21 @@
 
     - name: "Shutting down running containers"
       shell: |
-        "{{ docker_compose_bin }} down"
+        {{ docker_compose_bin }} down
         chdir: "{{ docker_user_home }}/bucketeer"
       become: yes
       become_user: "{{ docker_user }}"
 
     - name: "Pulling new bucketeer image"
       shell: |
-        "{{ docker_compose_bin }} pull"
+        {{ docker_compose_bin }} pull
         chdir: "{{ docker_user_home }}/bucketeer"
       become: yes
       become_user: "{{ docker_user }}"
 
     - name: "Launch new bucketeer container"
       shell: |
-        "{{ docker_compose_bin }} up -d"
+        {{ docker_compose_bin }} up -d
         chdir: "{{ docker_user_home }}/bucketeer"
       become: yes
       become_user: "{{ docker_user }}"
