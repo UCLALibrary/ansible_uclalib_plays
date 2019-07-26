@@ -1,0 +1,70 @@
+---
+- name: deploy.yml
+  hosts: test_bucketeer_servers,prod_bucketeer_servers
+
+  vars:
+    docker_user: dockeradmin
+    docker_user_home: /home/dockeradmin
+    docker_compose_bin: /usr/local/bin/docker-compose
+    bucketeer_version: latest
+
+  tasks:
+    - name: "Upload docker compose environment variables"
+      template:
+        src: "templates/.docker-compose.env.j2"
+        dest: "{{ docker_user_home }}/bucketeer/.docker-compose.env"
+        owner: "{{ docker_user }}"
+        group: "{{ docker_user }}"
+        mode: "0644"
+
+    - name: "Update docker-compose.yml file"
+      template:
+        src: "templates/docker-compose.yml.j2"
+        dest: "{{ docker_user_home }}/bucketeer/docker-compose.yml"
+        owner: "{{ docker_user }}"
+        group: "{{ docker_user }}"
+        mode: "0644"
+
+    - name: "Shutting down running containers"
+      shell: |
+        {{ docker_compose_bin }} down
+      args:
+        chdir: "{{ docker_user_home }}/bucketeer"
+      become: yes
+      become_user: "{{ docker_user }}"
+
+    - name: "Pulling new bucketeer image"
+      shell: |
+        {{ docker_compose_bin }} pull
+      args:
+        chdir: "{{ docker_user_home }}/bucketeer"
+      become: yes
+      become_user: "{{ docker_user }}"
+
+    - name: "Launch new bucketeer container"
+      shell: |
+        {{ docker_compose_bin }} up -d
+      args:
+        chdir: "{{ docker_user_home }}/bucketeer"
+      become: yes
+      become_user: "{{ docker_user }}"
+
+    - name: Check if prod bucketeer site is online
+      uri:
+        url: "https://bucketeer.library.ucla.edu/ping"
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 60
+      delay: 1
+      when: "'prod_bucketeer_servers' in group_names"
+
+    - name: Check if test bucketeer site is online
+      uri:
+        url: "https://test-bucketeer.library.ucla.edu/ping"
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 60
+      delay: 1
+      when: "'test_bucketeer_servers' in group_names"

@@ -1,0 +1,13 @@
+version: '3.4'
+services:
+  bucketeer:
+    image: uclalibrary/bucketeer:{{ bucketeer_version }}
+    ports:
+      - 8181:8888
+    deploy:
+      replicas: 1
+    container_name: bucketeer
+    env_file:
+      - .docker-compose.env
+    volumes:
+      - "/netapp/masters:/opt/data/Masters"
