@@ -1,0 +1,40 @@
+---
+- name: deploy.yml
+  hosts:
+    - test_bucketeer_servers
+    - prod_bucketeer_servers
+
+  vars:
+    docker_user: dockeradmin
+    docker_user_home: /home/dockeradmin
+    docker_compose_bin: /usr/local/bin/docker-compose
+
+  tasks:
+    - name: "Upload docker compose environment variables"
+      template:
+        src: "templates/.docker-compose.env.j2"
+        dest: "{{ docker_user_home }}/bucketeer/.docker-compose.env"
+        owner: "{{ docker_user }}"
+        group: "{{ docker_user }}"
+        mode: "0644"
+
+    - name: "Shutting down running containers"
+      shell: |
+        "{{ docker_compose_bin }} down"
+      chdir: "{{ docker_user_home }}/bucketeer"
+      become: yes
+      become_user: "{{ docker_user }}"
+
+    - name: "Pulling new bucketeer image"
+      shell: |
+        "{{ docker_compose_bin }} pull"
+      chdir: "{{ docker_user_home }}/bucketeer"
+      become: yes
+      become_user: "{{ docker_user }}"
+
+    - name: "Launch new bucketeer container"
+      shell: |
+        "{{ docker_compose_bin }} up -d"
+      chdir: "{{ docker_user_home }}/bucketeer"
+      become: yes
+      become_user: "{{ docker_user }}"
