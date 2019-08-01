@@ -1,0 +1,232 @@
+---
+
+- hosts: "californica{{ server_environ }}fedora"
+  become: yes
+  become_method: sudo
+  user: ansible
+
+  tasks:
+    - name: Set path to californica backup directory to restore
+      set_fact:
+        cal_backup_dir: "/mnt/samvera_backup/californica_{{ server_environ }}_{{ backup_date }}"
+
+    - name: Ensure backup mount point exists
+      file:
+        path: "/mnt/samvera_backup"
+        owner: "root"
+        group: "root"
+        mode: "0750"
+        state: "directory"
+
+    - name: Mount storage area for backups
+      mount:
+        path: "/mnt/samvera_backup"
+        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        fstype: "nfs"
+        state: "mounted"
+
+    - name: Stop Apache HTTPD
+      service:
+        name: httpd
+        state: stopped
+
+    - name: Stop Fedora
+      service:
+        name: fedora
+        state: stopped
+
+    - name: Create empty temp directory
+      file:
+        path: "/tmp/empty"
+        owner: "fedora"
+        group: "fedora"
+        mode: "0755"
+        state: "directory"
+
+    - name: Delete all contents of the fedora-data directory
+      shell: >
+        rsync -a --delete --exclude=.snapshot /tmp/empty/ /opt/fedora-data/
+
+    - name: Remove empty temp directory
+      file:
+        path: "/tmp/empty"
+        state: "absent"
+
+    - name: Restore backup of fedora-data directory
+      shell: >
+        rsync --exclude=.snapshot -a {{ cal_backup_dir }}/fedora_datastore_{{ backup_date }}/ /opt/fedora-data/
+
+    - name: Restore backup of the fedora database
+      shell: >
+        mysql fedora_californica_{{ server_environ }} < {{ cal_backup_dir }}/fedora_californica_{{ server_environ }}_{{ backup_date }}.sql
+
+    - name: Start Fedora
+      service:
+        name: fedora
+        state: started
+
+    - name: Start Apache HTTPD
+      service:
+        name: httpd
+        state: started
+
+    - name: Unmount storage area for backups
+      mount:
+        path: "/mnt/samvera_backup"
+        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        fstype: nfs
+        state: "absent"
+
+##############################################################################
+
+- hosts: "californica{{ server_environ }}solr"
+  become: yes
+  become_method: sudo
+  user: ansible
+
+  tasks:
+    - name: Set path to californica backup directory to restore
+      set_fact:
+        cal_backup_dir: "/mnt/samvera_backup/californica_{{ server_environ }}_{{ backup_date }}"
+
+    - name: Ensure backup mount point exists
+      file:
+        path: "/mnt/samvera_backup"
+        owner: "root"
+        group: "root"
+        mode: "0750"
+        state: "directory"
+
+    - name: Mount storage area for backups
+      mount:
+        path: "/mnt/samvera_backup"
+        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        fstype: "nfs"
+        state: "mounted"
+
+    - name: Stop Solr
+      service:
+        name: solr
+        state: stopped
+
+    - name: Remove existing Solr data directory
+      file:
+        path: "/var/solr/data"
+        state: absent
+
+    - name: Restore backup of Solr core
+      unarchive:
+        src: "{{ cal_backup_dir }}/calursus_{{ backup_date }}.tar.gz"
+        dest: "/var/solr"
+        remote_src: "yes"
+
+    - name: Start Solr
+      service:
+        name: solr
+        state: started
+
+    - name: Unmount storage area for backups
+      mount:
+        path: "/mnt/samvera_backup"
+        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        fstype: nfs
+        state: "absent"
+
+##############################################################################
+
+- hosts: "californica{{ server_environ }}web"
+  become: yes
+  become_method: sudo
+  user: ansible
+
+  tasks:
+    - name: Set path to californica backup directory to restore
+      set_fact:
+        cal_backup_dir: "/mnt/samvera_backup/californica_{{ server_environ }}_{{ backup_date }}"
+
+    - name: Ensure backup mount point exists
+      file:
+        path: "/mnt/samvera_backup"
+        owner: "root"
+        group: "root"
+        mode: "0750"
+        state: "directory"
+
+    - name: Mount storage area for backups
+      mount:
+        path: "/mnt/samvera_backup"
+        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        fstype: "nfs"
+        state: "mounted"
+
+    - name: Stop Apache HTTPD
+      service:
+        name: httpd
+        state: stopped
+
+    - name: Stop Sidekiq
+      service:
+        name: sidekiq
+        state: stopped
+
+    - name: Stop Redis
+      service:
+        name: redis
+        state: stopped
+
+    - name: Restore backup of the rails database
+      shell: >
+        mysql californicadb{{ server_environ }} < {{ cal_backup_dir }}/californicadb{{ server_environ }}_{{ backup_date }}.sql
+
+    - name: Remove existing redis database
+      file:
+        path: "/var/lib/redis/dump.rdb"
+        state: "absent"
+
+    - name: Restore backup of the redis database
+      copy:
+        src: "{{ cal_backup_dir }}/redis_db_{{ backup_date }}"
+        dest: "/var/lib/redis/dump.rdb"
+        owner: "redis"
+        group: "redis"
+        mode: "0644"
+        remote_src: "yes"
+
+    - name: Remove existing content in derivatives directory
+      shell: >
+        rm -rf /opt/derivatives/*
+
+    - name: Restore backup of the derivatives
+      unarchive:
+        src: "{{ cal_backup_dir }}/derivatives_{{ backup_date }}.tar.gz"
+        dest: "/"
+        remote_src: "yes"
+
+    - name: Start Redis
+      service:
+        name: redis
+        state: started
+
+    - name: Start Apache HTTPD
+      service:
+        name: httpd
+        state: started
+
+    - name: Start Sidekiq
+      service:
+        name: sidekiq
+        state: started
+
+    - name: Disable Californica read-only mode
+      become_user: "{{ capistrano_user | default('deploy') }}"
+      shell: >
+        RAILS_ENV=production bundle exec rake californica:read_only:off
+      args:
+        chdir: "/opt/californica/current"
+
+    - name: Unmount storage area for backups
+      mount:
+        path: "/mnt/samvera_backup"
+        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        fstype: nfs
+        state: "absent"
