@@ -1,6 +1,6 @@
 ---
 
-- hosts: "{{ californicaweb_inventory_hosts }}"
+- hosts: "californica{{ server_environ }}web"
   become: yes
   become_method: sudo
   user: ansible
@@ -46,8 +46,8 @@
 
     - name: Dump Californica Rails App database
       shell: >
-        mysqldump {{ rails_db_name }} >
-        /mnt/samvera_backup/californica_{{ env_date_time }}/{{ rails_db_name }}_{{ansible_date_time.date}}.sql
+        mysqldump californicadb{{ server_environ }} >
+        /mnt/samvera_backup/californica_{{ env_date_time }}/californicadb{{ server_environ }}_{{ansible_date_time.date}}.sql
 
     - name: Copy Redis database
       copy:
@@ -68,7 +68,7 @@
 
 ##############################################################################
 
-- hosts: "{{ californicafedora_inventory_hosts }}"
+- hosts: "californica{{ server_environ }}fedora"
   become: yes
   become_method: sudo
   user: ansible
@@ -95,8 +95,8 @@
 
     - name: Dump fedora database
       shell: >
-        mysqldump {{ fedora_db_name }} >
-        /mnt/samvera_backup/californica_{{ env_date_time }}/{{ fedora_db_name }}_{{ansible_date_time.date}}.sql
+        mysqldump fedora_californica_{{ server_environ }} >
+        /mnt/samvera_backup/californica_{{ env_date_time }}/fedora_californica_{{ server_environ }}_{{ansible_date_time.date}}.sql
 
     - name: Create fedora data store backup directory in backup mount
       file:
@@ -121,7 +121,7 @@
 
 ##############################################################################
 
-- hosts: "{{ californicasolr_inventory_hosts }}"
+- hosts: "californica{{ server_environ }}solr"
   become: yes
   become_method: sudo
   user: ansible
@@ -161,7 +161,7 @@
 
 ##############################################################################
 
-- hosts: "{{ californicaweb_inventory_hosts }}"
+- hosts: "californica{{ server_environ }}web"
   become: yes
   become_method: sudo
   user: ansible
