@@ -51,7 +51,7 @@
 
     - name: Check if prod bucketeer site is online
       uri:
-        url: "https://bucketeer.library.ucla.edu/ping"
+        url: "https://bucketeer.library.ucla.edu/status"
         status_code: 200
       register: result
       until: result.status == 200
@@ -61,7 +61,7 @@
 
     - name: Check if test bucketeer site is online
       uri:
-        url: "https://test-bucketeer.library.ucla.edu/ping"
+        url: "https://test-bucketeer.library.ucla.edu/status"
         status_code: 200
       register: result
       until: result.status == 200
