@@ -6,7 +6,7 @@
     docker_user: dockeradmin
     docker_user_home: /home/dockeradmin
     docker_compose_bin: /usr/local/bin/docker-compose
-    bucketeer_version: latest
+    dockerhub_tag: latest
 
   tasks:
     - name: "Upload docker compose environment variables"
