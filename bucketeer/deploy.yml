@@ -6,7 +6,7 @@
     docker_user: dockeradmin
     docker_user_home: /home/dockeradmin
     docker_compose_bin: /usr/local/bin/docker-compose
-    bucketeer_version: latest
+    dockerhub_tag: latest
 
   tasks:
     - name: "Upload docker compose environment variables"
@@ -51,7 +51,7 @@
 
     - name: Check if prod bucketeer site is online
       uri:
-        url: "https://bucketeer.library.ucla.edu/ping"
+        url: "https://bucketeer.library.ucla.edu/status"
         status_code: 200
       register: result
       until: result.status == 200
@@ -61,7 +61,7 @@
 
     - name: Check if test bucketeer site is online
       uri:
-        url: "https://test-bucketeer.library.ucla.edu/ping"
+        url: "https://test-bucketeer.library.ucla.edu/status"
         status_code: 200
       register: result
       until: result.status == 200
