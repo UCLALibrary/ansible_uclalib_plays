@@ -10,4 +10,15 @@ services:
     env_file:
       - .docker-compose.env
     volumes:
-      - "/netapp/masters:{{ bucketeer_fs_mount }}"
+      - "{{ nfs_volume }}:{{ bucketeer_fs_mount }}"
+    volumes:
+      - "mastersdata:/opt/data/Masters"
+
+volumes:
+  {{ nfs_volume }}:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr={{ nfs_addr }},vers=3,nosuid,noexec,ro
+      device: "{{ nfs_path }}"
+
