@@ -10,9 +10,7 @@ services:
     env_file:
       - .docker-compose.env
     volumes:
-      - "{{ nfs_volume }}:{{ bucketeer_fs_mount }}"
-    volumes:
-      - "mastersdata:/opt/data/Masters"
+      - "{{ nfs_volume }}:{{ nfs_mount_path }}"
 
 volumes:
   {{ nfs_volume }}:
