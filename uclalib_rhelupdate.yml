@@ -29,7 +29,7 @@
   become: yes
   become_method: sudo
   hosts: "{{ rhel_inventory_host_group }}"
-  serial: 10
+  serial: 15
   any_errors_fatal: False
 
   tasks:
