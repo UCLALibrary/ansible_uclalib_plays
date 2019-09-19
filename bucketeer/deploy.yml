@@ -1,6 +1,6 @@
 ---
 - name: deploy.yml
-  hosts: test_bucketeer_servers,prod_bucketeer_servers
+  hosts: test_bucketeer_servers,prod_bucketeer_servers,prod_sinai_bucketeer_servers
 
   vars:
     docker_user: dockeradmin
