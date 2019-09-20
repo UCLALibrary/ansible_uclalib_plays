@@ -1,0 +1,33 @@
+---
+
+###############################################################################
+# Playbook for Deploying a Stack into a Docker Swarm Cluster
+# ----------------------------------------------------------
+#
+# This ansible play is meant to be run against an existing Docker Swarm
+# Manager node.
+#
+# It is expected that your inventory file contains a unique group name for
+# the project/service you wish you deploy into the swarm cluster.
+#
+# For example, the inventory.ini should contain a group stanza titled
+# [swarm_service_prod] containing the swarm manager node DNS name.
+#
+# It is also expected that you have your group_vars configured to put in place
+# the docker-compose.yml file, and if necessary the compose env file. 
+#
+# Sample command-line execution of this play is (assuming you are in the
+# /etc/ansible directory):
+#
+# To run this play to deploy the [swarm_service_prod] stack:
+# ansible-playbook -i inventory.ini plays/uclalib_swarmstackdeploy.yml -e rhel_inventory_host_group=swarm_service_prod -v
+#
+###############################################################################
+
+- name: uclalib_swarmstackdeploy.yml
+  become: yes
+  become_method: sudo
+  hosts: "{{ rhel_inventory_host_group }}"
+
+  roles:
+    - { role: uclalib_role_swarmdeploy }
