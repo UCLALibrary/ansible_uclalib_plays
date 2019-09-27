@@ -14,7 +14,7 @@
 # [swarm_service_prod] containing the swarm manager node DNS name.
 #
 # It is also expected that you have your group_vars configured to put in place
-# the docker-compose.yml file, and if necessary the compose env file. 
+# the docker-compose.yml file, and if necessary the compose env file.
 #
 # Sample command-line execution of this play is (assuming you are in the
 # /etc/ansible directory):
@@ -28,6 +28,8 @@
   become: yes
   become_method: sudo
   hosts: "{{ rhel_inventory_host_group }}"
+  vars_files:
+    - group_vars/{{ rhel_inventory_host_group }}
 
   roles:
     - { role: uclalib_role_swarmdeploy }
