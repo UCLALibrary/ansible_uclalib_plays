@@ -29,7 +29,7 @@
   become_method: sudo
   hosts: "{{ rhel_inventory_host_group }}"
   vars_files:
-    - group_vars/{{ rhel_inventory_host_group }}
+    - ../group_vars/{{ rhel_inventory_host_group }}
 
   roles:
     - { role: uclalib_role_swarmdeploy }
