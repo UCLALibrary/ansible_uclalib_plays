@@ -2,7 +2,7 @@
 - name: provision.yml
   become: yes
   become_method: sudo
-  hosts: prod-elasticsearch
+  hosts: prod_elasticsearch
 
   # Sensitive variables are stored locally on ansible server through a combination of host and group vars
   # Variables overrided include
