@@ -1,0 +1,29 @@
+---
+- name: provision.yml
+  become: yes
+  become_method: sudo
+  hosts: prod-elasticsearch
+
+  # Sensitive variables are stored locally on ansible server through a combination of host and group vars
+  # Variables overrided include
+  # rules_definitions
+  # elasticsearch role variables
+  vars:
+    service_definitions:
+      es_publish_port:
+        desc: "ElasticSearch publish port"
+        proto: tcp
+        port: 9200
+      cluster_port:
+        desc: "ElasticSearch cluster port"
+        proto: tcp
+        port: 9300
+
+  roles:
+    - { role: uclalib_role_rhel7repos }
+    - { role: uclalib_role_epel }
+    - { role: uclalib_role_custom_facts }
+    - { role: uclalib_role_rhelinsights }
+    - { role: uclalib_role_firewalld }
+    - { role: uclalib_role_elasticsearch }
+
