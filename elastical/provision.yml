@@ -14,7 +14,7 @@
         desc: "ElasticSearch publish port"
         proto: tcp
         port: 9200
-      cluster_port:
+      es_cluster_port:
         desc: "ElasticSearch cluster port"
         proto: tcp
         port: 9300
