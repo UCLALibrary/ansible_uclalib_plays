@@ -146,11 +146,21 @@
         fstype: "nfs"
         state: "mounted"
 
+    - name: Stop Solr Process
+      service:
+        name: solr
+        state: stopped
+
     - name: Create archive of solr core
       archive:
         path: "/var/solr/data"
         dest: "/mnt/samvera_backup/californica_{{ env_date_time }}/calursus_{{ansible_date_time.date}}.tar.gz"
         format: gz
+
+    - name: Start Solr Process
+      service:
+        name: solr
+        state: started
 
     - name: Unmount storage area for backups
       mount:
