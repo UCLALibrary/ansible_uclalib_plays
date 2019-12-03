@@ -1,0 +1,39 @@
+---
+
+###############################################################################
+# Playbook for RHEL OS Systems Patching
+# -------------------------------------
+#
+# This ansible play is safe to be run against RHEL
+# systems, regardless of manual intervention requirements.
+#
+# The inventory.ini file contains a stanza titled
+# [unattended_yum_update] containing servers that
+# are OK to run an unattended yum update.
+#
+# The value of the rhelupdatedownload_serial parameter controls the
+# "batch size" of servers to execute these tasks on at any given time during a
+# run of the playbook. Defaults to 15.
+#
+# Sample command-line execution of this play is (assuming you are in the
+# /etc/ansible directory):
+#
+# To run this play on unattended_yum_update hosts:
+# ansible-playbook -i inventory.ini plays/uclalib_rhelupdatedownload.yml -e rhel_inventory_host_group=unattended_yum_update -v
+#
+###############################################################################
+
+- name: uclalib_rhelupdatedownload.yml
+  become: yes
+  become_method: sudo
+  hosts: "{{ rhel_inventory_host_group | default('unattended_yum_update') }}"
+  serial: "{{ rhelupdatedownload_serial | default(15) }}"
+  any_errors_fatal: False
+
+  tasks:
+    - name: Download RHEL Updates
+      yum:
+        name: "*"
+        state: latest
+        download_only: True
+      register: update_status
