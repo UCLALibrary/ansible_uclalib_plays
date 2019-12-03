@@ -1,0 +1,67 @@
+---
+
+###############################################################################
+# Playbook for RHEL OS Systems Patching
+# -------------------------------------
+#
+# The ansible play is meant to be run against RHEL
+# systems that do not require manual intervention
+#
+# The inventory.ini file contains a stanza titled
+# [unattended_yum_update] containing servers that
+# are OK to run an unattended yum update.
+#
+# The value of the serial parameter controls the "batch size" of servers to
+# execute these tasks on at any given time during a run of the playbook.
+#
+# Sample command-line execution of this play is (assuming you are in the
+# /etc/ansible directory):
+#
+# ansible-playbook -i inventory.ini plays/uclalib_rhelreboot.yml -e rhel_inventory_host_group=unattended_yum_update -v
+#
+# CAVEAT: This playbook will never reboot a system if needs-restarting is
+#         missing (unless force_reboot=true is passed).
+#
+###############################################################################
+
+- name: uclalib_rhelreboot.yml
+  become: yes
+  become_method: sudo
+  hosts: "{{ rhel_inventory_host_group | default('unattended_yum_update') }}"
+  serial: "{{ rhelreboot_serial | default(15) }}"
+  any_errors_fatal: False
+
+  vars:
+    - no_reboot: /etc/no-reboot
+
+  tasks:
+    - name: Query needs-restarting status
+      command: needs-restarting -r
+      ignore_errors: True
+      register: needs_restarting
+      changed_when: False
+
+    - name: Skip this reboot?
+      slurp:
+        src: '{{ no_reboot }}'
+      failed_when: False
+      register: skip
+      changed_when: skip.content is defined
+      notify: Why was host skipped?
+
+    - name: Reboot if required
+      reboot:
+      when: >
+        needs_restarting.failed
+        and (needs_restarting.stdout | default("")) is search ("Reboot is required")
+        and (skip.content is not defined)
+        or ( force_reboot | default (False) )
+      # needs-restarting returns 1 if a reboot is required, which Ansible
+      # considers to be failed.
+      # Equivalent shell: sudo needs-restarting -r || sudo reboot
+
+  handlers:
+
+    - name: Why was host skipped?
+      debug:
+        msg: "{{ (skip.content | b64decode | trim).split('\n') }}"
