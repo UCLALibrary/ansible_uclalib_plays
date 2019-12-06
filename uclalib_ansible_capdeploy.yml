@@ -19,6 +19,10 @@
     set_fact:
       cap_base: "{{ capistrano_base | default('/opt') }}"
 
+  - name: Set feature flag for capistrano deploy
+    set_fact:
+      cap_feature_flag: "{{ feature_flag | default('empty') }}"
+
   - name: Determine if content ingest rake process is running
     command: >
       pgrep -fau {{ cap_user }} rake
@@ -48,6 +52,15 @@
       BRANCH={{ git_repo_branch }} bundle exec cap localhost deploy
     args:
       chdir: /home/{{ ansible_username }}/{{ project_name }}
+    when: cap_feature_flag == 'empty'
+
+  - name: Execute capistrano deployment of project with feature flag
+    become_user: "{{ ansible_username }}"
+    shell: >
+      BRANCH={{ git_repo_branch }} FEATURE_FLAG={{ cap_feature_flag }} bundle exec cap localhost deploy
+    args:
+      chdir: /home/{{ ansible_username }}/{{ project_name }}
+    when: cap_feature_flag != 'empty'
 
   - name: Remove existing/default robots.txt file
     file:
