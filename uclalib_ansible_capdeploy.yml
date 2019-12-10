@@ -34,64 +34,60 @@
       msg: "Content ingest is in progress - code deploy stopped."
     when: ingest_rake_process.rc == 0
 
-  - name: Ensure a clean project deploy directory
-    file:
-      path: "/home/{{ ansible_username }}/{{ project_name }}"
-      state: absent
+  - block:
+      - name: Obtain a fresh clone of the project's git repository
+        become_user: "{{ ansible_username }}"
+        git:
+          repo: "{{ git_repo_url }}"
+          dest: "/home/{{ ansible_username }}/{{ project_name }}"
+          version: "{{ git_repo_branch }}"
 
-  - name: Obtain a fresh clone of the project's git repository
-    become_user: "{{ ansible_username }}"
-    git:
-      repo: "{{ git_repo_url }}"
-      dest: "/home/{{ ansible_username }}/{{ project_name }}"
-      version: "{{ git_repo_branch }}"
+      - name: Install required project gems
+        bundler:
+          state: present
+          chdir: "/home/{{ ansible_username }}/{{ project_name }}"
 
-  - name: Install required project gems
-    bundler:
-      state: present
-      chdir: "/home/{{ ansible_username }}/{{ project_name }}"
+      - name: Execute capistrano deployment of project
+        become_user: "{{ ansible_username }}"
+        shell: >
+          BRANCH={{ git_repo_branch }} bundle exec cap localhost deploy
+        args:
+          chdir: /home/{{ ansible_username }}/{{ project_name }}
+        when: cap_feature_flag == 'empty'
 
-  - name: Execute capistrano deployment of project
-    become_user: "{{ ansible_username }}"
-    shell: >
-      BRANCH={{ git_repo_branch }} bundle exec cap localhost deploy
-    args:
-      chdir: /home/{{ ansible_username }}/{{ project_name }}
-    when: cap_feature_flag == 'empty'
+      - name: Execute capistrano deployment of project with feature flag
+        become_user: "{{ ansible_username }}"
+        shell: >
+          BRANCH={{ git_repo_branch }} FEATURE_FLAG={{ cap_feature_flag }} bundle exec cap localhost deploy
+        args:
+          chdir: /home/{{ ansible_username }}/{{ project_name }}
+        when: cap_feature_flag != 'empty'
 
-  - name: Execute capistrano deployment of project with feature flag
-    become_user: "{{ ansible_username }}"
-    shell: >
-      BRANCH={{ git_repo_branch }} FEATURE_FLAG={{ cap_feature_flag }} bundle exec cap localhost deploy
-    args:
-      chdir: /home/{{ ansible_username }}/{{ project_name }}
-    when: cap_feature_flag != 'empty'
+      - name: Remove existing/default robots.txt file
+        file:
+          path: "{{ cap_base }}/{{ project_name }}/current/public/robots.txt"
+          state: "absent"
 
-  - name: Remove existing/default robots.txt file
-    file:
-      path: "{{ cap_base }}/{{ project_name }}/current/public/robots.txt"
-      state: "absent"
+      - name: Allow search engine crawling of this site
+        file:
+          src: "{{ cap_base }}/{{ project_name }}/current/public/robots_allow.txt"
+          path: "{{ cap_base }}/{{ project_name }}/current/public/robots.txt"
+          state: "link"
+        when: allow_web_crawl == "yes"
 
-  - name: Allow search engine crawling of this site
-    file:
-      src: "{{ cap_base }}/{{ project_name }}/current/public/robots_allow.txt"
-      path: "{{ cap_base }}/{{ project_name }}/current/public/robots.txt"
-      state: "link"
-    when: allow_web_crawl == "yes"
+      - name: Disallow search engine crawling of this site
+        file:
+          src: "{{ cap_base }}/{{ project_name }}/current/public/robots_disallow.txt"
+          path: "{{ cap_base }}/{{ project_name }}/current/public/robots.txt"
+          state: "link"
+        when: allow_web_crawl == "no"
 
-  - name: Disallow search engine crawling of this site
-    file:
-      src: "{{ cap_base }}/{{ project_name }}/current/public/robots_disallow.txt"
-      path: "{{ cap_base }}/{{ project_name }}/current/public/robots.txt"
-      state: "link"
-    when: allow_web_crawl == "no"
-
-  - name: Restart Apache HTTPD to reload passenger application
-    systemd:
-      name: httpd
-      state: restarted
-
-  - name: Clean-up ansible user project deploy directory
-    file:
-      path: "/home/{{ ansible_username }}/{{ project_name }}"
-      state: absent
+      - name: Restart Apache HTTPD to reload passenger application
+        systemd:
+          name: httpd
+          state: restarted
+    always:
+      - name: Clean-up ansible user project deploy directory
+        file:
+          path: "/home/{{ ansible_username }}/{{ project_name }}"
+          state: absent
