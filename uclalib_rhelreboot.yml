@@ -37,7 +37,7 @@
   tasks:
     - name: Query needs-restarting status
       command: needs-restarting -r
-      ignore_errors: True
+      failed_when: False
       register: needs_restarting
       changed_when: False
 
