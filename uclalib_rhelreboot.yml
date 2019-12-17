@@ -52,7 +52,7 @@
     - name: Reboot if required
       reboot:
       when: >
-        needs_restarting.failed
+        needs_restarting.rc == 1
         and (needs_restarting.stdout | default("")) is search ("Reboot is required")
         and (skip.content is not defined)
         or ( force_reboot | default (False) )
