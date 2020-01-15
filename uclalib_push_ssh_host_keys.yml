@@ -1,0 +1,21 @@
+---
+# Push local /etc/ssh/ssh_know_hosts to remote systems
+
+- name: uclalib_push_ssh_host_keys.yml
+  become: yes
+  become_method: sudo
+  hosts: all
+  user: ansible
+
+  vars:
+    src: "/etc/ssh/ssh_known_hosts"
+    dest: "{{ src }}"
+
+  tasks:
+    - name: Copy ssh_know_hosts
+      copy:
+        dest: '{{ dest }}'
+        src: '{{ src }}'
+        remote_src: false
+        mode: '0444'
+      become: true
