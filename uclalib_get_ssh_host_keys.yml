@@ -1,0 +1,100 @@
+---
+# Query every host in inventory.ini for ssh host keys, populate
+# /etc/ssh/known_hosts
+#
+# Requires python-netaddr and python-dns to be installed (RHEL7)
+
+- name: uclalib_get_ssh_host_keys.yml
+  hosts: all
+  user: ansible
+  connection: local
+  gather_facts: false
+
+  vars:
+    working_file: "/tmp/known-hosts"
+    output: "/etc/ssh/ssh_known_hosts"
+    salt: "{{ 1000000 | random }}"
+
+  tasks:
+    - name: Set Working Directory
+      set_fact:
+        working_directory: "/tmp/ssh-known-hosts-{{ salt }}"
+      run_once: true
+
+    - name: Create Working Directory
+      file:
+        path: "{{ working_directory }}"
+        state: directory
+      check_mode: false
+      run_once: true
+
+    # When the inventory record is an IP, this will cause noise
+    - name: Get port from inventory (default 22), look up IP
+      set_fact:
+        ansible_ssh_port: "{{ hostvars[inventory_hostname]['ansible_ssh_port'] | default('22') }}"
+        ansible_inventory_ip: "{{ lookup('dig',inventory_hostname) }}"
+        ansible_shortname: "{{ inventory_hostname|regex_replace('\\..*') }}"
+
+    # Relies upon facts set above, must be a separate task
+    - name: Assemble query string (hostname vs ip)
+      set_fact:
+        query_string: |
+          "{{ (inventory_hostname | ipaddr)
+              | ternary(
+                inventory_hostname,
+                ansible_inventory_ip + ' ' + inventory_hostname + ',' + ansible_shortname + ',' + ansible_inventory_ip
+              )
+          }}"
+
+    - name: Ensure ssh host key known
+      lineinfile:
+        dest: "{{ working_directory }}/{{ inventory_hostname }}"
+        create: yes
+        state: present
+        line: "{{ item }}"
+      with_items:
+        - "{{ lookup('pipe', 'ssh-keyscan -p' + ansible_ssh_port + ' ' + query_string ).split('\n') }}"
+      check_mode: false
+      notify: Assemble Host Keys
+
+  handlers:
+    - name: Assemble Host Keys
+      assemble:
+        dest: "{{ working_file }}"
+        src: "{{ working_directory }}"
+      changed_when: true
+      check_mode: false
+      run_once: true
+      notify: Sort Host Keys
+
+    - name: Sort Host Keys
+      command: sort -o {{ working_file }} {{ working_file }}
+      environment:
+        LC_COLLATE: C
+      changed_when: true
+      check_mode: false
+      run_once: true
+      notify: Remove Working Directory
+
+    - name: Remove Working Directory
+      file:
+        path: "{{ working_directory }}"
+        state: absent
+      check_mode: false
+      run_once: true
+      notify:
+        - Update {{ output }}
+        - Remove Working File
+
+    - name: Update {{ output }}
+      copy:
+        dest: '{{ output }}'
+        src: '{{ working_file }}'
+      become: true
+      run_once: true
+
+    - name: Remove Working File
+      file:
+        path: "{{ working_file }}"
+        state: absent
+      run_once: true
