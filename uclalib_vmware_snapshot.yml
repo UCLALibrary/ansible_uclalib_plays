@@ -1,0 +1,36 @@
+---
+
+- name: uclalib_vmware_snapshot.yml
+  hosts: all
+  gather_facts: false
+
+  vars:
+    vcenter_hostname: vc.library.ucla.edu
+    vsphere_datacenter: "Library Information Technology"
+    vsphere_domain: "ad.library.ucla.edu"
+    vsphere_folder: "/"
+    snapshot_name: "rhel-update"
+
+  vars_prompt:
+  - name: vsphere_user
+    prompt: "(vsphere_user) vSphere User"
+    private: false
+
+  - name: vsphere_password
+    prompt: "(vsphere_password) vSphere Password"
+    private: true
+
+  tasks:
+
+  - name: Manage Snapshot
+    vmware_guest_snapshot:
+      datacenter: "{{ vsphere_datacenter }}"
+      state: "{{ (remove_snapshot | default(false)) | ternary('absent','present') }}"
+      folder: "{{ vsphere_folder }}"
+      hostname: "{{ vcenter_hostname }}"
+      password: "{{ vsphere_password }}"
+      name: "{{ inventory_hostname | regex_replace ('\\..*') }}"
+      quiesce: true
+      snapshot_name: "{{ snapshot_name }}"
+      username: "{{ vsphere_user }}@{{ vsphere_domain }}"
+    connection: local
