@@ -11,99 +11,104 @@
     vsphere_folder: "/"
     snapshot_prefix: "rhel-update"
     remove_snapshot: false
-    #date_format: "%Y-%m-%dT%H:%M:%S.%f%z" # for python3
-    date_format_snapshot: "%Y-%m-%dT%H:%M:%S.%f+00:00" # for python2, assuming UTC
+    # for python3
+    # date_format_snapshot: "%Y-%m-%dT%H:%M:%S.%f%z"
+    # for python2, assuming UTC
+    date_format_snapshot: "%Y-%m-%dT%H:%M:%S.%f+00:00"
     date_format_ansible: "%Y-%m-%dT%H:%M:%SZ"
     days_to_keep_snapshots: 7
     # ansible_date_time.epoch
 
 
   vars_prompt:
-  - name: vsphere_user
-    prompt: "(vsphere_user) vSphere User"
-    private: false
+    - name: vsphere_user
+      prompt: "(vsphere_user) vSphere User"
+      private: false
 
-  - name: vsphere_password
-    prompt: "(vsphere_password) vSphere Password"
-    private: true
+    - name: vsphere_password
+      prompt: "(vsphere_password) vSphere Password"
+      private: true
 
   tasks:
 
-  - name: Gathering Facts
-    setup:
-      fact_path: omit
-      gather_subset: "!all,virtual"
+    - name: Gathering Facts
+      setup:
+        fact_path: omit
+        gather_subset: "!all,virtual"
 
-  - name: Set vSphere username (implicit domain)
-    set_fact:
-      vsphere_username: "{{ vsphere_user }}{{ '@' + vsphere_domain }}"
-    when: vsphere_user is not search("@")
+    - name: Set vSphere username (implicit domain)
+      set_fact:
+        vsphere_username: "{{ vsphere_user }}{{ '@' + vsphere_domain }}"
+      when: vsphere_user is not search("@")
 
-  - name: Set vSphere username (explicit domain)
-    set_fact:
-      vsphere_username: "{{ vsphere_user }}"
-    when: vsphere_user is search("@")
+    - name: Set vSphere username (explicit domain)
+      set_fact:
+        vsphere_username: "{{ vsphere_user }}"
+      when: vsphere_user is search("@")
 
-  - debug: var=ansible_virtualization_type
-  - debug: var=ansible_hostname
-  - debug: var=vsphere_username
-  - debug: msg={{ snapshot_prefix }}-{{ ansible_date_time.date }}
+    - debug: var=ansible_virtualization_type
+    - debug: var=ansible_hostname
+    - debug: var=vsphere_username
+    - debug: msg={{ snapshot_prefix }}-{{ ansible_date_time.date }}
 
-  - block:
-      - name: Get Snapshots
-        vmware_guest_snapshot_info:
-          datacenter: "{{ vsphere_datacenter }}"
-          folder: "{{ vsphere_folder }}"
-          hostname: "{{ vcenter_hostname }}"
-          password: "{{ vsphere_password }}"
-          name: "{{ ansible_hostname }}"
-          username: "{{ vsphere_username }}"
-        connection: local
-        register: snapshots
+    - block:
+        - name: Get Snapshots
+          vmware_guest_snapshot_info:
+            datacenter: "{{ vsphere_datacenter }}"
+            folder: "{{ vsphere_folder }}"
+            hostname: "{{ vcenter_hostname }}"
+            password: "{{ vsphere_password }}"
+            name: "{{ ansible_hostname }}"
+            username: "{{ vsphere_username }}"
+          connection: local
+          register: snapshots
 
-      - debug: var=snapshots
+        - debug: var=snapshots
 
-      - name: Create Snapshots
-        vmware_guest_snapshot:
-          datacenter: "{{ vsphere_datacenter }}"
-          state: present
-          folder: "{{ vsphere_folder }}"
-          hostname: "{{ vcenter_hostname }}"
-          password: "{{ vsphere_password }}"
-          name: "{{ ansible_hostname }}"
-          quiesce: true
-          snapshot_name: "{{ snapshot_prefix }}-{{ ansible_date_time.date }}"
-          username: "{{ vsphere_username }}"
-        connection: local
-        register: out
-        when:
-          - not remove_snapshot
+        - name: Create Snapshots
+          vmware_guest_snapshot:
+            datacenter: "{{ vsphere_datacenter }}"
+            state: present
+            folder: "{{ vsphere_folder }}"
+            hostname: "{{ vcenter_hostname }}"
+            password: "{{ vsphere_password }}"
+            name: "{{ ansible_hostname }}"
+            quiesce: true
+            snapshot_name: "{{ snapshot_prefix }}-{{ ansible_date_time.date }}"
+            username: "{{ vsphere_username }}"
+          connection: local
+          register: out
+          when:
+            - not remove_snapshot
 
-      - debug: var=out
+        - debug: var=out
 
-      - debug: var=snapshots.guest_snapshots
+        - debug: var=snapshots.guest_snapshots
 
-      - name: List days of the snapshots
-        debug:
-          msg: >
-            {{
-            (
-              (ansible_date_time.iso8601 | to_datetime(date_format_ansible))
-            - (item.creation_time     | to_datetime(date_format_snapshot))
-               ).total_seconds()
-            }}
-        loop: "{{ snapshots.guest_snapshots.snapshots }}"
+        - name: List days of the snapshots
+          debug:
+            msg: >
+              {{
+              (
+                (ansible_date_time.iso8601 | to_datetime(date_format_ansible))
+              - (item.creation_time     | to_datetime(date_format_snapshot))
+                 ).total_seconds()
+              }}
+          loop: "{{ snapshots.guest_snapshots.snapshots }}"
 
 
-      - name: List the snapshot names
-        debug:
-          msg: "Snapshot: {{ item.name }} -> {{ item.creation_time | to_datetime(date_format_snapshot) }}"
-        loop: "{{ snapshots.guest_snapshots.snapshots }}"
-        when: >
-          ( (ansible_date_time.iso8601 | to_datetime(date_format_ansible))
-          - (item.creation_time     | to_datetime(date_format_snapshot)) ).total_seconds()
-          > days_to_keep_snapshots|int * 86400
+        - name: List the snapshot names
+          debug:
+            msg: >
+              Snapshot: {{ item.name }} ->
+              {{ item.creation_time | to_datetime(date_format_snapshot) }}
+          loop: "{{ snapshots.guest_snapshots.snapshots }}"
+          when: >
+            ( (ansible_date_time.iso8601 | to_datetime(date_format_ansible ))
+            - (item.creation_time        | to_datetime(date_format_snapshot))
+            ).total_seconds()
+            > days_to_keep_snapshots|int * 86400
 
-    when:
-      - ansible_virtualization_type == "VMware"
-    # end block
+      # end block
+      when:
+        - ansible_virtualization_type == "VMware"
