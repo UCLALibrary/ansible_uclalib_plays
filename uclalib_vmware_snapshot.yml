@@ -19,7 +19,6 @@
     days_to_keep_snapshots: 7
     # ansible_date_time.epoch
 
-
   vars_prompt:
     - name: vsphere_user
       prompt: "(vsphere_user) vSphere User"
@@ -30,7 +29,6 @@
       private: true
 
   tasks:
-
     - name: Gathering Facts
       setup:
         fact_path: omit
@@ -46,11 +44,6 @@
         vsphere_username: "{{ vsphere_user }}"
       when: vsphere_user is search("@")
 
-    - debug: var=ansible_virtualization_type
-    - debug: var=ansible_hostname
-    - debug: var=vsphere_username
-    - debug: msg={{ snapshot_prefix }}-{{ ansible_date_time.date }}
-
     - block:
         - name: Get Snapshots
           vmware_guest_snapshot_info:
@@ -62,8 +55,6 @@
             username: "{{ vsphere_username }}"
           connection: local
           register: snapshots
-
-        - debug: var=snapshots
 
         - name: Create Snapshots
           vmware_guest_snapshot:
@@ -77,24 +68,8 @@
             snapshot_name: "{{ snapshot_prefix }}-{{ ansible_date_time.date }}"
             username: "{{ vsphere_username }}"
           connection: local
-          register: out
           when:
             - not remove_snapshot
-
-        - debug: var=out
-
-        - debug: var=snapshots.guest_snapshots
-
-        - name: List days of the snapshots
-          debug:
-            msg: >
-              {{
-              (
-                (ansible_date_time.iso8601 | to_datetime(date_format_ansible))
-              - (item.creation_time     | to_datetime(date_format_snapshot))
-                 ).total_seconds()
-              }}
-          loop: "{{ snapshots.guest_snapshots.snapshots }}"
 
         - name: Remove outdated snapshots
           vmware_guest_snapshot:
