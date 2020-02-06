@@ -96,18 +96,25 @@
               }}
           loop: "{{ snapshots.guest_snapshots.snapshots }}"
 
-
-        - name: List the snapshot names
-          debug:
-            msg: >
-              Snapshot: {{ item.name }} ->
-              {{ item.creation_time | to_datetime(date_format_snapshot) }}
+        - name: Remove outdated snapshots
+          vmware_guest_snapshot:
+            datacenter: "{{ vsphere_datacenter }}"
+            state: absent
+            folder: "{{ vsphere_folder }}"
+            hostname: "{{ vcenter_hostname }}"
+            password: "{{ vsphere_password }}"
+            name: "{{ ansible_hostname }}"
+            snapshot_name: "{{ item.name }}"
+            username: "{{ vsphere_username }}"
+          connection: local
+          when:
+            - ( (ansible_date_time.iso8601 | to_datetime(date_format_ansible ))
+              - (item.creation_time        | to_datetime(date_format_snapshot))
+              ).total_seconds()
+              > days_to_keep_snapshots|int * 86400
+            - item.name | regex_search( "^" + snapshot_prefix )
+            - remove_snapshot | bool
           loop: "{{ snapshots.guest_snapshots.snapshots }}"
-          when: >
-            ( (ansible_date_time.iso8601 | to_datetime(date_format_ansible ))
-            - (item.creation_time        | to_datetime(date_format_snapshot))
-            ).total_seconds()
-            > days_to_keep_snapshots|int * 86400
 
       # end block
       when:
