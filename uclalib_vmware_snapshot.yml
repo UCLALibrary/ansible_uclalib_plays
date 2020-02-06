@@ -36,7 +36,7 @@
 
     - name: Set vSphere username (implicit domain)
       set_fact:
-        vsphere_username: "{{ vsphere_user }}{{ '@' + vsphere_domain }}"
+        vsphere_username: "{{ vsphere_user + '@' + vsphere_domain }}"
       when: vsphere_user is not search("@")
 
     - name: Set vSphere username (explicit domain)
