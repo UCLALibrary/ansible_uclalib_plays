@@ -18,4 +18,5 @@
         dest: "{{ ansible_github_config_path }}"
         version: "{{ ansible_github_branch }}"
         key_file: "{{ ansible_user_ssh_key_path }}"
+      become: true
       become_user: "{{ ansible_user }}"
