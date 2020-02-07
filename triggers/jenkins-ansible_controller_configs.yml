@@ -1,7 +1,8 @@
 ---
 - name: jenkins-ansible_controller_configs.yml
-  hosts: 127.0.0.1
+  hosts: p-u-ansible01.library.ucla.edu
   connection: local
+  gather_facts: false
 
   vars:
     ansible_github_url: git@github.com:UCLALibrary/ansible_uclalib_configs.git
