@@ -17,7 +17,6 @@
         repo: "{{ ansible_github_url }}"
         dest: "{{ ansible_github_config_path }}"
         version: "{{ ansible_github_branch }}"
-        accept_hostkey: yes
         key_file: "{{ ansible_user_ssh_key_path }}"
       become: yes
       become_user: "{{ ansible_user }}"
