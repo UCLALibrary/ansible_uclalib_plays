@@ -1,0 +1,22 @@
+---
+- name: jenkins-ansible_controller_configs.yml
+  hosts: p-u-ansible01.library.ucla.edu
+  connection: local
+  gather_facts: false
+
+  vars:
+    ansible_github_url: git@github.com:UCLALibrary/ansible_uclalib_configs.git
+    ansible_github_config_path: /etc/ansible
+    ansible_github_branch: master
+    ansible_user: ansible
+    ansible_user_ssh_key_path: /home/ansible/.ssh/id_rsa
+
+  tasks:
+    - name: "Clone/Update configs repo"
+      git:
+        repo: "{{ ansible_github_url }}"
+        dest: "{{ ansible_github_config_path }}"
+        version: "{{ ansible_github_branch }}"
+        key_file: "{{ ansible_user_ssh_key_path }}"
+      become: true
+      become_user: "{{ ansible_user }}"
