@@ -1,0 +1,106 @@
+---
+
+- name: uclalib_vmware_snapshot.yml
+  hosts: all
+  gather_facts: false
+
+  vars:
+    vcenter_hostname: vc.library.ucla.edu
+    vsphere_datacenter: "Library Information Technology"
+    vsphere_domain: "ad.library.ucla.edu"
+    vsphere_folder: "/"
+    snapshot_prefix: "rhel-update"
+    remove_snapshot: false
+    # for python3
+    # date_format_snapshot: "%Y-%m-%dT%H:%M:%S.%f%z"
+    # for python2, assuming UTC
+    date_format_snapshot: "%Y-%m-%dT%H:%M:%S.%f+00:00"
+    date_format_ansible: "%Y-%m-%dT%H:%M:%SZ"
+    days_to_keep_snapshots: 7
+
+  vars_prompt:
+    - name: vsphere_user
+      prompt: "(vsphere_user) vSphere User"
+      private: false
+
+    - name: vsphere_password
+      prompt: "(vsphere_password) vSphere Password"
+      private: true
+
+  tasks:
+    - name: Gathering Facts
+      setup:
+        fact_path: omit
+        gather_subset: "!all,virtual"
+
+    - name: Set vSphere username (implicit domain)
+      set_fact:
+        vsphere_username: "{{ vsphere_user + '@' + vsphere_domain }}"
+      when: vsphere_user is not search("@")
+
+    - name: Set vSphere username (explicit domain)
+      set_fact:
+        vsphere_username: "{{ vsphere_user }}"
+      when: vsphere_user is search("@")
+
+    # snapshot creation/deletion block
+    - block:
+        - name: Create Snapshots
+          vmware_guest_snapshot:
+            datacenter: "{{ vsphere_datacenter }}"
+            state: present
+            folder: "{{ vsphere_folder }}"
+            hostname: "{{ vcenter_hostname }}"
+            password: "{{ vsphere_password }}"
+            name: "{{ ansible_hostname }}"
+            quiesce: true
+            snapshot_name: "{{ snapshot_prefix }}-{{ ansible_date_time.date }}"
+            username: "{{ vsphere_username }}"
+          connection: local
+          when:
+            - not remove_snapshot|bool
+
+        # remove snapshot block
+        - block:
+            - name: Get Snapshots
+              vmware_guest_snapshot_info:
+                datacenter: "{{ vsphere_datacenter }}"
+                folder: "{{ vsphere_folder }}"
+                hostname: "{{ vcenter_hostname }}"
+                password: "{{ vsphere_password }}"
+                name: "{{ ansible_hostname }}"
+                username: "{{ vsphere_username }}"
+              connection: local
+              register: snapshots
+
+            - name: Remove outdated snapshots
+              vmware_guest_snapshot:
+                datacenter: "{{ vsphere_datacenter }}"
+                state: absent
+                folder: "{{ vsphere_folder }}"
+                hostname: "{{ vcenter_hostname }}"
+                password: "{{ vsphere_password }}"
+                name: "{{ ansible_hostname }}"
+                snapshot_name: "{{ item.name }}"
+                username: "{{ vsphere_username }}"
+              connection: local
+              when:
+                - snapshots.guest_snapshots.snapshots is defined
+                # subtract seconds in epoch of snapshot creation from now
+                # if it is greater than X days, remove the snapshot
+                - ( (ansible_date_time.iso8601
+                     | to_datetime(date_format_ansible ))
+                  - (item.creation_time
+                      | to_datetime(date_format_snapshot))
+                  ).total_seconds()
+                  > days_to_keep_snapshots|int * 86400
+                - item.name | regex_search( "^" + snapshot_prefix )
+              loop: "{{ snapshots.guest_snapshots.snapshots }}"
+
+          # end remove snapshot block
+          when:
+            - remove_snapshot | bool
+
+      # end snapshot creation/deletion block
+      when:
+        - ansible_virtualization_type == "VMware"
