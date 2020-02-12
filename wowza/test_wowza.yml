@@ -1,0 +1,13 @@
+---
+- name: test_wowza.yml
+  become: yes
+  become_method: sudo
+  hosts: t-w-wowza01.library.ucla.edu
+
+  # Variables are stored in host vars on the ansible configs repo and controller
+
+  roles:
+    - { role: uclalib_role_firewalld }
+    - { role: uclalib_role_nfsmount }
+    - { role: uclalib_role_wowza }
+
