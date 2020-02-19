@@ -1,6 +1,6 @@
 ---
 - name: provision.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: prod_elasticsearch
 
@@ -26,4 +26,3 @@
     - { role: uclalib_role_rhelinsights }
     - { role: uclalib_role_firewalld }
     - { role: uclalib_role_elasticsearch }
-

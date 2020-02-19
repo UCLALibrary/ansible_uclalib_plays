@@ -1,6 +1,6 @@
 ---
 - name: uclalib_karaf.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: karaf4
 

@@ -1,6 +1,6 @@
 ---
 - name: uclalib_fedoracamel.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: karaf4
   vars_files:

@@ -1,3 +1,5 @@
+---
+
 - name: drupal_deploy_post.yml
   hosts: all
 
@@ -16,25 +18,25 @@
     - name: "Drush trigger updatedb on {{ APP_ENV }}"
       shell: |
         "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" updatedb -y
-      become: yes
+      become: true
       become_user: "{{ drush_user }}"
     - name: "Drush trigger cache clear on {{ APP_ENV }}"
       shell: |
         "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" cc all
-      become: yes
+      become: true
       become_user: "{{ drush_user }}"
     - name: "Drush trigger features revert on {{ APP_ENV }}"
       shell: |
         "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" features-revert-all -y
-      become: yes
+      become: true
       become_user: "{{ drush_user }}"
     - name: "Drush trigger cache clear on {{ APP_ENV }}"
       shell: |
         "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" cc all
-      become: yes
+      become: true
       become_user: "{{ drush_user }}"
     - name: "Bring {{ APP_ENV }} out of maintenance mode"
       shell: |
         "{{ drush_path }}" @"{{ drush_configs[APP_ENV]['drush_alias'] }}" vset maintenance_mode 0
-      become: yes
+      become: true
       become_user: "{{ drush_user }}"

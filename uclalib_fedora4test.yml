@@ -1,6 +1,6 @@
 ---
 - name: uclalib_fedora4test.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: fedora4
   vars_files:

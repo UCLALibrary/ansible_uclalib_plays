@@ -1,3 +1,5 @@
+---
+
 - name: drupal_deploy_pre.yml
   hosts: all
 
@@ -16,5 +18,5 @@
     - name: "Set maintenance mode on {{ APP_ENV }}"
       shell: |
         {{ drush_path }} @"{{ drush_configs[APP_ENV]['drush_alias'] }}" vset maintenance_mode 1
-      become: yes
+      become: true
       become_user: "{{ drush_user }}"

@@ -25,7 +25,7 @@
 ###############################################################################
 
 - name: uclalib_swarmstackdeploy.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: "{{ rhel_inventory_host_group }}"
   vars_files:

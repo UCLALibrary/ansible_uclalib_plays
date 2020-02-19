@@ -81,6 +81,7 @@
                 - snapshots.guest_snapshots.snapshots is defined
                 # subtract seconds in epoch of snapshot creation from now
                 # if it is greater than X days, remove the snapshot
+                # yamllint disable-line rule:indentation
                 - ( (ansible_date_time.iso8601
                      | to_datetime(date_format_ansible ))
                   - (item.creation_time

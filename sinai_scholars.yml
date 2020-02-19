@@ -1,6 +1,8 @@
+---
+
 - name: sinai_scholars.yml
   hosts: all
-  become: yes
+  become: true
   become_method: sudo
   vars:
     iptables_anywhere_input_rules:

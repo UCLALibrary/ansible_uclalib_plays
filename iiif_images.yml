@@ -1,6 +1,8 @@
+---
+
 - name: iiif_images.yml
   hosts: all
-  become: yes
+  become: true
   become_method: sudo
   vars:
     iptables_anywhere_input_rules:
@@ -15,7 +17,7 @@
     nfsmountuser: jiiify
     nfsmountgroup: jiiify
   vars_files:
-      - /etc/ansible/plays/vars/emeluser_smb.yml
+    - /etc/ansible/plays/vars/emeluser_smb.yml
 
   roles:
     - { role: uclalib_role_iiifimages }

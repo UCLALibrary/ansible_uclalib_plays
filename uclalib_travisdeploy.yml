@@ -1,7 +1,7 @@
 ---
 
 - name: uclalib_travisdeploy.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: test
 

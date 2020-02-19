@@ -1,7 +1,7 @@
 ---
 
 - name: uclalib_sinaimanumysql.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: all
   user: ansible

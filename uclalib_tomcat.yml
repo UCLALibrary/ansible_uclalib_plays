@@ -1,6 +1,6 @@
 ---
 - name: uclalib_tomcat.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: all
 

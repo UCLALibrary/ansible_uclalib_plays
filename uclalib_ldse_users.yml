@@ -1,7 +1,7 @@
 ---
 - name: uclalib_ldse_users.yml
   hosts: all
-  become: yes
+  become: true
   become_method: sudo
   vars_files:
     - /etc/ansible/plays/vars/ldseusers.yml

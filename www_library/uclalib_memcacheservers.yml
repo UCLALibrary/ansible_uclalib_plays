@@ -1,3 +1,5 @@
+---
+
 # This playbooks heavily depends on hidden host_vars
 - name: uclalib_memcacheservers.yml
   hosts: all

@@ -24,11 +24,11 @@
 ###############################################################################
 
 - name: uclalib_rhelupdate.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: "{{ rhel_inventory_host_group | default('unattended_yum_update') }}"
   serial: "{{ rhelupdate_serial | default(15) }}"
-  any_errors_fatal: False
+  any_errors_fatal: false
 
   tasks:
     - name: Execute RHEL yum update

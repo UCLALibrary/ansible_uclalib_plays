@@ -1,6 +1,6 @@
 ---
 - name: provision.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: prod_kibana
 

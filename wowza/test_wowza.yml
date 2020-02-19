@@ -1,6 +1,6 @@
 ---
 - name: test_wowza.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: t-w-wowza01.library.ucla.edu
 
@@ -10,4 +10,3 @@
     - { role: uclalib_role_firewalld }
     - { role: uclalib_role_nfsmount }
     - { role: uclalib_role_wowza }
-

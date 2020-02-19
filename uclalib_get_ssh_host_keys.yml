@@ -38,6 +38,7 @@
     # Relies upon facts set above, must be a separate task
     - name: Assemble query string (hostname vs ip)
       set_fact:
+        # yamllint disable-line rule:indentation
         query_string: |
           "{{ (inventory_hostname | ipaddr)
               | ternary(
@@ -49,7 +50,7 @@
     - name: Ensure ssh host key known
       lineinfile:
         dest: "{{ working_directory }}/{{ inventory_hostname }}"
-        create: yes
+        create: true
         state: present
         line: "{{ item }}"
       with_items:

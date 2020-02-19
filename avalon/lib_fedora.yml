@@ -1,7 +1,7 @@
 ---
 
 - name: lib_fedora.yml
-  become: yes
+  become: true
   hosts: all
   vars:
     project_name: avalon

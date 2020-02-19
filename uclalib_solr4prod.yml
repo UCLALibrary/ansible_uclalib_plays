@@ -1,6 +1,6 @@
 ---
 - name: uclalib_solr4prod.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: solr_master
   # Define the intended solr applicaitons in the vars section below

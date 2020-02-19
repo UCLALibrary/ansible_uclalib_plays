@@ -25,11 +25,11 @@
 ###############################################################################
 
 - name: uclalib_rhelreboot.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: "{{ rhel_inventory_host_group | default('unattended_yum_update') }}"
   serial: "{{ rhelreboot_serial | default(15) }}"
-  any_errors_fatal: False
+  any_errors_fatal: false
 
   vars:
     - no_reboot: /etc/no-reboot
@@ -37,19 +37,20 @@
   tasks:
     - name: Query needs-restarting status
       command: needs-restarting -r
-      failed_when: False
+      failed_when: false
       register: needs_restarting
-      changed_when: False
+      changed_when: false
 
     - name: Skip this reboot?
       slurp:
         src: '{{ no_reboot }}'
-      failed_when: False
+      failed_when: false
       register: skip
       changed_when: skip.content is defined
       notify: Why was host skipped?
 
     - name: Reboot if required
+      # yamllint disable-line rule:empty-values
       reboot:
       when: >
         needs_restarting.rc == 1

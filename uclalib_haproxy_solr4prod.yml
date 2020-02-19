@@ -1,7 +1,7 @@
 ---
 
 - name: uclalib_haproxy_solr4prod.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: solr_lb
   # Define the intended haproxy config parameters in the vars section below

@@ -1,34 +1,34 @@
 ---
 
 - name: uclalib_clearcache_cantaloupe.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: all
   user: ansible
 
   tasks:
-  - name: Stop Apache HTTPD
-    service:
-      name: httpd
-      state: stopped
+    - name: Stop Apache HTTPD
+      service:
+        name: httpd
+        state: stopped
 
-  - name: Stop Cantaloupe
-    service:
-      name: cantaloupe
-      state: stopped
+    - name: Stop Cantaloupe
+      service:
+        name: cantaloupe
+        state: stopped
 
-  - name: Clear cache directory
-    shell: >
-      rm -rf /var/cantaloupe/cache/image/* &&
-      rm -rf /var/cantaloupe/cache/info/* &&
-      rm -rf /var/cantaloupe/cache/source/*
+    - name: Clear cache directory
+      shell: >
+        rm -rf /var/cantaloupe/cache/image/* &&
+        rm -rf /var/cantaloupe/cache/info/* &&
+        rm -rf /var/cantaloupe/cache/source/*
 
-  - name: Start Cantaloupe
-    service:
-      name: cantaloupe
-      state: started
+    - name: Start Cantaloupe
+      service:
+        name: cantaloupe
+        state: started
 
-  - name: Start Apache HTTPD
-    service:
-      name: httpd
-      state: started
+    - name: Start Apache HTTPD
+      service:
+        name: httpd
+        state: started

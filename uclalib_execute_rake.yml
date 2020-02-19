@@ -1,27 +1,27 @@
 ---
 
 - name: uclalib_execute_rake.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: all
   user: ansible
 
   tasks:
-  - name: Ensure ansible user is defined
-    set_fact:
-      ansible_username: "{{ ansible_user | default('ansible') }}"
+    - name: Ensure ansible user is defined
+      set_fact:
+        ansible_username: "{{ ansible_user | default('ansible') }}"
 
-  - name: Ensure capistrano deploy user is defined
-    set_fact:
-      cap_user: "{{ capistrano_user | default('deploy') }}"
+    - name: Ensure capistrano deploy user is defined
+      set_fact:
+        cap_user: "{{ capistrano_user | default('deploy') }}"
 
-  - name: Ensure capistrano project base directory is defined
-    set_fact:
-      project_base_dir: "{{ capistrano_base | default('/opt') }}"
+    - name: Ensure capistrano project base directory is defined
+      set_fact:
+        project_base_dir: "{{ capistrano_base | default('/opt') }}"
 
-  - name: Execute rails rake task
-    become_user: "{{ capistrano_user }}"
-    shell: >
-      RAILS_ENV=production {{ cmdline_env_vars | default(None) }} bundle exec {{ rake_task }}
-    args:
-      chdir: "{{ project_base_dir }}/{{ project_name }}/current"
+    - name: Execute rails rake task
+      become_user: "{{ capistrano_user }}"
+      shell: >
+        RAILS_ENV=production {{ cmdline_env_vars | default(None) }} bundle exec {{ rake_task }}
+      args:
+        chdir: "{{ project_base_dir }}/{{ project_name }}/current"

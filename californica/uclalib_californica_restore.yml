@@ -1,7 +1,7 @@
 ---
 
 - hosts: "californica{{ server_environ }}fedora"
-  become: yes
+  become: true
   become_method: sudo
   user: ansible
 
@@ -80,7 +80,7 @@
 ##############################################################################
 
 - hosts: "californica{{ server_environ }}solr"
-  become: yes
+  become: true
   become_method: sudo
   user: ansible
 
@@ -135,7 +135,7 @@
 ##############################################################################
 
 - hosts: "californica{{ server_environ }}web"
-  become: yes
+  become: true
   become_method: sudo
   user: ansible
 

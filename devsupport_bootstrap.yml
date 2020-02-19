@@ -1,7 +1,9 @@
+---
+
 - name: devsupport_bootstrap.yml
   hosts: all
-  become: yes
+  become: true
   become_method: sudo
 
   roles:
-     - { role: uclalib_role_rhel7repos }
+    - { role: uclalib_role_rhel7repos }

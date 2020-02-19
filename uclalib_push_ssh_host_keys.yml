@@ -2,7 +2,7 @@
 # Push local /etc/ssh/ssh_know_hosts to remote systems
 
 - name: uclalib_push_ssh_host_keys.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: all
   user: ansible

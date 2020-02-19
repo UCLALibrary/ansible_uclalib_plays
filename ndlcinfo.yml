@@ -1,5 +1,7 @@
+---
+
 - name: ndlcinfo.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: webservers
   vars:
@@ -9,5 +11,5 @@
         protocol: tcp
 
   roles:
-    - { role: uclalib_role_ndlcinfo,		tags: ["ndlc.info"]}
+    - { role: uclalib_role_ndlcinfo, tags: [ "ndlc.info" ] }
     - { role: uclalib_role_iptables }

@@ -1,6 +1,6 @@
 ---
 - name: uclalib_postgres.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: all
 
@@ -33,16 +33,16 @@
     postgresql_users:
       - name: "{{ postgres_build['test']['dataden']['user']['username'] }}"
         pass: "{{ postgres_build['test']['dataden']['user']['password'] }}"
-        encrypted: yes
+        encrypted: true
       - name: "{{ postgres_build['test']['vsim']['user']['username'] }}"
         pass: "{{ postgres_build['test']['vsim']['user']['password'] }}"
-        encrypted: yes
+        encrypted: true
       - name: "{{ postgres_build['prod']['dataden']['user']['username'] }}"
         pass: "{{ postgres_build['prod']['dataden']['user']['password'] }}"
-        encrypted: yes
+        encrypted: true
       - name: "{{ postgres_build['prod']['vsim']['user']['username'] }}"
         pass: "{{ postgres_build['prod']['vsim']['user']['password'] }}"
-        encrypted: yes
+        encrypted: true
 
     # create a database for dspace
     postgresql_databases:

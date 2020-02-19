@@ -30,7 +30,7 @@
         {{ docker_compose_bin }} down
       args:
         chdir: "{{ docker_user_home }}/bucketeer"
-      become: yes
+      become: true
       become_user: "{{ docker_user }}"
 
     - name: "Pulling new bucketeer image"
@@ -38,7 +38,7 @@
         {{ docker_compose_bin }} pull
       args:
         chdir: "{{ docker_user_home }}/bucketeer"
-      become: yes
+      become: true
       become_user: "{{ docker_user }}"
 
     - name: "Launch new bucketeer container"
@@ -46,7 +46,7 @@
         {{ docker_compose_bin }} up -d
       args:
         chdir: "{{ docker_user_home }}/bucketeer"
-      become: yes
+      become: true
       become_user: "{{ docker_user }}"
 
     - name: Check if prod bucketeer site is online

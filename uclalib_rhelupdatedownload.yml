@@ -24,16 +24,16 @@
 ###############################################################################
 
 - name: uclalib_rhelupdatedownload.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: "{{ rhel_inventory_host_group | default('unattended_yum_update') }}"
   serial: "{{ rhelupdatedownload_serial | default(15) }}"
-  any_errors_fatal: False
+  any_errors_fatal: false
 
   tasks:
     - name: Download RHEL Updates
       yum:
         name: "*"
         state: latest
-        download_only: True
+        download_only: true
       register: update_status

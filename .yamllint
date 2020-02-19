@@ -1,0 +1,86 @@
+---
+
+# yamllint 1.20.0
+extends: default
+
+ignore: |
+  *private*yml
+  *vault.yml
+  vars/fctools_vars.yml
+
+rules:
+
+  braces:
+    min-spaces-inside: 1
+    max-spaces-inside: 1
+
+  brackets:
+    min-spaces-inside: 1
+    max-spaces-inside: 1
+
+  colons:
+    max-spaces-before: 0
+    max-spaces-after: 1
+
+  commas:
+    max-spaces-before: 0
+    min-spaces-after: 1
+    max-spaces-after: 1
+
+  comments:
+    require-starting-space: false
+
+  document-end:
+    present: false
+
+  document-start:
+    level: error
+    present: true
+
+  empty-lines:
+    max: 1
+
+  empty-values:
+    forbid-in-block-mappings: true
+    forbid-in-flow-mappings: true
+
+  hyphens:
+    max-spaces-after: true
+
+  indentation:
+    spaces: 2
+    indent-sequences: true
+    check-multi-line-strings: true
+
+  key-duplicates: enable
+
+  # a semantic ordering, where required / required-if / optional were primary
+  # key, and alphabetical was secodnary would be nice.
+  key-ordering: disable
+
+  line-length:
+    level: warning
+    max: 80
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: true
+
+  new-line-at-end-of-file: enable
+
+  new-lines:
+    type: unix
+
+  octal-values:
+    #level: warning
+    forbid-implicit-octal: true
+    forbid-explicit-octal: false
+
+  # This should be enabled, to prevent ambiguity
+  quoted-strings: disable
+
+  trailing-spaces: enable
+
+  truthy:
+    level: error
+    allowed-values:
+      - "true"
+      - "false"
