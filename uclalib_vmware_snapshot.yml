@@ -9,7 +9,7 @@
     vsphere_datacenter: "Library Information Technology"
     vsphere_domain: "ad.library.ucla.edu"
     vsphere_user: "{{ vmware_user | default }}"
-    vsphere_password: " {{ vmware_password | default }}"
+    vsphere_password: "{{ vmware_password | default }}"
     vsphere_folder: "/"
     snapshot_prefix: "rhel-update"
     remove_snapshot: false
