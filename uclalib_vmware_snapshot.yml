@@ -8,6 +8,8 @@
     vcenter_hostname: vc.library.ucla.edu
     vsphere_datacenter: "Library Information Technology"
     vsphere_domain: "ad.library.ucla.edu"
+    vsphere_user: "{{ vmware_user | default }}"
+    vsphere_password: " {{ vmware_password | default }}"
     vsphere_folder: "/"
     snapshot_prefix: "rhel-update"
     remove_snapshot: false
@@ -17,15 +19,6 @@
     date_format_snapshot: "%Y-%m-%dT%H:%M:%S.%f+00:00"
     date_format_ansible: "%Y-%m-%dT%H:%M:%SZ"
     days_to_keep_snapshots: 7
-
-  vars_prompt:
-    - name: vsphere_user
-      prompt: "(vsphere_user) vSphere User"
-      private: false
-
-    - name: vsphere_password
-      prompt: "(vsphere_password) vSphere Password"
-      private: true
 
   tasks:
     - name: Gathering Facts
