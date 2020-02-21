@@ -87,7 +87,7 @@
                       | to_datetime(date_format_snapshot))
                   ).total_seconds()
                   > days_to_keep_snapshots|int * 86400
-                - item.name | regex_search( "^" + snapshot_prefix )
+                - item.name | regex_search( "^" + snapshot_prefix + "-" )
               loop: "{{ snapshots.guest_snapshots.snapshots }}"
 
           # end remove snapshot block
