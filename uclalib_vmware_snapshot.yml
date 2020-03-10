@@ -1,7 +1,26 @@
 ---
 
+###############################################################################
+# Playbook for VMware Guest Snapshots
+# -------------------------------------
+#
+# This playbook can create or remove snapshots for VMware guests.
+# Supported paramters:
+# rhel_inventory_host_group (default: unattended_yum_update)
+#   The group (or host) to snapshot
+# snapshot_prefix (default: rhel-update)
+#   Prefix name to apply
+# remove_snapshot (default: false)
+#   Controls the creation or removal of the snapshot
+#   The default of false will create a snapshot
+# days_to_keep_snapshots (default: 7)
+#   When removing a snapshot, save al snapshots more recent than this in days
+#   The default is one week
+#
+###############################################################################
+
 - name: uclalib_vmware_snapshot.yml
-  hosts: all
+  hosts: "{{ rhel_inventory_host_group | default('unattended_yum_update') }}"
   gather_facts: false
 
   vars:
