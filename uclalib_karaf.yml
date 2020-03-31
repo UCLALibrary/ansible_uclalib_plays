@@ -1,9 +1,0 @@
----
-- name: uclalib_karaf.yml
-  become: yes
-  become_method: sudo
-  hosts: karaf4
-
-  roles:
-    - { role: uclalib_role_java }
-    - { role: uclalib_role_karaf }
