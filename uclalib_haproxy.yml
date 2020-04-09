@@ -1,0 +1,79 @@
+---
+
+# 2020-04-09 jhriv
+# A simple playbook to put UCLA Library test/prod HAProxy under
+# Ansible / version control.
+
+- name: HAProxy (Prod/Test) Install/Configure
+  hosts: all
+
+  tasks:
+    - name: Install it
+      yum:
+        name: http://yum.library.ucla.edu/rhel7/haproxy-1.8.13-1.x86_64.rpm
+        state: present
+      become: true
+
+    - name: Role Group
+      group:
+        name: "{{ haproxy_group | default (haproxy_user|default('haproxy') ) }}"
+        state: present
+        system: true
+        # local: true
+      become: true
+
+    - name: Role User
+      user:
+        name: "{{ haproxy_user|default('haproxy') }}"
+        group: "{{ haproxy_group | default (haproxy_user|default('haproxy') ) }}"
+        comment: "HAProxy User"
+        state: present
+        system: true
+        shell: /sbin/nologin
+        # local: true
+      become: true
+
+    - name: Get the directories
+      # -printf is a GNU extension
+      # command: find . -type d -printf '%P\n'
+      command: find . -type d -print
+      args:
+        chdir: "files/{{ haproxy_local_file_path }}"
+      connection: local
+      changed_when: false
+      check_mode: false
+      register: haproxy_conf_directories
+
+    - name: Get the files
+      # -printf is a GNU extension
+      # command: find . -type f -not -name haproxy.cfg -printf '%P\n'
+      command: find . -type f -not -name haproxy.cfg -print
+      args:
+        chdir: "files/{{ haproxy_local_file_path }}"
+      connection: local
+      changed_when: false
+      check_mode: false
+      register: haproxy_conf_files
+
+    - name: Create Directories
+      file:
+        name: "{{ haproxy_config_dir }}/{{ item }}"
+        state: directory
+      become: true
+      loop:
+        "{{ haproxy_conf_directories.stdout_lines }}"
+
+    - name: Copy Files
+      copy:
+        src: "{{ haproxy_local_file_path }}/{{ item }}"
+        dest: "{{ haproxy_config_dir }}/{{ item | regex_replace ('\\.vault(|\\..*)$', '\\1' ) }}"
+      become: true
+      loop:
+        "{{ haproxy_conf_files.stdout_lines }}"
+
+    - name: Copy Config
+      copy:
+        src: "{{ haproxy_local_file_path }}/haproxy.cfg"
+        dest: "{{ haproxy_config_dir }}/haproxy.cfg"
+        validate: haproxy -c -f %s
+      become: true
