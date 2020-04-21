@@ -77,3 +77,11 @@
         dest: "{{ haproxy_config_dir }}/haproxy.cfg"
         validate: haproxy -c -f %s
       become: true
+
+    - name: Deploy UCLA VPN ACL source
+      copy:
+        content: "{{ ucla_vpn_networks | join('\n') }}"
+        dest: "{{ haproxy_config_dir  }}/ucla_vpn_networks"
+        owner: "root"
+        group: "root"
+        mode: 0644
