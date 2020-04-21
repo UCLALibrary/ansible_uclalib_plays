@@ -85,3 +85,11 @@
         owner: "root"
         group: "root"
         mode: 0644
+
+    - name: Deploy UCLA Library staff ACL source
+      copy:
+        content: "{{ ucla_library_staff_networks | join('\n') }}"
+        dest: "{{ haproxy_config_dir  }}/ucla_library_staff_networks"
+        owner: "root"
+        group: "root"
+        mode: 0644
