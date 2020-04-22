@@ -33,6 +33,15 @@
         # local: true
       become: true
 
+    - name: Allow bind to non-local IPs (keepalived)
+      sysctl:
+        name: net.ipv4.ip_nonlocal_bind
+        value: '1'
+        state: present
+        sysctl_set: true
+        reload: true
+      become: true
+
     - name: Get the directories
       # -printf is a GNU extension
       # command: find . -type d -printf '%P\n'
@@ -70,6 +79,22 @@
       become: true
       loop:
         "{{ haproxy_conf_files.stdout_lines }}"
+      notify:
+        - Restart HAProxy
+
+    - name: Deploy ACL sources
+      copy:
+        content: "{{ hostvars[inventory_hostname][item] | join('\n') }}\n"
+        dest: "{{ haproxy_config_dir  }}/{{ item }}"
+        owner: "root"
+        group: "root"
+        mode: 0644
+      become: true
+      loop:
+        - ucla_vpn_networks
+        - ucla_library_staff_networks
+      notify:
+        - Restart HAProxy
 
     - name: Copy Config
       copy:
@@ -77,19 +102,12 @@
         dest: "{{ haproxy_config_dir }}/haproxy.cfg"
         validate: haproxy -c -f %s
       become: true
+      notify:
+        - Restart HAProxy
 
-    - name: Deploy UCLA VPN ACL source
-      copy:
-        content: "{{ ucla_vpn_networks | join('\n') }}"
-        dest: "{{ haproxy_config_dir  }}/ucla_vpn_networks"
-        owner: "root"
-        group: "root"
-        mode: 0644
-
-    - name: Deploy UCLA Library staff ACL source
-      copy:
-        content: "{{ ucla_library_staff_networks | join('\n') }}"
-        dest: "{{ haproxy_config_dir  }}/ucla_library_staff_networks"
-        owner: "root"
-        group: "root"
-        mode: 0644
+  handlers:
+    - name: Restart HAProxy
+      service:
+        name: haproxy
+        state: restarted
+      become: true
