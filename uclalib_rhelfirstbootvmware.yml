@@ -12,3 +12,9 @@
     - { role: uclalib_role_custom_facts }
     - { role: uclalib_role_rhelinsights }
     - { role: uclalib_role_firewalld }
+
+  tasks:
+    - name: Execute RHEL yum update
+      yum:
+        name: "*"
+        state: latest
