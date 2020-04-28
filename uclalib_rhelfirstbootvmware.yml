@@ -12,3 +12,25 @@
     - { role: uclalib_role_custom_facts }
     - { role: uclalib_role_rhelinsights }
     - { role: uclalib_role_firewalld }
+
+  tasks:
+    - name: Execute RHEL yum update
+      yum:
+        name: "*"
+        disable_excludes: all
+        state: latest
+
+    - name: Query needs-restarting status
+      command: needs-restarting -r
+      failed_when: False
+      register: needs_restarting
+      changed_when: False
+
+    - name: Reboot if required
+      reboot:
+      when: >
+        needs_restarting.rc == 1
+        and (needs_restarting.stdout | default("")) is search ("Reboot is required")
+      # needs-restarting returns 1 if a reboot is required, which Ansible
+      # considers to be failed.
+      # Equivalent shell: sudo needs-restarting -r || sudo reboot
