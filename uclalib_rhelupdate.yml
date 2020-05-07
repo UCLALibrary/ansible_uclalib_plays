@@ -27,7 +27,7 @@
   become: yes
   become_method: sudo
   hosts: "{{ rhel_inventory_host_group | default('unattended_yum_update') }}"
-  serial: "{{ rhelupdate_serial | default(15) }}"
+  serial: "{{ rhelupdate_serial | default(20) }}"
   any_errors_fatal: False
 
   tasks:
