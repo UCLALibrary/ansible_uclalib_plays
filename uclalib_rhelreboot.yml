@@ -51,6 +51,7 @@
 
     - name: Reboot if required
       reboot:
+        reboot_timeout: 180
       when: >
         needs_restarting.rc == 1
         and (needs_restarting.stdout | default("")) is search ("Reboot is required")
