@@ -1,0 +1,13 @@
+---
+
+- name: Set up PostgreSQL Server
+  hosts: ?-d-postgres??.library.ucla.edu
+  gather_facts: false
+
+  roles:
+    - name: uclalib_role_postgresql
+
+  pre_tasks:
+    - name: Gathering Facts (minus /etc/facts.d)
+      setup:
+        fact_path: /nonexistent
