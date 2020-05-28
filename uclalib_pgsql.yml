@@ -5,6 +5,7 @@
   gather_facts: false
 
   roles:
+    - name: uclalib_role_firewalld
     - name: uclalib_role_postgresql
 
   pre_tasks:
