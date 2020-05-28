@@ -6,6 +6,7 @@
 
   roles:
     - name: uclalib_role_firewalld
+      become: true
     - name: uclalib_role_postgresql
 
   pre_tasks:
