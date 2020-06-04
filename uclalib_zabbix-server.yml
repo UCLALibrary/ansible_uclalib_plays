@@ -1,12 +1,11 @@
 ---
 - name: Zabbix Server
   hosts: p-w-zabbix01.library.ucla.edu
+  become: yes
+  become_method: sudo
 
   roles:
-    - role: uclalib_role_certbot
     - role: uclalib_role_rhelscl
     - role: uclalib_role_apache
     - role: uclalib_role_postgresql
     - role: uclalib_role_zabbix
-      tags:
-        - server
