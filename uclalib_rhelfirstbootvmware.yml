@@ -5,6 +5,9 @@
   become_method: sudo
   hosts: all
 
+  vars:
+    zabbix_install_server: false
+
   roles:
     - { role: uclalib_role_rhel7repos }
     - { role: uclalib_role_epel }
@@ -12,6 +15,7 @@
     - { role: uclalib_role_custom_facts }
     - { role: uclalib_role_rhelinsights }
     - { role: uclalib_role_firewalld }
+    - { role: uclalib_role_zabbix }
 
   tasks:
     - name: Execute RHEL yum update
