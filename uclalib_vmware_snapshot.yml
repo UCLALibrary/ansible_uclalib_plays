@@ -68,6 +68,7 @@
             quiesce: true
             snapshot_name: "{{ snapshot_prefix }}-{{ ansible_date_time.date }}"
             username: "{{ vsphere_username }}"
+            validate_certs: false
           connection: local
           when:
             - not remove_snapshot|bool
@@ -82,6 +83,7 @@
                 password: "{{ vsphere_password }}"
                 name: "{{ ansible_hostname }}"
                 username: "{{ vsphere_username }}"
+                validate_certs: false
               connection: local
               register: snapshots
 
@@ -95,6 +97,7 @@
                 name: "{{ ansible_hostname }}"
                 snapshot_name: "{{ item.name }}"
                 username: "{{ vsphere_username }}"
+                validate_certs: false
               connection: local
               when:
                 - snapshots.guest_snapshots.snapshots is defined
