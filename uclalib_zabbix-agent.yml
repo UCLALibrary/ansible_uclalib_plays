@@ -1,0 +1,9 @@
+---
+- name: Zabbix Agent
+  hosts: all
+  become: yes
+  become_method: sudo
+
+  roles:
+    - role: uclalib_role_zabbix
+    - role: uclalib_role_firewalld
