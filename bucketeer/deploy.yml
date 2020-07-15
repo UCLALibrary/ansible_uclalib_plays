@@ -67,6 +67,7 @@
       until: result.status == 200
       retries: 60
       delay: 1
+      validate_certs: no
       when: "'prod_bucketeer_servers' in group_names"
 
     - name: Check if test bucketeer site is online
@@ -77,4 +78,5 @@
       until: result.status == 200
       retries: 60
       delay: 1
+      validate_certs: no
       when: "'test_bucketeer_servers' in group_names"
