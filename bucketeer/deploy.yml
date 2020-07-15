@@ -63,20 +63,20 @@
       uri:
         url: "https://bucketeer.library.ucla.edu/status"
         status_code: 200
+        validate_certs: false
       register: result
       until: result.status == 200
       retries: 60
       delay: 1
-      validate_certs: no
       when: "'prod_bucketeer_servers' in group_names"
 
     - name: Check if test bucketeer site is online
       uri:
         url: "https://test-bucketeer.library.ucla.edu/status"
         status_code: 200
+        validate_certs: false
       register: result
       until: result.status == 200
       retries: 60
       delay: 1
-      validate_certs: no
       when: "'test_bucketeer_servers' in group_names"
