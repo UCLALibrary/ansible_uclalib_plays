@@ -20,6 +20,15 @@
 
     - name: "Upload docker compose environment variables"
       template:
+        src: "templates/prod-sinai-bucketeer_docker-compose.env.j2"
+        dest: "{{ docker_user_home }}/bucketeer/.docker-compose.env"
+        owner: "{{ docker_user }}"
+        group: "{{ docker_user }}"
+        mode: "0644"
+      when: "'prod_sinai_bucketeer_servers' in group_names"
+
+    - name: "Upload docker compose environment variables"
+      template:
         src: "templates/test-bucketeer_docker-compose.env.j2"
         dest: "{{ docker_user_home }}/bucketeer/.docker-compose.env"
         owner: "{{ docker_user }}"
@@ -69,6 +78,18 @@
       retries: 60
       delay: 1
       when: "'prod_bucketeer_servers' in group_names"
+
+    - name: Check if prod sinai bucketeer site is online
+      uri:
+        url: "https://sinai-bucketeer.library.ucla.edu/status"
+        status_code: 200
+        validate_certs: false
+      register: result
+      until: result.status == 200
+      retries: 60
+      delay: 1
+      when: "'prod_sinai_bucketeer_servers' in group_names"
+
 
     - name: Check if test bucketeer site is online
       uri:
