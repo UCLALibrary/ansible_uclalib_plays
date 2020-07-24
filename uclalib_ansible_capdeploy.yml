@@ -82,6 +82,17 @@
           state: "link"
         when: allow_web_crawl == "no"
 
+      - name: Enable Stack Tracing
+        lineinfile:
+          path: '{{ cap_base }}/{{ project_name }}/current/config/environments/production.rb'
+          line: '\1true'
+          regexp: '(\s*config.consider_all_requests_local\s*=\s*)false'
+          backrefs: true
+          state: present
+        when:
+          - (allow_stack_trace|default('false')) | bool
+          - (stack_trace|default('false')) | bool
+
       - name: Restart Apache HTTPD to reload passenger application
         systemd:
           name: httpd
