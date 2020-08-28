@@ -1,14 +1,33 @@
-version: '3.4'
+version: '3.8'
 services:
   bucketeer:
-    image: uclalibrary/bucketeer:{{ dockerhub_tag }}
+    image: uclalibrary/bucketeer-ucla:{{ dockerhub_tag }}
     ports:
-      - 8181:8888
+      - {{ bucketeer_ingress_port }}:8888
     deploy:
       replicas: 1
+      resources:
+        limits:
+          cpus: '{{ bucketeer_cpu_limit }}'
+          memory: {{ bucketeer_mem_limit }}
     container_name: bucketeer
     env_file:
-      - .docker-compose.env
+      - bucketeer.env
+    volumes:
+      - "{{ nfs_volume }}:{{ nfs_mount_path }}"
+  bucketeer_large:
+    image: uclalibrary/bucketeer-ucla:{{ dockerhub_tag }}
+    ports:
+      - {{ bucketeer_large_ingress_port }}:8888
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '{{ bucketeer_large_cpu_limit }}'
+          memory: {{ bucketeer_large_mem_limit }}
+    container_name: bucketeer_large
+    env_file:
+      - bucketeer_large.env
     volumes:
       - "{{ nfs_volume }}:{{ nfs_mount_path }}"
 
