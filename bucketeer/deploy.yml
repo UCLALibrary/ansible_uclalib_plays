@@ -11,30 +11,22 @@
   tasks:
     - name: "Upload docker compose environment variables"
       template:
-        src: "templates/prod-bucketeer_docker-compose.env.j2"
-        dest: "{{ docker_user_home }}/bucketeer/.docker-compose.env"
+        src: "templates/bucketeer.env.j2"
+        dest: "{{ docker_user_home }}/bucketeer/bucketeer.env"
         owner: "{{ docker_user }}"
         group: "{{ docker_user }}"
         mode: "0644"
-      when: "'prod_bucketeer_servers' in group_names"
 
-    - name: "Upload docker compose environment variables"
-      template:
-        src: "templates/prod-sinai-bucketeer_docker-compose.env.j2"
-        dest: "{{ docker_user_home }}/bucketeer/.docker-compose.env"
-        owner: "{{ docker_user }}"
-        group: "{{ docker_user }}"
-        mode: "0644"
-      when: "'prod_sinai_bucketeer_servers' in group_names"
-
-    - name: "Upload docker compose environment variables"
-      template:
-        src: "templates/test-bucketeer_docker-compose.env.j2"
-        dest: "{{ docker_user_home }}/bucketeer/.docker-compose.env"
-        owner: "{{ docker_user }}"
-        group: "{{ docker_user }}"
-        mode: "0644"
-      when: "'test_bucketeer_servers' in group_names"
+    - block:
+      - name: "Upload docker compose environment variables for large batch instance"
+        template:
+          src: "templates/bucketeer.env.j2"
+          dest: "{{ docker_user_home }}/bucketeer/bucketeer_large.env"
+          owner: "{{ docker_user }}"
+          group: "{{ docker_user }}"
+          mode: "0644"
+      vars:
+        bucketeer_large: true
 
     - name: "Update docker-compose.yml file"
       template:
@@ -46,7 +38,7 @@
 
     - name: "Shutting down running containers"
       shell: |
-        {{ docker_compose_bin }} down
+        {{ docker_compose_bin }} --compatibility down
       args:
         chdir: "{{ docker_user_home }}/bucketeer"
       become: yes
@@ -54,7 +46,7 @@
 
     - name: "Pulling new bucketeer image"
       shell: |
-        {{ docker_compose_bin }} pull
+        {{ docker_compose_bin }} --compatibility pull
       args:
         chdir: "{{ docker_user_home }}/bucketeer"
       become: yes
@@ -62,7 +54,7 @@
 
     - name: "Launch new bucketeer container"
       shell: |
-        {{ docker_compose_bin }} up -d
+        {{ docker_compose_bin }} --compatibility up -d
       args:
         chdir: "{{ docker_user_home }}/bucketeer"
       become: yes
