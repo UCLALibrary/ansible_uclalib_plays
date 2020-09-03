@@ -1,0 +1,16 @@
+---
+
+- name: Catalog VMware VMs
+  hosts: p-u-virtwho01.library.ucla.edu
+  gather_facts: false
+
+  tasks:
+    - name: Gathering Facts (minus /etc/facts.d)
+      setup:
+        fact_path: /nonexistent
+
+    - name: Restart virt-who
+      service:
+        name: virt-who
+        state: restarted
+      become: true
