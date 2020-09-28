@@ -1,5 +1,27 @@
 ---
 
+- hosts: "californica{{ server_environ }}fedora:californica{{ server_environ }}solr:californica{{ server_environ }}web"
+  become: true
+  become_method: sudo
+  user: ansible
+
+  tasks:
+    - name: Set default restore environment
+      set_fact:
+        restore_environ: "{{ server_environ }}"
+      when: restore_environ is undefined
+
+    - name: Ensure prod is only restored from prod
+      assert:
+        that: >
+          {% if server_environ == "prod" %}
+            {{ restore_environ == "prod" }}
+          {% else %}
+            {{ true }}
+          {% endif %}
+
+##############################################################################
+
 - hosts: "californica{{ server_environ }}fedora"
   become: yes
   become_method: sudo
@@ -8,7 +30,7 @@
   tasks:
     - name: Set path to californica backup directory to restore
       set_fact:
-        cal_backup_dir: "/mnt/samvera_backup/californica_{{ server_environ }}_{{ backup_date }}"
+        cal_backup_dir: "/mnt/samvera_backup/californica_{{ restore_environ }}_{{ backup_date }}"
 
     - name: Ensure backup mount point exists
       file:
@@ -58,7 +80,7 @@
 
     - name: Restore backup of the fedora database
       shell: >
-        mysql fedora_californica_{{ server_environ }} < {{ cal_backup_dir }}/fedora_californica_{{ server_environ }}_{{ backup_date }}.sql
+        mysql fedora_californica_{{ server_environ }} < {{ cal_backup_dir }}/fedora_californica_{{ restore_environ }}_{{ backup_date }}.sql
 
     - name: Start Fedora
       service:
@@ -87,7 +109,7 @@
   tasks:
     - name: Set path to californica backup directory to restore
       set_fact:
-        cal_backup_dir: "/mnt/samvera_backup/californica_{{ server_environ }}_{{ backup_date }}"
+        cal_backup_dir: "/mnt/samvera_backup/californica_{{ restore_environ }}_{{ backup_date }}"
 
     - name: Ensure backup mount point exists
       file:
@@ -142,7 +164,7 @@
   tasks:
     - name: Set path to californica backup directory to restore
       set_fact:
-        cal_backup_dir: "/mnt/samvera_backup/californica_{{ server_environ }}_{{ backup_date }}"
+        cal_backup_dir: "/mnt/samvera_backup/californica_{{ restore_environ }}_{{ backup_date }}"
 
     - name: Ensure backup mount point exists
       file:
@@ -176,7 +198,7 @@
 
     - name: Restore backup of the rails database
       shell: >
-        mysql californicadb{{ server_environ }} < {{ cal_backup_dir }}/californicadb{{ server_environ }}_{{ backup_date }}.sql
+        mysql californicadb{{ server_environ }} < {{ cal_backup_dir }}/californicadb{{ restore_environ }}_{{ backup_date }}.sql
 
     - name: Remove existing redis database
       file:
