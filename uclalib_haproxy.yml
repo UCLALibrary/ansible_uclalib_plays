@@ -93,6 +93,7 @@
       loop:
         - ucla_vpn_networks
         - ucla_library_staff_networks
+        - ucla_library_tunnel_networks
       notify:
         - Restart HAProxy
 
