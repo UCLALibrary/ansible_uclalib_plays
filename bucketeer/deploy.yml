@@ -16,6 +16,9 @@
         owner: "{{ docker_user }}"
         group: "{{ docker_user }}"
         mode: "0644"
+      vars:
+        # Allow main bucketeer to use bucketeer_large as a batch endpoint
+        bucketeer_large: true
 
     - block:
       - name: "Upload docker compose environment variables for large batch instance"
@@ -25,8 +28,6 @@
           owner: "{{ docker_user }}"
           group: "{{ docker_user }}"
           mode: "0644"
-      vars:
-        bucketeer_large: true
 
     - name: "Update docker-compose.yml file"
       template:
