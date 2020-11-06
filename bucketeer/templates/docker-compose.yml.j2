@@ -15,6 +15,7 @@ services:
       - bucketeer.env
     volumes:
       - "{{ nfs_volume }}:{{ nfs_mount_path }}"
+      - "{{ cifs_volume }}:{{ cifs_mount_path }}"
   bucketeer_large:
     image: uclalibrary/bucketeer-ucla:{{ dockerhub_tag }}
     ports:
@@ -30,6 +31,7 @@ services:
       - bucketeer_large.env
     volumes:
       - "{{ nfs_volume }}:{{ nfs_mount_path }}"
+      - "{{ cifs_volume }}:{{ cifs_mount_path }}"
 
 volumes:
   {{ nfs_volume }}:
@@ -38,4 +40,10 @@ volumes:
       type: nfs
       o: addr={{ nfs_addr }},vers=3,nosuid,noexec,ro
       device: "{{ nfs_path }}"
-
+  {{ cifs_volume }}:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "addr={{ cifs_addr }},rw"
+      o: "uid={{ bucketeer_uid }},username={{ cifs_username }},password={{ cifs_password }},file_mode=0770,dir_mode=0770"
+      device: "//{{ cifs_addr }}/{{ cifs_path }}"
