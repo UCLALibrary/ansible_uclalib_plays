@@ -1,0 +1,9 @@
+---
+
+- name: uclalib_oral-history_pgsql.yml
+  hosts: oralhistory_*
+  become: true
+
+  roles:
+    - role: uclalib_role_postgresql
+      delegate_to: "{{ pgsql_host }}"
