@@ -1,6 +1,6 @@
 ---
 
-- name: uclalib_oral-history_solr6.yml
+- name: uclalib_oral-history_solr7.yml
   hosts: ?-u-ohsolr??.library.ucla.edu
   become: yes
   become_method: sudo
