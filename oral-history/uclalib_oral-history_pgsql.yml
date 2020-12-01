@@ -7,8 +7,8 @@
     # --limit oralhistory_prod
   become: true
   vars_files:
-    - ../group_vars/{{ ansible_limit }}/main.yml
-    - ../group_vars/{{ ansible_limit }}/main.vault.yml
+    - ../../group_vars/{{ ansible_limit }}/main.yml
+    - ../../group_vars/{{ ansible_limit }}/main.vault.yml
 
   roles:
     - role: uclalib_role_postgresql
