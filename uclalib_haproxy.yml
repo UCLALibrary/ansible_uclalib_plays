@@ -93,6 +93,7 @@
       loop:
         - ucla_vpn_networks
         - ucla_library_staff_networks
+        - rancher_agent_acl
       notify:
         - Restart HAProxy
 
