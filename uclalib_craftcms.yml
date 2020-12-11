@@ -1,0 +1,12 @@
+---
+
+- name: uclalib_craftcms.yml
+  become: yes
+  become_method: sudo
+  hosts: all
+
+  roles:
+    - { role: uclalib_role_postgres }
+    - { role: uclalib_role_rhelscl }
+    - { role: uclalib_role_apache }
+    - { role: uclalib_role_craftcms }
