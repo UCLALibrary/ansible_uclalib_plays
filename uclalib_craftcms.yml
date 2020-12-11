@@ -6,7 +6,7 @@
   hosts: all
 
   roles:
-    - { role: uclalib_role_postgres }
+    - { role: uclalib_role_postgresql }
     - { role: uclalib_role_rhelscl }
     - { role: uclalib_role_apache }
     - { role: uclalib_role_craftcms }
