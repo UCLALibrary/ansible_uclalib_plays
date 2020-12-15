@@ -6,6 +6,7 @@
   hosts: all
 
   roles:
+    - { role: uclalib_role_firewalld }
     - { role: uclalib_role_postgresql }
     - { role: uclalib_role_rhelscl }
     - { role: uclalib_role_apache }
