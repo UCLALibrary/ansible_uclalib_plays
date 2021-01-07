@@ -43,7 +43,7 @@
     - name: Mount storage area for backups
       mount:
         path: "/mnt/samvera_backup"
-        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        src: "samvera.in.library.ucla.edu:/Samvera_Recovery"
         fstype: "nfs"
         state: "mounted"
 
@@ -95,7 +95,7 @@
     - name: Unmount storage area for backups
       mount:
         path: "/mnt/samvera_backup"
-        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        src: "samvera.in.library.ucla.edu:/Samvera_Recovery"
         fstype: nfs
         state: "absent"
 
@@ -122,7 +122,7 @@
     - name: Mount storage area for backups
       mount:
         path: "/mnt/samvera_backup"
-        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        src: "samvera.in.library.ucla.edu:/Samvera_Recovery"
         fstype: "nfs"
         state: "mounted"
 
@@ -150,7 +150,7 @@
     - name: Unmount storage area for backups
       mount:
         path: "/mnt/samvera_backup"
-        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        src: "samvera.in.library.ucla.edu:/Samvera_Recovery"
         fstype: nfs
         state: "absent"
 
@@ -177,7 +177,7 @@
     - name: Mount storage area for backups
       mount:
         path: "/mnt/samvera_backup"
-        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        src: "samvera.in.library.ucla.edu:/Samvera_Recovery"
         fstype: "nfs"
         state: "mounted"
 
@@ -249,6 +249,6 @@
     - name: Unmount storage area for backups
       mount:
         path: "/mnt/samvera_backup"
-        src: "svm-samvera.in.library.ucla.edu:/Samvera_Recovery"
+        src: "samvera.in.library.ucla.edu:/Samvera_Recovery"
         fstype: nfs
         state: "absent"
