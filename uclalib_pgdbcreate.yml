@@ -1,0 +1,53 @@
+---
+#
+# This play can be used to set-up a new postgresql database/user for
+# use cases where a psql client does not need to be installed for the app
+# to establish a connection.
+#
+# This play can also be used in situations where you need to set-up a
+# postgresql database for an app running in a container. In this case,
+# there is no host for ansible to connect.
+#
+# To use the play:
+#   - Create a group_vars sub-directory with a unique name specific to this app
+#   - Put the postgresql variable definitions in main.yml and main.vault.yml
+#   - Run the ansible-playbook command:
+#
+#   $ ansible-playbook -i inventory.ini plays/uclalib_pgdbcreate.yml -e 'app_ansible_group=appgroupname' -v
+#
+#   Where `app_ansible_group` should be set to the name of the group_vars
+#   sub-directory you created for this application.
+#
+# What is this play doing?
+#    - The hosts parameter is hard-coded to localhost, which means this play can
+#      only run on the system invoking the ansible-playbook command,
+#      which is the ansible control server.
+#    - The add_host task temporarily (for this play run only) adds localhost to
+#      be a member of the group you identified in the command line extra parameters.
+#    - With localhost now a member of this group, when the postgresql role runs,
+#      all group_vars associated with this group will be included in the play.
+#      These group_vars should include (at a minimum):
+#          pgsql_major_version
+#          pgsql_host
+#          pgsql_name
+#          pgsql_user
+#          pgsql_pass
+#      *Reference uclalib_role_postgresql for additional details*
+#    - The postgresql role invocation includes the delegate_to parameter to
+#      ensure the tasks run on the postgresql host identified in pgsql_host.
+#
+
+- name: uclalib_pgdbcreate.yml
+  become: yes
+  become_method: sudo
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Add localhost to app-specific group for this play run
+      add_host:
+        hostname: "localhost"
+        groups: "{{ app_ansible_group }}"
+
+  roles:
+    - { role: uclalib_role_postgresql, delegate_to: "{{ pgsql_host }}" }
