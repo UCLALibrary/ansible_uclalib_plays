@@ -41,7 +41,6 @@
   become: yes
   become_method: sudo
   hosts: localhost
-  gather_facts: false
 
   pre_tasks:
     - name: Add localhost to app-specific group for this play run
