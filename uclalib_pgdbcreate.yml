@@ -43,7 +43,7 @@
   hosts: localhost
   gather_facts: false
 
-  tasks:
+  pre_tasks:
     - name: Add localhost to app-specific group for this play run
       add_host:
         hostname: "localhost"
