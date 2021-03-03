@@ -17,7 +17,7 @@
     - { role: uclalib_role_clamav }
     - { role: uclalib_role_pip }
     - { role: uclalib_role_imagemagick }
-    - { role: uclalib_role_libreoffice, libreoffice_version: '6.0.6' }
+    - { role: uclalib_role_libreoffice, libreoffice_version: '6.0.7' }
     - { role: uclalib_role_ffmpeg }
     - { role: uclalib_role_fits, fits_version: '1.3.0' }
     - { role: uclalib_role_ruby, ruby_version: '2.5.1' }
