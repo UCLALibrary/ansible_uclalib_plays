@@ -11,7 +11,8 @@
     - { role: uclalib_role_epel }
     - { role: uclalib_role_uclalibrepo }
     - { role: uclalib_role_samvera_basepackages }
-    - { role: uclalib_role_java, oracle_java_version: '1.8.0_191' }
+    - { role: uclalib_role_java,
+        java_platform: 'oracle', oracle_java_version: '1.8.0_191' }
     - { role: uclalib_role_apache }
     - { role: uclalib_role_clamav }
     - { role: uclalib_role_pip }
