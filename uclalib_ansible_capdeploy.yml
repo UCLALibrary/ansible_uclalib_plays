@@ -42,6 +42,20 @@
           dest: "/home/{{ ansible_username }}/{{ project_name }}"
           version: "{{ git_repo_branch }}"
 
+      - name: Get bundled-with version
+        command:
+          cmd: sed -n '/BUNDLED WITH/{n;p;}' Gemfile.lock # noqa command-instead-of-module
+          chdir: "/home/{{ ansible_username }}/{{ project_name }}"
+        changed_when: false
+        check_mode: false
+        register: bundler_version
+
+      - name: Install Versioned Bundler
+        gem:
+          name: bundler
+          version: '{{ bundler_version.stdout | trim }}'
+          state: present
+
       - name: Install required project gems
         bundler:
           state: present
