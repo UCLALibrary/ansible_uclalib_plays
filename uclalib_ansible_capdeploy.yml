@@ -55,6 +55,7 @@
           name: bundler
           version: '{{ bundler_version.stdout | trim }}'
           state: present
+          user_install: false
 
       - name: Install required project gems
         bundler:
