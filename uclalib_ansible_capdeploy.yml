@@ -54,6 +54,7 @@
         gem:
           name: bundler
           version: '{{ bundler_version.stdout | trim }}'
+          force: true
           state: present
           user_install: false
 
