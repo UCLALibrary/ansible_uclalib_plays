@@ -25,4 +25,5 @@
     - { role: uclalib_role_nodejs, nodejs_version: '8' }
     - { role: uclalib_role_yarn }
     - { role: uclalib_role_redis }
+    - { role: uclalib_role_nfsmount }
     - { role: uclalib_role_samvera_capdeploy }
