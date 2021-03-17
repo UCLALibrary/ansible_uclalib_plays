@@ -3,7 +3,7 @@
 - name: uclalib_ursusweb.yml
   become: yes
   become_method: sudo
-  hosts: all
+  hosts: "[pstd]-w-ursus*"
   user: ansible
 
   roles:
