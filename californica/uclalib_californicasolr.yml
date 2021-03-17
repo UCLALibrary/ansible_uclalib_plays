@@ -3,7 +3,7 @@
 - name: uclalib_californicasolr.yml
   become: yes
   become_method: sudo
-  hosts: all
+  hosts: "[pstd]-u-calursussolr*"
   user: ansible
 
   roles:
