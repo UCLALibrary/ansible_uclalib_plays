@@ -37,6 +37,7 @@
         owner: "{{ avalon_user }}"
         group: "{{ avalon_user }}"
         mode: "0755"
+        state: "directory"
       become: true
       become_user: "{{ avalon_user }}"
 
