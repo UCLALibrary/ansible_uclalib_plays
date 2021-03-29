@@ -1,0 +1,50 @@
+---
+
+  # cachemeoutside
+  # Simple playbook to deploy avalon rails code for dev/prod environment
+
+- name: uclalib_avalondeploy.yml
+  hosts:
+    - p-w-avalonweb01.library.ucla.edu
+    - d-w-avalonweb01.library.ucla.edu
+
+  vars:
+    env: "{{ 'prod' if (inventory_hostname == 'p-w-avalonweb01.library.ucla.edu') else 'dev' }}"
+    avalon_user: "avalon"
+    avalon_repo: "git@github.com:UCLALibrary/avalon-fork.git"
+    avalon_branch: "main"
+    avalon_webroot: "/var/www/avalon"
+
+  tasks:
+    - name: Get Avalon settings files
+      command: "find /etc/ansible/files/avalon/{{ env }} -type f -name '*.yml' -print"
+      connection: local
+      register: avalon_settings_files
+
+    - name: Keep repo updated with upstream branch
+      git:
+        repo: "{{ avalon_repo }}"
+        dest: "{{ avalon_webroot }}"
+        version: "{{ avalon_branch }}"
+      become: true
+      become_user: "{{ avalon_user }}"
+      notify:
+        - Restart Apache
+
+    - name: Copy Avalon settings file to destination
+      copy:
+        src: "{{ item }}"
+        dest: "{{ avalon_settings_files }}/{{ item | basename}}"
+      become: true
+      become_user: "{{ avalon_user }}"
+      loop:
+        "{{ avalon_settings_files.stdout_lines }}"
+      notify:
+        - Restart Apache
+
+  handlers:
+    - name: Restart Apache
+      service:
+        name: httpd
+        state: restarted
+      become: true
