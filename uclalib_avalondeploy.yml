@@ -12,7 +12,7 @@
     env: "{{ 'prod' if (inventory_hostname == 'p-w-avalonweb01.library.ucla.edu') else 'dev' }}"
     avalon_user: "avalon"
     avalon_repo: "git@github.com:UCLALibrary/avalon-fork.git"
-    avalon_branch: "main"
+    avalon_branch: "staging_dev"
     avalon_webroot: "/var/www/avalon"
 
   tasks:
