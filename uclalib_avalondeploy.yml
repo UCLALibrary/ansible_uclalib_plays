@@ -31,10 +31,19 @@
       notify:
         - Restart Apache
 
+    - name: Ensure log directory present
+      file:
+        path: "{{ avalon_webroot }}/log"
+        owner: "{{ avalon_user }}"
+        group: "{{ avalon_user }}"
+        mode: "0755"
+      become: true
+      become_user: "{{ avalon_user }}"
+
     - name: Copy Avalon settings file to destination
       copy:
         src: "{{ item }}"
-        dest: "{{ avalon_settings_files }}/{{ item | basename}}"
+        dest: "{{ avalon_webroot }}/config/{{ item | basename }}"
       become: true
       become_user: "{{ avalon_user }}"
       loop:
