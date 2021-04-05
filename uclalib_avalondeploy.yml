@@ -67,7 +67,7 @@
         - Restart Apache
 
     - name: Install gems via bundle if relative bundle directory does not exist
-      command: "bundle"
+      command: "bundle install --path vendor/bundle"
       become: true
       become_user: "{{ avalon_user }}"
       become_flags: "-i"
