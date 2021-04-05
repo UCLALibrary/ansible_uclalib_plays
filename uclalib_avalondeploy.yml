@@ -1,0 +1,102 @@
+---
+
+  # cachemeoutside
+  # Simple playbook to deploy avalon rails code for dev/prod environment
+
+- name: uclalib_avalondeploy.yml
+  hosts:
+    - p-w-avalonweb01.library.ucla.edu
+    - d-w-avalonweb01.library.ucla.edu
+
+  vars:
+    env: "{{ 'prod' if (inventory_hostname == 'p-w-avalonweb01.library.ucla.edu') else 'dev' }}"
+    avalon_user: "avalon"
+    avalon_repo: "git@github.com:UCLALibrary/avalon-fork.git"
+    avalon_branch: "main"
+    avalon_webroot: "/var/www/avalon"
+    avalon_source_backups: "/var/www/avalon-source-backups"
+    avalon_bundle_dir: "vendor/bundle"
+
+  tasks:
+    - name: Get Avalon settings files
+      command: "find /etc/ansible/files/avalon/{{ env }} -type f -name '*.yml' -print"
+      connection: local
+      register: avalon_settings_files
+
+    - name: Ensure backup path exists
+      file:
+        path: "{{ avalon_source_backups }}"
+        owner: "{{ avalon_user }}"
+        group: "{{ avalon_user }}"
+        mode: "0755"
+        state: "directory"
+
+    - name: Backup avalon root
+      archive:
+        path: "{{ avalon_webroot }}"
+        dest: "{{ avalon_source_backups }}/avalon.{{ ansible_date_time.epoch }}.tar.gz"
+        format: "gz"
+      become: true
+      become_user: "{{ avalon_user }}"
+
+    - name: Only keep most recent backup files
+      shell: "ls -tp {{ avalon_source_backups }}/avalon.*.tar.gz | grep -v '/$' | tail -n +7 | xargs -r rm"
+      become: true
+      become_user: "{{ avalon_user }}"
+
+    - name: Keep repo updated with upstream branch
+      git:
+        repo: "{{ avalon_repo }}"
+        dest: "{{ avalon_webroot }}"
+        version: "{{ avalon_branch }}"
+      become: true
+      become_user: "{{ avalon_user }}"
+      notify:
+        - Restart Apache
+
+    - name: Ensure log directory present
+      file:
+        path: "{{ avalon_webroot }}/log"
+        owner: "{{ avalon_user }}"
+        group: "{{ avalon_user }}"
+        mode: "0755"
+        state: "directory"
+
+    - name: Copy Avalon settings file to destination
+      copy:
+        src: "{{ item }}"
+        dest: "{{ avalon_webroot }}/config/{{ item | basename }}"
+      become: true
+      become_user: "{{ avalon_user }}"
+      loop:
+        "{{ avalon_settings_files.stdout_lines }}"
+      notify:
+        - Restart Apache
+
+    - name: Check if gems are satisfied
+      command: "bundle check"
+      become: true
+      become_user: "{{ avalon_user }}"
+      become_flags: "-i"
+      args:
+        chdir: "{{ avalon_webroot }}"
+      register: bundle_check
+      changed_when: "bundle_check.rc > 0"
+
+    - name: Install gems via bundle if relative bundle directory does not exist
+      command: "bundle install --path vendor/bundle"
+      become: true
+      become_user: "{{ avalon_user }}"
+      become_flags: "-i"
+      when: "bundle_check.rc > 0"
+      args:
+        chdir: "{{ avalon_webroot }}"
+      notify:
+        - Restart Apache
+
+  handlers:
+    - name: Restart Apache
+      service:
+        name: httpd
+        state: restarted
+      become: true
