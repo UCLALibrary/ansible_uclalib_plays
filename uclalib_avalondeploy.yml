@@ -37,6 +37,11 @@
         dest: "{{ avalon_source_backups }}/avalon.{{ ansible_date_time.epoch }}.tar.gz"
         format: "gz"
 
+    - name: Only keep most recent backup files
+      command: "ls -tp {{ avalon_webroot }}/avalon.*.tar.gz | grep -v '/$' | tail -n +7 | xargs -r rm"
+      become: true
+      become_user: "{{ avalon_user }}"
+
     - name: Keep repo updated with upstream branch
       git:
         repo: "{{ avalon_repo }}"
