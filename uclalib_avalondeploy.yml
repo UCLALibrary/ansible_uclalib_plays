@@ -17,9 +17,6 @@
     avalon_source_backups: "/var/www/avalon-source-backups"
     avalon_bundle_dir: "vendor/bundle"
 
-  environment:
-    PATH: "{{ ansible_env.PATH }}:/usr/local/rvm/bin"
-
   tasks:
     - name: Get Avalon settings files
       command: "find /etc/ansible/files/avalon/{{ env }} -type f -name '*.yml' -print"
@@ -71,10 +68,13 @@
 
     - name: Install gems via bundle if relative bundle directory does not exist
       shell: "bundle"
+      become: true
       become_user: "{{ avalon_user }}"
       args:
         chdir: "{{ avalon_webroot }}"
         executable: "/bin/bash"
+      environment:
+        PATH: "{{ ansible_env.PATH }}:/usr/local/rvm/bin"
 
   handlers:
     - name: Restart Apache
