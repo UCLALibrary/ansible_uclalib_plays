@@ -78,6 +78,8 @@
       become_flags: "-i"
       args:
         chdir: "{{ avalon_webroot }}"
+      notify:
+        - Restart Apache
 
   handlers:
     - name: Restart Apache
