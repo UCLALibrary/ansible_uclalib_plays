@@ -12,14 +12,30 @@
     env: "{{ 'prod' if (inventory_hostname == 'p-w-avalonweb01.library.ucla.edu') else 'dev' }}"
     avalon_user: "avalon"
     avalon_repo: "git@github.com:UCLALibrary/avalon-fork.git"
-    avalon_branch: "staging_dev"
+    avalon_branch: "main"
     avalon_webroot: "/var/www/avalon"
+    avalon_source_backups: "/var/www/avalon-source-backups"
+    avalon_bundle_dir: "vendor/bundle"
 
   tasks:
     - name: Get Avalon settings files
       command: "find /etc/ansible/files/avalon/{{ env }} -type f -name '*.yml' -print"
       connection: local
       register: avalon_settings_files
+
+    - name: Ensure backup path exists
+      file:
+        path: "{{ avalon_source_backups }}"
+        owner: "{{ avalon_user }}"
+        group: "{{ avalon_user }}"
+        mode: "0755"
+        state: "directory"
+
+    - name: Backup avalon root
+      archive:
+        path: "{{ avalon_webroot }}"
+        dest: "{{ avalon_source_backups }}/avalon.{{ ansible_date_time.epoch }}"
+        format: "gz"
 
     - name: Keep repo updated with upstream branch
       git:
@@ -38,8 +54,6 @@
         group: "{{ avalon_user }}"
         mode: "0755"
         state: "directory"
-      become: true
-      become_user: "{{ avalon_user }}"
 
     - name: Copy Avalon settings file to destination
       copy:
@@ -51,6 +65,13 @@
         "{{ avalon_settings_files.stdout_lines }}"
       notify:
         - Restart Apache
+
+    - name: Install gems via bundle if relative bundle directory does not exist
+      command: "bundle install --path {{ avalon_bundle_dir }}"
+      become: true
+      become_user: "{{ avalon_user }}"
+      args:
+        chdir: "{{ avalon_webroot }}"
 
   handlers:
     - name: Restart Apache
