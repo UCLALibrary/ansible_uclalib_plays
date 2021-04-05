@@ -34,7 +34,7 @@
     - name: Backup avalon root
       archive:
         path: "{{ avalon_webroot }}"
-        dest: "{{ avalon_source_backups }}/avalon.{{ ansible_date_time.epoch }}"
+        dest: "{{ avalon_source_backups }}/avalon.{{ ansible_date_time.epoch }}.tar.gz"
         format: "gz"
 
     - name: Keep repo updated with upstream branch
@@ -67,7 +67,7 @@
         - Restart Apache
 
     - name: Install gems via bundle if relative bundle directory does not exist
-      command: "bundle install --path {{ avalon_bundle_dir }}"
+      command: "bundle"
       become: true
       become_user: "{{ avalon_user }}"
       args:
