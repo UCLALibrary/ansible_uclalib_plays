@@ -36,9 +36,11 @@
         path: "{{ avalon_webroot }}"
         dest: "{{ avalon_source_backups }}/avalon.{{ ansible_date_time.epoch }}.tar.gz"
         format: "gz"
+      become: true
+      become_user: "{{ avalon_user }}"
 
     - name: Only keep most recent backup files
-      command: "ls -tp {{ avalon_webroot }}/avalon.*.tar.gz | grep -v '/$' | tail -n +7 | xargs -r rm"
+      shell: "ls -tp {{ avalon_webroot }}/avalon.*.tar.gz | grep -v '/$' | tail -n +7 | xargs -r rm"
       become: true
       become_user: "{{ avalon_user }}"
 
