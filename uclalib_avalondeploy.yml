@@ -70,11 +70,10 @@
       shell: "bundle"
       become: true
       become_user: "{{ avalon_user }}"
+      become_flag: "-i"
       args:
         chdir: "{{ avalon_webroot }}"
         executable: "/bin/bash"
-      environment:
-        PATH: "{{ ansible_env.PATH }}:/usr/local/rvm/bin"
 
   handlers:
     - name: Restart Apache
