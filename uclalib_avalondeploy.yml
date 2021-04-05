@@ -70,7 +70,7 @@
       command: "bundle"
       become: true
       become_user: "{{ avalon_user }}"
-      become_flag: "-i"
+      become_flag: -i
       args:
         chdir: "{{ avalon_webroot }}"
 
