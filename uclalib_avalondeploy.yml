@@ -67,13 +67,12 @@
         - Restart Apache
 
     - name: Install gems via bundle if relative bundle directory does not exist
-      shell: "bundle"
+      command: "bundle"
       become: true
       become_user: "{{ avalon_user }}"
       become_flag: "-i"
       args:
         chdir: "{{ avalon_webroot }}"
-        executable: "/bin/bash"
 
   handlers:
     - name: Restart Apache
