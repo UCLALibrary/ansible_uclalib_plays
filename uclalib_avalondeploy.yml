@@ -73,11 +73,22 @@
       notify:
         - Restart Apache
 
+    - name: Check if gems are satisfied
+      command: "bundle check"
+      become: true
+      become_user: "{{ avalon_user }}"
+      become_flags: "-i"
+      args:
+        chdir: "{{ avalon_webroot }}"
+      register: bundle_check
+      changed_when: "bundle_check.rc > 0"
+
     - name: Install gems via bundle if relative bundle directory does not exist
       command: "bundle install --path vendor/bundle"
       become: true
       become_user: "{{ avalon_user }}"
       become_flags: "-i"
+      when: "bundle_check.rc > 0"
       args:
         chdir: "{{ avalon_webroot }}"
       notify:
