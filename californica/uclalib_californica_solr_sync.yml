@@ -1,0 +1,12 @@
+---
+
+- name: uclalib_californica_solr_sync.yml
+  hosts: '[tsp]-u-calursussolrslave01.library.ucla.edu'
+  become: true
+
+  tasks:
+    - name: Sync Solr Core from Californica
+      command:
+        cmd: /usr/local/sbin/solr-rsync-replication
+      become: true
+      become_user: solr
