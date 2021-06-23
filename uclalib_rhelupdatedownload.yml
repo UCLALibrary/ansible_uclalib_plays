@@ -36,4 +36,5 @@
         name: "*"
         state: latest
         download_only: True
+        security: "{{ ( security_only | default (false) ) | bool }}"
       register: update_status
