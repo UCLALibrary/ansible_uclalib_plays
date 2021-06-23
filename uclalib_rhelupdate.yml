@@ -47,3 +47,4 @@
       yum:
         name: "*"
         state: latest
+        security: "{{ ( security_only | default (false) ) | bool }}"
