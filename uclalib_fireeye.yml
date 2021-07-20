@@ -1,0 +1,10 @@
+---
+
+- name: uclalib_fireeye.yml
+  become: yes
+  become_method: sudo
+  hosts: all
+
+  roles:
+    - { role: uclalib_role_uclalibrepo }
+    - { role: uclalib_role_fireeye }
