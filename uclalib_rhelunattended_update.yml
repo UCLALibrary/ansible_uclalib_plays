@@ -1,0 +1,12 @@
+---
+
+################################################################################
+# Playbook for Unattended OS Updates
+# -------------------------------------
+#
+# If a host fails a particular playbook, it will get excluded from subsequent
+# playbooks, while allowing unaffected hosts to continue.
+#
+
+- import_playbook: uclalib_vmware_snapshot.yml
+- import_playbook: uclalib_rhelupdate.yml
