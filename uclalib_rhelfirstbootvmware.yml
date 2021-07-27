@@ -16,6 +16,7 @@
     - { role: uclalib_role_rhelinsights }
     - { role: uclalib_role_firewalld }
     - { role: uclalib_role_zabbix }
+    - { role: uclalib_role_fireeye }
 
   tasks:
     - name: Execute RHEL yum update
