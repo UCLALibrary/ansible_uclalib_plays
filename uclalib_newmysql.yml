@@ -1,6 +1,8 @@
 ---
 - name: Playbook to migrate MySQL servers
-  hosts: all
+  hosts:
+    - p-d-mysqlsrc01.library.ucla.edu
+    - p-d-mysqlreplica01.library.ucla.edu
   become: yes
   become_method: sudo
 
