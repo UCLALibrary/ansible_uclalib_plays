@@ -13,7 +13,8 @@
       - "mysql-community-client-{{ mysql_vers }}"
       - "mysql-community-libs-{{ mysql_vers }}"
       - "mysql-community-common-{{ mysql_vers }}"
-      - "mysql-community-compat-{{ mysql_vers }}"
+      - "mysql-community-libs-compat-{{ mysql_vers }}"
+
     service_definitions:
       mysql:
         desc: "MySQL Port"
