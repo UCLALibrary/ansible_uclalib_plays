@@ -1,0 +1,66 @@
+---
+- name: Playbook to migrate MySQL servers
+  hosts: all
+  become: yes
+  become_method: sudo
+
+  vars:
+    mysql_vers: "5.7.28-1"
+    mysql_pkgs:
+      - "mysql-community-server-{{ mysql_vers }}"
+      - "mysql-community-client-{{ mysql_vers }}"
+      - "mysql-community-libs-{{ mysql_vers }}"
+      - "mysql-community-common-{{ mysql_vers }}"
+      - "mysql-community-compat-{{ mysql_vers }}"
+    service_definitions:
+      mysql:
+        desc: "MySQL Port"
+        proto: tcp
+        port: "3306"
+    rule_definitions:
+      - family: ipv4
+        src_addr: 164.67.40.0/24
+        srv_name: mysql
+        action: accept
+      - family: ipv4
+        src_addr: 164.67.48.0/24
+        srv_name: mysql
+        action: accept
+
+  tasks:
+    - name: Install MySQL GPG
+      rpm_key:
+        key: https://repo.mysql.com/RPM-GPG-KEY-mysql
+        state: present
+
+    - name: Install MySQL community repo
+      yum_repository:
+        name: mysql57-community
+        description: MySQL 5.7 Community Server
+        baseurl: http://repo.mysql.com/yum/mysql-5.7-community/el/7/$basearch/
+        gpgcheck: yes
+        enabled: yes
+
+    - name: Install MySQL community connectors repo
+      yum_repository:
+        name: mysql-connectors-community
+        description: MySQL Connectors Community
+        baseurl: http://repo.mysql.com/yum/mysql-connectors-community/el/7/$basearch/
+        gpgcheck: yes
+        enabled: yes
+
+    - name: Install MySQL community tools repo
+      yum_repository:
+        name: mysql-tools-community
+        description: MySQL Tools Community
+        baseurl: http://repo.mysql.com/yum/mysql-tools-community/el/7/$basearch/
+        gpgcheck: yes
+        enabled: yes
+
+    - name: Install MySQL server and dependent packages
+      yum:
+        name: "{{ mysql_pkgs }}"
+        state: present
+
+  roles:
+    - { role: uclalib_role_firewalld }
