@@ -1,0 +1,11 @@
+---
+
+- name: uclalib_omicron.yml
+  hosts: omicron
+
+  roles:
+    - name: uclalib_role_postgresql
+      delegate_to: '{{ pgsql_host }}'
+    - name: uclalib_role_epel
+      become: true
+    - name: uclalib_role_omicron
