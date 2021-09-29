@@ -1,0 +1,69 @@
+---
+
+###############################################################################
+# Playbook for VMware Guest Snapshot Reporting
+# --------------------------------------------
+#
+# This playbook will list all snapshots
+#
+###############################################################################
+
+- name: uclalib_vmware_snapshot_report.yml
+  hosts: "{{ rhel_inventory_host_group | default('unattended_yum_update') }}"
+  gather_facts: false
+
+  vars:
+    vcenter_hostname: vc.library.ucla.edu
+    vsphere_datacenter: "Library Information Technology"
+    vsphere_domain: "ad.library.ucla.edu"
+    vsphere_username: "{{ vmware_user }}@{{ vsphere_domain }}"
+    vsphere_password: "{{ vmware_password }}"
+    vsphere_folder: "/"
+    # for python3
+    # date_format_snapshot: "%Y-%m-%dT%H:%M:%S.%f%z"
+    # for python2, assuming UTC
+    date_format_snapshot: "%Y-%m-%dT%H:%M:%S.%f+00:00"
+    date_format_display: "%Y-%m-%d %H:%M"
+    report_pathname: '/tmp/snaps.txt'
+
+  tasks:
+    - name: Gathering Facts
+      setup:
+        fact_path: omit
+        gather_subset: "!all,virtual"
+
+    - name: Get Snapshots
+      vmware_guest_snapshot_info:
+        datacenter: "{{ vsphere_datacenter }}"
+        folder: "{{ vsphere_folder }}"
+        hostname: "{{ vcenter_hostname }}"
+        password: "{{ vsphere_password }}"
+        name: "{{ ansible_hostname }}"
+        username: "{{ vsphere_username }}"
+        validate_certs: false
+      connection: local
+      register: snapshots
+      changed_when: snapshots.guest_snapshots.snapshots is defined
+      notify: Save Report
+      when:
+        - ansible_virtualization_type == "VMware"
+
+  handlers:
+
+    - name: Save Report
+      lineinfile:
+        line: '{{ inventory_hostname }}: ({{ (item.creation_time | to_datetime(date_format_snapshot)).strftime(date_format_display) }}) {{ item.name }}'
+        # Python3 will be able to convert to the local timezone
+        #msg: '{{ inventory_hostname }}: ({{ (item.creation_time | to_datetime(date_format_snapshot)).astimezone().strftime(date_format_display) }}) {{ item.name }}'
+        path: '{{ report_pathname }}'
+        create: true
+        state: present
+      connection: local
+      notify: Print Report
+      loop: '{{ snapshots.guest_snapshots.snapshots }}'
+
+    - name: Print Report
+      debug:
+        msg: '{{ item }}'
+      with_file:
+        - '{{ report_pathname }}'
