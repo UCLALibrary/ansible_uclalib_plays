@@ -1,6 +1,6 @@
 ---
 
-- name: uclalib_craftcmsdeploy.yml
+- name: uclalib_craftcms_deploy.yml
   become: yes
   become_method: sudo
   hosts: "{{ deploy_host | default('t-w-craftcms01.library.ucla.edu') }}"
