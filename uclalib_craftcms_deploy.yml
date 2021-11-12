@@ -19,7 +19,7 @@
         chdir: "{{ craft_dir }}"
 
     - name: Git pull of code from branch
-      become_user: "{{ craftc_user }}"
+      become_user: "{{ craft_user }}"
       git:
         repo: "{{ git_repo_url | default('git@github.com:UCLALibrary/craftcms.git') }}"
         dest: "{{ craft_dir }}"
