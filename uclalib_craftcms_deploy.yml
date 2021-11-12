@@ -1,0 +1,40 @@
+---
+
+- name: uclalib_craftcmsdeploy.yml
+  become: yes
+  become_method: sudo
+  hosts: "{{ deploy_host | default('t-w-craftcms01.library.ucla.edu') }}"
+
+  tasks:
+    - name: Set play variables
+      set_fact:
+        craft_dir: "{{ craft_work_dir | default('/var/www/craftcms') }}"
+        craft_user: "{{ craftcms_user | default('craftcms') }}"
+
+    - name: Take CraftCMS System Offline
+      become_user: "{{ craft_user }}"
+      command: >
+        php craft off --interactive 0
+      args:
+        chdir: "{{ craft_dir }}"
+
+    - name: Git pull of code from branch
+      become_user: "{{ craftc_user }}"
+      git:
+        repo: "{{ git_repo_url | default('git@github.com:UCLALibrary/craftcms.git') }}"
+        dest: "{{ craft_dir }}"
+        version: "{{ git_repo_branch | default('main') }}"
+
+    - name: Apply changes to the Craft project config
+      become_user: "{{ craft_user }}"
+      command: >
+        php craft project-config/apply
+      args:
+        chdir: "{{ craft_dir }}"
+
+    - name: Bring CraftCMS online
+      become_user: "{{ craft_user }}"
+      command: >
+        php craft on --interactive 0
+      args:
+        chdir: "{{ craft_dir }}"
