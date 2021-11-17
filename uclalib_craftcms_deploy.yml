@@ -6,15 +6,21 @@
   hosts: "{{ deploy_host | default('t-w-craftcms01.library.ucla.edu') }}"
 
   tasks:
+    - name: Get PHP executable path 
+      command: >
+        which php 
+      register: php_exec_path
+
     - name: Set play variables
       set_fact:
         craft_dir: "{{ craft_work_dir | default('/var/www/craftcms') }}"
         craft_user: "{{ craftcms_user | default('craftcms') }}"
+        php_exec: "{{ php_exec_path.stdout }}"
 
     - name: Take CraftCMS System Offline
       become_user: "{{ craft_user }}"
       command: >
-        php craft off --interactive 0
+        {{ php_exec }} craft off --interactive 0
       args:
         chdir: "{{ craft_dir }}"
 
@@ -28,13 +34,13 @@
     - name: Apply changes to the Craft project config
       become_user: "{{ craft_user }}"
       command: >
-        php craft project-config/apply
+        {{ php_exec }} craft project-config/apply
       args:
         chdir: "{{ craft_dir }}"
 
     - name: Bring CraftCMS online
       become_user: "{{ craft_user }}"
       command: >
-        php craft on --interactive 0
+        {{ php_exec }} craft on --interactive 0
       args:
         chdir: "{{ craft_dir }}"
