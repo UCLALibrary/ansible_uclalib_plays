@@ -5,6 +5,9 @@
   become_method: sudo
   hosts: "{{ deploy_host | default('t-w-craftcms01.library.ucla.edu') }}"
 
+  environment:
+    PATH: /opt/rh/rh-php73/root/usr/bin:/opt/rh/rh-php73/root/usr/sbin:{{ ansible_env.PATH }}
+
   tasks:
     - name: Get PHP executable path 
       command: >
