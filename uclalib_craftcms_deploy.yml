@@ -34,6 +34,13 @@
         dest: "{{ craft_dir }}"
         version: "{{ git_repo_branch | default('main') }}"
 
+    - name: Run composer install to pick-up any package dependency changes
+      become_user: "{{ craft_user }}"
+      command: >
+        {{ php_exec }} craft update/composer-install
+      args:
+        chdir: "{{ craft_dir }}"
+
     - name: Apply changes to the Craft project config
       become_user: "{{ craft_user }}"
       command: >
