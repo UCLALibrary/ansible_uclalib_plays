@@ -49,6 +49,15 @@
       changed_when: skip.content is defined
       notify: Why was host skipped?
 
+    - name: Prohibit this reboot?
+      command:
+        cmd: pgrep --exact '{{ item }}'
+      changed_when: False
+      register: prohibit
+      failed_when: prohibit.rc == 0
+      loop:
+        '{{ reboot_prohibiting_processes }}'
+
     - name: Reboot if required
       reboot:
         reboot_timeout: 300
