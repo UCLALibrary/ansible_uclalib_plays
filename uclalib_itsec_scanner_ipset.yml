@@ -1,0 +1,19 @@
+---
+
+- name: uclalib_itsec_scanner_ipset.yaml
+  become: yes
+  become_method: sudo
+  hosts: all
+
+  tasks:
+    - name: Put in place itsec scanner ipset file
+      template:
+        src: "files/itsec_scanner/itsec_scanner_ips.j2"
+        dest: "/etc/firewalld/ipsets/itsec_scanner_ips.xml"
+        owner: "root"
+        group: "root"
+        mode: "0644"
+    
+    - name: Reload firewalld 
+      command: >
+        firewall-cmd --reload
