@@ -9,7 +9,7 @@
     - name: Put in place itsec scanner ipset file
       template:
         src: "files/itsec_scanner/itsec_scanner_ips.j2"
-        dest: "/etc/firewalld/ipset/itsec_scanner_ips.xml"
+        dest: "/etc/firewalld/ipsets/itsec_scanner_ips.xml"
         owner: "root"
         group: "root"
         mode: "0644"
