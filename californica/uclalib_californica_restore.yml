@@ -11,13 +11,28 @@
         restore_environ: "{{ server_environ }}"
       when: restore_environ is undefined
 
-    - name: Ensure prod is only restored from prod
+    - name: Ensure restore environment is suitable
       assert:
         that: >
           {% if server_environ == "prod" %}
             {{ restore_environ == "prod" }}
           {% else %}
-            {{ true }}
+            {% if server_environ == "stage" %}
+              {{ restore_environ == "prod"
+                 or restore_environ =="stage" }}
+            {% else %}
+              {% if server_environ == "test" %}
+                {{ restore_environ == "prod"
+                   or restore_environ == "stage"
+                   or restore_environ == "test" }}
+              {% else %}
+                {% if server_environ == "dev" %}
+                  true
+                {% else %}
+                  false
+                {% endif %}
+              {% endif %}
+            {% endif %}
           {% endif %}
 
 ##############################################################################
