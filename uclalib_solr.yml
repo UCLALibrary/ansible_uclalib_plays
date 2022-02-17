@@ -1,6 +1,6 @@
 ---
 
-- name: uclalib_solr7.yml
+- name: uclalib_solr.yml
   become: yes
   become_method: sudo
   hosts: all
@@ -8,4 +8,4 @@
   roles:
     - { role: uclalib_role_java }
     - { role: uclalib_role_apache }
-    - { role: uclalib_role_solr7 }
+    - { role: uclalib_role_solr }
