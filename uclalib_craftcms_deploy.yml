@@ -41,6 +41,13 @@
       args:
         chdir: "{{ craft_dir }}"
 
+    - name: Run any pending migrations
+      become_user: "{{ craft_user }}"
+      command: >
+        {{ php_exec }} craft migrate/all
+      args:
+        chdir: "{{ craft_dir }}"
+
     - name: Apply changes to the Craft project config
       become_user: "{{ craft_user }}"
       command: >
