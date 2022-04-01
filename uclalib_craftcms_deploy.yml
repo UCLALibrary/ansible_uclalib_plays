@@ -20,6 +20,11 @@
         craft_user: "{{ craftcms_user | default('craftcms') }}"
         php_exec: "{{ php_exec_path.stdout }}"
 
+    - name: Perform Full Backup of Craft (DB and FS)
+      become_user: "{{ craft_user }}"
+      command: >
+        /usr/local/bin/craftcms_full_backup
+
     - name: Take CraftCMS System Offline
       become_user: "{{ craft_user }}"
       command: >
