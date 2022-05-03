@@ -1,0 +1,10 @@
+---
+
+- name: uclalib_chartmuseum.yml
+  become: yes
+  become_method: sudo
+  hosts: all
+
+  roles:
+    - { role: uclalib_role_redis }
+    - { role: uclalib_role_chartmuseum }
