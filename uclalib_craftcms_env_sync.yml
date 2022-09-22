@@ -1,0 +1,152 @@
+---
+
+- name: uclalib_craftcms_env_sync.yml
+  become: yes
+  become_method: sudo
+  hosts: "{{ craft_dest_host | default('d-w-craftcms01.library.ucla.edu') }}"
+
+  environment:
+    PATH: /opt/rh/rh-php73/root/usr/bin:/opt/rh/rh-php73/root/usr/sbin:{{ ansible_env.PATH }}
+  
+  tasks:
+    - name: Get PHP executable path 
+      command: >
+        which php 
+      register: php_exec_path
+
+    - name: Set play variables
+      set_fact:
+        craft_dir: "{{ craftcms_work_dir | default('/var/www/craftcms') }}"
+        craft_src_backup_dir: "{{ craftcms_src_backup | default('/craftcmsbackupprod') }}"
+        craft_src_backup_nfs: "{{ craftcms_src_backup_nfs | default('devsupport.in.library.ucla.edu:/LX/craftprod_backups') }}"
+        craft_assets_src_dir: "{{ craftcms_src_assets | default('/mnt/craft_assets_prod') }}"
+        craft_assets_src_nfs: "{{ craftcms_src_assets_nfs | default ('webcontent.in.library.ucla.edu:/craft_assets/prod')"
+        craft_assets_dest_dir: "{{ craftcms_sync_assets | default('/mnt/craft_assets') }}"
+        craft_user: "{{ craftcms_user | default('craftcms') }}"
+        craft_src_host: "{{ craftcms_source_host | default('p-w-craftcms01.library.ucla.edu') }}"
+        php_exec: "{{ php_exec_path.stdout }}"
+
+    ## Prerequiste Tasks ################################
+
+    - name: Mount source craft backup volume on destination host 
+      mount:
+        path: "{{ craft_src_backup_dir }}"
+        src: "{{ craft_src_backup_nfs }}"
+        fstype: "nfs"
+        opts: "ro"
+        state: "mounted"
+    
+    - name: Mount source craft assets volume on destination host
+      mount: 
+        path: "{{ craft_assets_src_dir }}"
+        src: "{{ craft_assets_src_nfs }}"
+        fstype: "nfs"
+        opts: "ro"
+        state: "mounted"
+
+    - name: Stop Apache HTTPD 
+      service: 
+        name: "httpd"
+        state: "stopped"
+    
+    - name: Stop PHP-FPM
+      service:
+        name: "rh-php73-php-fpm"
+        state: "stopped"
+
+    - name: Get most recent source backup directory name
+      shell: >
+        ls -tr | tail -1
+      args:
+        chdir: "{{ craft_src_backup_dir }}"
+      changed_when: "false"
+      register: backup_dir_name
+
+    ##################################################################################
+
+    ## Restore source craft file system backup to destination craft ##################
+
+    - name: Preserve destination craft .env file 
+      copy:
+        src: "{{ craft_dir }}/.env"
+        dest: "/home/craftcms/.env_local_backup"
+        owner: "craftcms"
+        group: "craftcms"
+        mode: "0660"
+        remote_src: "yes"
+
+    - name: Remove existing destination craft directory
+      file: 
+        path: "{{ craft_dir }}"
+        state: "absent"
+        
+    - name: Restore source craft file system backup to destination craft 
+      unarchive:
+        src: "{{ craft_src_backup_dir }}/{{ backup_dir_name.stdout }}/craftcms_fs_{{ backup_dir_name.stdout }}.tar.gz"
+        dest: "/var/www/"
+        remote_src: "yes"
+
+    - name: Restore destination craft .env file 
+      copy:
+        src: "/home/craftcms/.env_local_backup"
+        dest: "{{ craft_dir }}/.env"
+        owner: "craftcms"
+        group: "craftcms"
+        mode: "0660"
+        remote_src: "yes"
+
+    ##################################################################################
+
+    ## Restore source craft database backup to destination craft #####################
+
+    - name: Restore source craft database backup to destination craft 
+      become_user: "{{ craft_user }}"
+      command: >
+        {{ php_exec }} craft db/restore {{ craft_src_backup_dir }}/{{ backup_dir_name.stdout }}/craftcms_sqldump_{{ backup_dir_name.stdout }}.sql --interactive 0
+      args:
+        chdir: "{{ craft_dir }}"
+
+    ##################################################################################
+
+    ## Synchronize source craft assets with destination craft assets #################
+
+    - name: Synchronize source craft assets with destination craft assets
+      become_user: "{{ craft_user }}"
+      synchronize:
+        src: "{{ craft_assets_src_dir }}/"
+        dest: "{{ craft_assets_dest_dir }}"
+        delete: "yes"
+      delegate_to: "{{ inventory_hostname }}"
+    
+    ##################################################################################
+
+    ## Clean-up Tasks ################################################################
+
+    - name: Unmount source craft backup volume on destination host 
+      mount:
+        path: "{{ craft_src_backup_dir }}"
+        state: "absent"
+    
+    - name: Unmount source craft assets volume on destination host
+      mount: 
+        path: "{{ craft_assets_src_dir }}"
+        state: "absent"
+
+    - name: Start Apache HTTPD 
+      service: 
+        name: "httpd"
+        state: "started"
+    
+    - name: Start PHP-FPM
+      service:
+        name: "rh-php73-php-fpm"
+        state: "started"
+    
+    - name: Set destination craft environment to online
+      become_user: "{{ craft_user }}"
+      command: >
+        {{ php_exec }} craft on --interactive 0
+      args:
+        chdir: "{{ craft_dir }}"
+        
+    ##################################################################################
