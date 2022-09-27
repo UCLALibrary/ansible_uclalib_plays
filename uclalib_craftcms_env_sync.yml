@@ -115,7 +115,9 @@
       synchronize:
         src: "{{ craft_assets_src_dir }}/"
         dest: "{{ craft_assets_dest_dir }}"
-        delete: "yes"
+        rsync_opts:
+          - "--delete"
+          - "--exclude=.snapshot"
       delegate_to: "{{ inventory_hostname }}"
     
     ##################################################################################
