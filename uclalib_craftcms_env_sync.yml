@@ -20,7 +20,7 @@
         craft_src_backup_dir: "{{ craftcms_src_backup | default('/craftcmsbackupprod') }}"
         craft_src_backup_nfs: "{{ craftcms_src_backup_nfs | default('devsupport.in.library.ucla.edu:/LX/craftprod_backups') }}"
         craft_assets_src_dir: "{{ craftcms_src_assets | default('/mnt/craft_assets_prod') }}"
-        craft_assets_src_nfs: "{{ craftcms_src_assets_nfs | default ('webcontent.in.library.ucla.edu:/craft_assets/prod')"
+        craft_assets_src_nfs: "{{ craftcms_src_assets_nfs | default ('webcontent.in.library.ucla.edu:/craft_assets/prod') }}"
         craft_assets_dest_dir: "{{ craftcms_sync_assets | default('/mnt/craft_assets') }}"
         craft_user: "{{ craftcms_user | default('craftcms') }}"
         craft_src_host: "{{ craftcms_source_host | default('p-w-craftcms01.library.ucla.edu') }}"
