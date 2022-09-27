@@ -3,7 +3,7 @@
 - name: uclalib_craftcms_env_sync.yml
   become: yes
   become_method: sudo
-  hosts: "{{ craft_dest_host | default('d-w-craftcms01.library.ucla.edu') }}"
+  hosts: "{{ craft_dest_host | default('s-w-craftcms01.library.ucla.edu') }}"
 
   environment:
     PATH: /opt/rh/rh-php73/root/usr/bin:/opt/rh/rh-php73/root/usr/sbin:{{ ansible_env.PATH }}
