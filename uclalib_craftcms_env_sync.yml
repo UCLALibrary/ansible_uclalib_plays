@@ -150,5 +150,12 @@
         {{ php_exec }} craft on --interactive 0
       args:
         chdir: "{{ craft_dir }}"
+    
+    - name: Clear all craft caches 
+      become_user: "{{ craft_user }}"
+      command: >
+        {{ php_exec }} craft clear-caches/all --interactive 0
+      args:
+        chdir: "{{ craft_dir }}"  
         
     ##################################################################################
