@@ -24,11 +24,10 @@
 ###############################################################################
 
 - name: uclalib_rhelupdate.yml
-  become: yes
-  become_method: sudo
   hosts: "{{ rhel_inventory_host_group | default('unattended_yum_update') }}"
   serial: "{{ rhelupdate_serial | default(20) }}"
-  any_errors_fatal: False
+  any_errors_fatal: false
+  gather_facts: false
 
   tasks:
     - name: Get RHEL Subscription Status
@@ -36,6 +35,7 @@
         subscription-manager list --consumed --pool-only
       changed_when: false
       check_mode: false
+      become: true
       register: subscription_status
 
     - name: Fail if host not attached to RHEL Subscription
@@ -46,5 +46,6 @@
     - name: Execute RHEL yum update
       yum:
         name: "*"
-        state: latest
+        state: latest  # noqa: package-latest
         security: "{{ ( security_only | default (false) ) | bool }}"
+      become: true
