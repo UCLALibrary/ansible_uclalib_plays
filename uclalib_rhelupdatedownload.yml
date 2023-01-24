@@ -36,4 +36,5 @@
         state: latest  # noqa: package-latest
         download_only: true
         security: "{{ ( security_only | default (false) ) | bool }}"
+        update_cache: true
       become: true
