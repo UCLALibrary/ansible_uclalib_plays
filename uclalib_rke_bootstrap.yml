@@ -2,7 +2,6 @@
 - name: provision.yaml
   hosts:
     - localhost
-    - p-u-ansible01.library.ucla.edu
   connection: local
   gather_facts: false
 
@@ -67,49 +66,40 @@
         mode: "0700"
       with_items: "{{ kubeconfig_results.results }}"
 
-    - name: Install cert-manager helm chart
-      shell: |
-        helm repo add jetstack "{{ cert_manager_repo }}"
-        helm upgrade --install --version "{{ cert_manager_version }}" -n cert-manager --create-namespace cert-manager jetstack/cert-manager --set installCRDs=true
-      environment:
-        KUBECONFIG: "{{ kubeconfig_dir  }}/kubeconfig_{{ item.item }}"
-      with_items: "{{ kubeconfig_results.results }}"
+    - name: Install bootstrap prereqs and helm chart
+      block:
+        - name: Install cert-manager helm chart
+          shell: |
+            helm repo add jetstack "{{ cert_manager_repo }}"
+            helm upgrade --install --version "{{ cert_manager_version }}" -n cert-manager --create-namespace cert-manager jetstack/cert-manager --set installCRDs=true
 
-    - name: Install external secrets helm chart
-      shell: |
-        helm repo add external-secrets "{{ external_secrets_repo }}"
-        helm upgrade --install --version "{{ external_secrets_version }}" -n external-secrets --create-namespace external-secrets external-secrets/external-secrets
-      environment:
-        KUBECONFIG: "{{ kubeconfig_dir  }}/kubeconfig_{{ item.item }}"
-      with_items: "{{ kubeconfig_results.results }}"
+        - name: Install external secrets helm chart
+          shell: |
+            helm repo add external-secrets "{{ external_secrets_repo }}"
+            helm upgrade --install --version "{{ external_secrets_version }}" -n external-secrets --create-namespace external-secrets external-secrets/external-secrets
 
-    - name: Enable automatic host endpoint in Calico
-      shell: |
-        kubectl patch KubeControllersConfiguration default --type=merge --patch='{"spec": {"controllers": {"node": {"hostEndpoint": {"autoCreate": "Enabled"}}}}}'
-      environment:
-        KUBECONFIG: "{{ kubeconfig_dir  }}/kubeconfig_{{ item.item }}"
-      with_items: "{{ kubeconfig_results.results }}"
+        - name: Enable automatic host endpoint in Calico
+          shell: |
+            kubectl patch KubeControllersConfiguration default --type=merge --patch='{"spec": {"controllers": {"node": {"hostEndpoint": {"autoCreate": "Enabled"}}}}}'
 
-    - name: Adjust FelixConfiguration to disable fail safe inbound ports
-      shell: |
-        kubectl patch FelixConfiguration default --type=merge --patch='{"spec": {"failsafeInboundHostPorts": []}}'
-      environment:
-        KUBECONFIG: "{{ kubeconfig_dir  }}/kubeconfig_{{ item.item }}"
-      with_items: "{{ kubeconfig_results.results }}"
+        - name: Adjust FelixConfiguration to disable fail safe inbound ports
+          shell: |
+            kubectl patch FelixConfiguration default --type=merge --patch='{"spec": {"failsafeInboundHostPorts": []}}'
 
-    - name: Pause for 1 minute to let pods finish deploying
-      pause:
-        minutes: 1
+        - name: Pause for 1 minute to let pods finish deploying
+          pause:
+            minutes: 1
 
-    - name: Install rke bootstrap helm chart
-      shell: |
-        helm upgrade --install --version "{{ rke_bootstrap_version }}" -n uclabootstrap --create-namespace uclabootstrap /etc/ansible/files/rke_bootstrap \
-        --set secrets.external_secrets.services.aws.access_key="{{ es_services_access_key }}" \
-        --set secrets.external_secrets.services.aws.secret_access_key="{{ es_services_secret_access_key }}" \
-        --set secrets.external_secrets.systems.aws.access_key="{{ es_systems_access_key }}" \
-        --set secrets.external_secrets.systems.aws.secret_access_key="{{ es_systems_secret_access_key }}" \
-        --set secrets.cert_manager.external.sectigo_acme.email="{{ sectigo_acme_email }}" \
-        --set secrets.cert_manager.external.sectigo_acme.tls_key="{{ sectigo_acme_tls_key }}"
+        - name: Install rke bootstrap helm chart
+          shell: |
+            helm upgrade --install --version "{{ rke_bootstrap_version }}" -n uclabootstrap --create-namespace uclabootstrap /etc/ansible/files/rke_bootstrap \
+            --set secrets.external_secrets.services.aws.access_key="{{ es_services_access_key }}" \
+            --set secrets.external_secrets.services.aws.secret_access_key="{{ es_services_secret_access_key }}" \
+            --set secrets.external_secrets.systems.aws.access_key="{{ es_systems_access_key }}" \
+            --set secrets.external_secrets.systems.aws.secret_access_key="{{ es_systems_secret_access_key }}" \
+            --set secrets.cert_manager.external.sectigo_acme.email="{{ sectigo_acme_email }}" \
+            --set secrets.cert_manager.external.sectigo_acme.tls_key="{{ sectigo_acme_tls_key }}"
+
       environment:
         KUBECONFIG: "{{ kubeconfig_dir  }}/kubeconfig_{{ item.item }}"
       with_items: "{{ kubeconfig_results.results }}"
