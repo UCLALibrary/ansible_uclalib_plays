@@ -1,0 +1,115 @@
+---
+- name: provision.yaml
+  hosts:
+    - localhost
+    - p-u-ansible01.library.ucla.edu
+  connection: local
+  gather_facts: false
+
+  vars:
+    rancher_token: "{{ test_rancher_token }}"
+    rancher_api_url: "{{ test_rancher_api_url }}"
+    kubeconfig_dir_root: "{{ ansible_kubeconfig_dir_root }}"
+    kubeconfig_dir: "{{ kubeconfig_dir_root }}/ansible"
+    cert_manager_repo: "https://charts.jetstack.io"
+    cert_manager_version: "v1.11.0"
+    external_secrets_repo: "https://charts.external-secrets.io"
+    external_secrets_version: "0.7.2"
+    uclalib_cm_repo: "https://chartmuseum.library.ucla.edu"
+    rke_bootstrap_version: "0.7.2"
+    ansible_python_interpreter: "/usr/bin/python3"
+
+  tasks:
+    - name: Get list of clusters
+      uri:
+        url: "{{ rancher_api_url }}/v3/clusters"
+        method: GET
+        validate_certs: false
+        return_content: true
+        headers:
+          Authorization: "Bearer {{ rancher_token }}"
+      register: clusters_output
+
+    - name: parse active clusters
+      set_fact:
+        cluster_list: "{{ clusters_output | json_query(cquery) }}"
+      vars:
+        cquery: "*.data[?id!='local' && state=='active'].id"
+
+    - name: Get Kubeconfig
+      uri:
+        url: "{{ rancher_api_url }}/v3/clusters/{{ item }}?action=generateKubeconfig"
+        method: POST
+        validate_certs: false
+        return_content: true
+        headers:
+          Authorization: "Bearer {{ rancher_token }}"
+      register: kubeconfig_results
+      with_items:
+        "{{ cluster_list }}"
+
+    - name: Make kubeconfig storage directory root
+      file:
+        path: "{{ kubeconfig_dir_root }}"
+        mode: '0750'
+        state: directory
+
+    - name: Make kubeconfig storage directory
+      file:
+        path: "{{ kubeconfig_dir }}"
+        mode: '0750'
+        state: directory
+
+    - name: Store cluster kubeconfigs in storage directory
+      copy:
+        content: "{{ item.json.config }}"
+        dest: "{{ kubeconfig_dir }}/kubeconfig_{{ item.item }}"
+        mode: "0700"
+      with_items: "{{ kubeconfig_results.results }}"
+
+    - name: Install cert-manager helm chart
+      shell: |
+        helm repo add jetstack "{{ cert_manager_repo }}"
+        helm upgrade --install --version "{{ cert_manager_version }}" -n cert-manager --create-namespace cert-manager jetstack/cert-manager --set installCRDs=true
+      environment:
+        KUBECONFIG: "{{ kubeconfig_dir  }}/kubeconfig_{{ item.item }}"
+      with_items: "{{ kubeconfig_results.results }}"
+
+    - name: Install external secrets helm chart
+      shell: |
+        helm repo add external-secrets "{{ external_secrets_repo }}"
+        helm upgrade --install --version "{{ external_secrets_version }}" -n external-secrets --create-namespace external-secrets external-secrets/external-secrets
+      environment:
+        KUBECONFIG: "{{ kubeconfig_dir  }}/kubeconfig_{{ item.item }}"
+      with_items: "{{ kubeconfig_results.results }}"
+
+    - name: Enable automatic host endpoint in Calico
+      shell: |
+        kubectl patch KubeControllersConfiguration default --type=merge --patch='{"spec": {"controllers": {"node": {"hostEndpoint": {"autoCreate": "Enabled"}}}}}'
+      environment:
+        KUBECONFIG: "{{ kubeconfig_dir  }}/kubeconfig_{{ item.item }}"
+      with_items: "{{ kubeconfig_results.results }}"
+
+    - name: Adjust FelixConfiguration to disable fail safe inbound ports
+      shell: |
+        kubectl patch FelixConfiguration default --type=merge --patch='{"spec": {"failsafeInboundHostPorts": []}}'
+      environment:
+        KUBECONFIG: "{{ kubeconfig_dir  }}/kubeconfig_{{ item.item }}"
+      with_items: "{{ kubeconfig_results.results }}"
+
+    - name: Pause for 1 minute to let pods finish deploying
+      pause:
+        minutes: 1
+
+    - name: Install rke bootstrap helm chart
+      shell: |
+        helm upgrade --install --version "{{ rke_bootstrap_version }}" -n uclabootstrap --create-namespace uclabootstrap /etc/ansible/files/rke_bootstrap \
+        --set secrets.external_secrets.services.aws.access_key="{{ es_services_access_key }}" \
+        --set secrets.external_secrets.services.aws.secret_access_key="{{ es_services_secret_access_key }}" \
+        --set secrets.external_secrets.systems.aws.access_key="{{ es_systems_access_key }}" \
+        --set secrets.external_secrets.systems.aws.secret_access_key="{{ es_systems_secret_access_key }}" \
+        --set secrets.cert_manager.external.sectigo_acme.email="{{ sectigo_acme_email }}" \
+        --set secrets.cert_manager.external.sectigo_acme.tls_key="{{ sectigo_acme_tls_key }}"
+      environment:
+        KUBECONFIG: "{{ kubeconfig_dir  }}/kubeconfig_{{ item.item }}"
+      with_items: "{{ kubeconfig_results.results }}"
