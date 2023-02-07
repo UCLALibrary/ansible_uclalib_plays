@@ -103,7 +103,7 @@
 
     - name: Install rke bootstrap helm chart
       shell: |
-        helm upgrade --install --version "{{ rke_bootstrap_version }}" -n uclabootstrap --create-namespace uclabootstrap /etc/ansible/helm_charts/rke_uclalibrary_bootstrap \
+        helm upgrade --install --version "{{ rke_bootstrap_version }}" -n uclabootstrap --create-namespace uclabootstrap /etc/ansible/files/rke_bootstrap \
         --set secrets.external_secrets.services.aws.access_key="{{ es_services_access_key }}" \
         --set secrets.external_secrets.services.aws.secret_access_key="{{ es_services_secret_access_key }}" \
         --set secrets.external_secrets.systems.aws.access_key="{{ es_systems_access_key }}" \
