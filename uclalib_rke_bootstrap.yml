@@ -5,18 +5,5 @@
   connection: local
   gather_facts: false
 
-  vars:
-    rancher_token: "{{ test_rancher_token }}"
-    rancher_api_url: "{{ test_rancher_api_url }}"
-    kubeconfig_dir_root: "{{ ansible_kubeconfig_dir_root }}"
-    kubeconfig_dir: "{{ kubeconfig_dir_root }}/ansible"
-    cert_manager_repo: "https://charts.jetstack.io"
-    cert_manager_version: "v1.11.0"
-    external_secrets_repo: "https://charts.external-secrets.io"
-    external_secrets_version: "0.7.2"
-    uclalib_cm_repo: "https://chartmuseum.library.ucla.edu"
-    rke_bootstrap_version: "0.7.2"
-    ansible_python_interpreter: "/usr/bin/python3"
-
   roles:
     - { role: uclalib_role_rkebootstrap }
