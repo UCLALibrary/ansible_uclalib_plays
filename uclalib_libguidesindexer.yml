@@ -1,0 +1,10 @@
+---
+
+- name: uclalib_libguidesindexer.yml
+  become: yes
+  become_method: sudo
+  hosts: all
+
+  roles:
+    - { role: uclalib_role_rhelscl }
+    - { role: uclalib_role_libguidesindexer }
