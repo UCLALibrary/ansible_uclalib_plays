@@ -1,0 +1,9 @@
+---
+- name: uclalib_rke_bootstrap_targeted.yaml
+  hosts:
+    - localhost
+  connection: local
+  gather_facts: false
+
+  roles:
+    - { role: uclalib_role_rkebootstrap_targeted }
