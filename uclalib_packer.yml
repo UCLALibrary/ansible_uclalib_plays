@@ -1,0 +1,33 @@
+---
+
+- name: uclalib_role_packer.yml
+  hosts: '{{ hosts | default ("localhost") }}'
+  gather_facts: false
+  connection: local
+
+  tasks:
+
+    - name: 'Assert vm_name is set'
+      assert:
+        that: vm_name is defined
+
+    - name: Add host
+      add_host:
+        name: '{{ vm_name }}'
+
+# ---
+
+- name: 'uclalib_role_packer.yml pt 2'
+  hosts: '{{ vm_name }}'
+  gather_facts: false
+
+  pre_tasks:
+    - name: Gathering Facts (minus /etc/facts.d)
+      setup:
+        fact_path: /nonexistent
+        gather_subset: '!all' 
+      connection: local
+
+  roles:
+    - name: uclalib_role_packer
+      connection: local
