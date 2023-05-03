@@ -1,6 +1,6 @@
 ---
 
-- name: uclalib_role_packer.yml
+- name: Playbook uclalib_role_packer.yml
   hosts: '{{ hosts | default ("localhost") }}'
   gather_facts: false
   connection: local
@@ -17,7 +17,7 @@
 
 # ---
 
-- name: 'uclalib_role_packer.yml pt 2'
+- name: 'Playbook uclalib_role_packer.yml pt 2'
   hosts: '{{ vm_name }}'
   gather_facts: false
 
@@ -25,8 +25,71 @@
     - name: Gathering Facts (minus /etc/facts.d)
       setup:
         fact_path: /nonexistent
-        gather_subset: '!all' 
+        gather_subset: '!all'
       connection: local
+
+    - name: Convert name to short
+      set_fact:
+        vm_short_name: '{{ vm_name | regex_replace("^([^.]+)\.?.*", "\1") }}'
+      when: false
+
+    - name: Set FQDN
+      set_fact:
+        vm_fqdn: '{{ (vm_name is regex("\.")) | ternary (
+            vm_name,
+            vm_name ~ "." ~ ansible_domain
+          ) }}'
+
+    - name: 'Look up IP address'
+      set_fact:
+        vm_ip_dig: '{{ hostvars[inventory_hostname].ansible_host | default(lookup("dig", vm_fqdn)) }}'
+
+    - name: 'Set IP address, if resolvable'
+      set_fact:
+        vm_ip: '{{ vm_ip_dig }}'
+      when:
+        - vm_ip_dig != "NXDOMAIN"
+        - vm_ip == 'dhcp'
+
+    - name: 'Fall back to dhcp'
+      set_fact:
+        vm_ip: 'dhcp'
+      when: vm_ip is not defined or vm_ip == ''
+
+    - name: Set the nameservers
+      set_fact:
+        nameservers: '{{ ansible_dns.nameservers }}'
+      when: nameservers is not defined
+
+    - name: 'Set bootstring when IP address is known'
+      set_fact:
+        vm_boot_string: >
+          ip={{ vm_ip }}::{{ ( vm_ip + "/" + subnet_size )
+            | ipaddr( "1" ) | regex_replace( "/", ":" ) }}:{{ vm_fqdn }}
+          {%- for nameserver in nameservers %} nameserver={{ nameserver }}
+          {%- endfor %}
+      when: ( vm_ip | default( "dhcp" ) ) != "dhcp"
+
+    - name: Set network
+      set_fact:
+        vsphere_network: '{{ vlan_map[ vm_ip | regex_replace ("\.([^.]+)$", "") ] }}'
+      when: vsphere_network == ''
+      # this playbook is pulling in values from the role defaults/main.yml !
+
+    - name: Set VM folder
+      set_fact:
+        vsphere_folder: '{{ vm_folder_map[ inventory_hostname[0] ] }}'
+      when:
+        - vsphere_folder == ''
+        - vm_folder_map[ inventory_hostname[0] ] is defined
+        - not convert_to_template|bool
+
+    - name: Set Template folder
+      set_fact:
+        vsphere_folder: '{{ template_folder }}'
+      when:
+        - vsphere_folder == ''
+        - convert_to_template|bool
 
   roles:
     - name: uclalib_role_packer
