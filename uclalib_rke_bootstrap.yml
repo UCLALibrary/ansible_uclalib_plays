@@ -2,7 +2,6 @@
 - name: uclalib_rke_bootstrap.yaml
   hosts:
     - localhost
-  connection: local
   gather_facts: false
 
   roles:
