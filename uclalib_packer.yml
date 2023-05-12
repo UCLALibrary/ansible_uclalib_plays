@@ -70,6 +70,11 @@
           {%- endfor %}
       when: ( vm_ip | default( "dhcp" ) ) != "dhcp"
 
+    - name: 'Set bootstring hostname when using dhcp'
+      set_fact:
+        vm_boot_string: 'ip=::::{{ vm_fqdn }}::dhcp:'
+      when: ( vm_ip | default( "dhcp" ) ) == "dhcp"
+
     - name: Set network
       set_fact:
         vsphere_network: '{{ vlan_map[ vm_ip | regex_replace ("\.([^.]+)$", "") ] }}'
