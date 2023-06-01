@@ -1,0 +1,11 @@
+---
+
+- name: Playbook uclalib_role_rancher.yml
+  hosts:
+    - t-w-rancher01.library.ucla.edu
+
+  vars:
+    use_kubernetes_module: false
+
+  roles:
+    - name: uclalib_role_rancher
