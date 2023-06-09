@@ -98,7 +98,7 @@
 
     - name: Set Provisioning Script
       set_fact:
-        playbook_file: '{{ convert_to_template | ternary (provisioner.template, provisioner.vm) }}'
+        playbook_file: '{{ (convert_to_template | bool) | ternary (provisioner.template, provisioner.vm) }}'
       when:
         - playbook_file is not defined
 
