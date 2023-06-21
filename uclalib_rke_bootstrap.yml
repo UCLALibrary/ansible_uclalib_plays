@@ -1,7 +1,9 @@
 ---
 - name: uclalib_rke_bootstrap.yaml
+  connection: local
   hosts:
-    - localhost
+    - rancher_prod_rke_bootstrap
+    - rancher_test_rke_bootstrap
   gather_facts: false
 
   roles:
