@@ -67,3 +67,4 @@
         msg: '{{ item }}'
       with_file:
         - '{{ report_pathname }}'
+      run_once: true
