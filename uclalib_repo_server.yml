@@ -1,0 +1,8 @@
+---
+- name: uclalib_repo_server.yml
+  hosts: all
+  become: yes
+  become_method: sudo
+
+  roles:
+    - { role: uclalib_role_apache }
