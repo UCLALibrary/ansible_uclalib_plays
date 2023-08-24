@@ -1,0 +1,87 @@
+---
+
+- name: adhoc-rsyncd.yml
+  hosts: all
+  gather_facts: false
+  become: true
+
+  vars:
+    rsyncd_port: '873/tcp'
+    rsyncd_conf: '/root/_rsyncd.conf'
+    rsyncd_pidfile: '/root/_rsyncd.pid'
+    rsyncd_log: '/root/_rsyncd.log'
+
+  pre_tasks:
+    - name: Gathering Facts
+      setup:
+        fact_path: /nonexitent
+
+  tasks:
+    - name: Open rsyncd port
+      firewalld:
+        state: enabled
+        port: '{{ rsyncd_port }}'
+        permanent: false
+        immediate: true
+
+    - name: Create temporary rsyncd config
+      copy:
+        dest: '{{ rsyncd_conf }}'
+        content: |
+          # ansible managed
+          pid file = {{ rsyncd_pidfile }}
+          read only
+          hosts allow = 164.67.48.0/24
+          hosts deny = 0.0.0.0/0
+          uid = root
+          gid = root
+          log file = /root/_rsyncd.log
+          [home]
+            path = /home
+            comment = (/home) Home directories
+          [letsencrypt]
+            path = /etc/letsencrypt
+            comment = (/etc/letsencrypt) Certbot TLS certificates
+          [vhosts]
+            path = /etc/httpd/vhosts.d
+            comment = (/etc/httpd/vhosts.d) vhost definitions
+            read only
+          [data]
+            path = /data
+            comment = (/data) Local data
+            read only
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Start rsyncd
+      # noqa: command-instead-of-module
+      # "synchornize" module won't start a daemon
+      command:
+        cmd: 'rsync --daemon --config={{ rsyncd_conf }} --log-file= {{ rsyncd_log }}'
+      changed_when: true
+
+    - name: Pause for rsync to complete
+      pause:
+        prompt: 'Rsync is listening, hit [return] to stop rsync service'
+
+    - name: Stop rsyncd
+      command:
+        cmd: 'pkill --pidfile {{ rsyncd_pidfile }}'
+        # This is the best I can get to ensure only the daemon is killed
+      changed_when: true
+
+    - name: Clean temporary rsync files
+      file:
+        name: '{{ item }}'
+        state: absent
+      with_items:
+        - '{{ rsyncd_pidfile }}'
+        - '{{ rsyncd_conf }}'
+
+    - name: Close rsyncd port
+      firewalld:
+        state: disabled
+        port: '{{ rsyncd_port }}'
+        permanent: false
+        immediate: true
