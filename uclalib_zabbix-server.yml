@@ -1,6 +1,6 @@
 ---
 - name: Zabbix Server
-  hosts: p-w-zabbix01.library.ucla.edu
+  hosts: p-w-zabbix*.library.ucla.edu
   become: yes
   become_method: sudo
 
