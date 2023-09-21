@@ -1,0 +1,9 @@
+---
+
+- name: uclalib_k3s.yml
+  become: yes
+  become_method: sudo
+  hosts: k3s_hosts
+
+  roles:
+    - { role: uclalib_role_k3s }
