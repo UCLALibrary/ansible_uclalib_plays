@@ -1,6 +1,6 @@
 ---
 
-- name: uclalib_icmp_allowed_ipset.yaml
+- name: uclalib_icmp_allowed_ipset.yml
   become: yes
   become_method: sudo
   hosts: all
