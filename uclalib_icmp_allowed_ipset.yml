@@ -1,12 +1,12 @@
 ---
 
-- name: uclalib_itsec_scanner_ipset.yaml
+- name: uclalib_icmp_allowed_ipset.yaml
   become: yes
   become_method: sudo
   hosts: all
 
   tasks:
-    - name: Put in place itsec scanner ipset file
+    - name: Put in place icmp_allowed ipset file
       template:
         src: "files/icmp_allowed/icmp_allowed.j2"
         dest: "/etc/firewalld/ipsets/icmp_allowed.xml"
