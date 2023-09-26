@@ -1,8 +1,6 @@
 ---
 
 - name: uclalib_argocd.yml
-  become: yes
-  become_method: sudo
   hosts: argocd
 
   roles:
