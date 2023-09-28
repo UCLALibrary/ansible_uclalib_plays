@@ -50,6 +50,10 @@
             path = /data
             comment = (/data) Local data
             read only
+          [sftp]
+            path = /sftp
+            comment = (/sftp) sftp data
+            read only
         owner: root
         group: root
         mode: '0644'
