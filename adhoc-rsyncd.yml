@@ -39,9 +39,15 @@
           [home]
             path = /home
             comment = (/home) Home directories
+            read only
+          [local]
+            path = /usr/local
+            comment = (/usr/local) Local software
+            read only
           [letsencrypt]
             path = /etc/letsencrypt
             comment = (/etc/letsencrypt) Certbot TLS certificates
+            read only
           [vhosts]
             path = /etc/httpd/vhosts.d
             comment = (/etc/httpd/vhosts.d) vhost definitions
