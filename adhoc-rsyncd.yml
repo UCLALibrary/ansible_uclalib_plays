@@ -44,6 +44,10 @@
             path = /usr/local
             comment = (/usr/local) Local software
             read only
+          [sshd]
+            path = /etc/ssh
+            comment = (/etc/ssh) sshd keys and configs
+            read only
           [letsencrypt]
             path = /etc/letsencrypt
             comment = (/etc/letsencrypt) Certbot TLS certificates
