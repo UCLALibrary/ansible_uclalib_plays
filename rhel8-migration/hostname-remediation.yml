@@ -1,0 +1,32 @@
+---
+
+- name: Remove rhel8 suffix from hostname
+  hosts: all
+  become: true
+
+  vars:
+    # set short hostname from inventory hostname
+    shortname: "{{ inventory_hostname|regex_replace('\\..*') }}"
+
+  tasks:
+    - name: Adjust system hostname
+      ansible.builtin.hostname:
+        name: '{{ shortname }}'
+
+    - name: Update Zabbix Agent reporting hostname
+      ansible.builtin.lineinfile:
+        path: /etc/zabbix/zabbix_agentd.conf
+        line: 'Hostname={{ shortname }}'
+        regex: 'Hostname={{ shortname }}-rhel8'
+        state: present
+        backrefs: true
+        mode: '0644'
+        owner: root
+        group: root
+      notify: Restart Zabbix Agent
+
+  handlers:
+    - name: Restart Zabbix Agent
+      ansible.builtin.service:
+        name: zabbix-agent
+        state: restarted
