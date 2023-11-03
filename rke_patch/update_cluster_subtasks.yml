@@ -1,0 +1,35 @@
+---
+  - name: "Get available nodepools: {{ item }}"
+    uri:
+      url: "{{ rancher_url }}/v3/nodePools"
+      method: GET
+      status_code: [200]
+      return_content: true
+      user: "{{ rancher_user }}"
+      password: "{{ rancher_password }}"
+      force_basic_auth: true
+    register: nodepool_available_json
+
+  - name: "Get controlplane/etcd nodepool ids: {{ item }}"
+    set_fact:
+      controlplane_nodepool_ids: "{{ nodepool_available_json.content | from_json | json_query(query) }}"
+    vars:
+      query: "data[?controlPlane==`true` && etcd==`true` && worker ==`false`].name"
+
+  - name: "Get worker nodepool ids: {{ item }}"
+    set_fact:
+      worker_nodepool_ids: "{{ nodepool_available_json.content | from_json | json_query(query) }}"
+    vars:
+      query: "data[?controlPlane==`false` && etcd==`false` && worker ==`true`].name"
+
+  - name: "Updating controlplane/etcd nodepools: {{ controlplane_nodepool_ids }}"
+    include_tasks: "update_nodepool_subtasks.yml"
+    loop: "{{ controlplane_nodepool_ids }}"
+    loop_control:
+      loop_var: cc
+
+  - name: "Updating worker nodepools: {{ worker_nodepool_ids }}"
+    loop: "{{ worker_nodepool_ids }}"
+    include_tasks: "update_nodepool_subtasks.yml"
+    loop_control:
+      loop_var: cc
