@@ -42,16 +42,6 @@
       body: "{{ update_nodepool_quantity.stdout }}"
     register: nodes_resp
 
-#  - name: "Pass updated payload to {{ rancher_url }}/v3/nodePools/{{ item }}:{{ cc }}"
-#    shell: >
-#      curl -x socks5://localhost:9090
-#      -s -u {{ bearer_token }}
-#      {{ rancher_url }}/v3/nodePools/{{ item }}:{{ cc }}
-#      --compressed -X PUT
-#      -H 'Accept: application/json' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json'
-#      --data '{{ update_nodepool_quantity.stdout }}'
-#    register: update_resp
-#
   - name: Pause for 10 seconds to allow Rancher to trigger update
     pause:
       seconds: 10
