@@ -7,7 +7,10 @@
   connection: local
   gather_facts: false
 
+  vars:
+    retry_limit: 20
+
   tasks:
-    - name: "Updating clusters: {{ cluster_ids }}"
+    - name: "Updating clusters: {{ rancher_cluster_ids }}"
       include_tasks: "update_cluster_subtasks.yml"
-      loop: "{{ cluster_ids }}"
+      loop: "{{ rancher_cluster_ids }}"

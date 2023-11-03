@@ -57,7 +57,7 @@
       force_basic_auth: true
     register: result
     until: result.content | from_json | json_query(query) | length == 0
-    retries: 10
+    retries: "{{ retry_limit }}"
     delay: 60
     vars:
       query: "data[?state!='active']"
@@ -89,7 +89,7 @@
       force_basic_auth: true
     register: result
     until: result.content | from_json | json_query(query) | length == 0
-    retries: 10
+    retries: "{{ retry_limit }}"
     delay: 60
     vars:
       query: "data[?state!='active']"
