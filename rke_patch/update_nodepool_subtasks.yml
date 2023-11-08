@@ -21,4 +21,3 @@
     loop: "{{ delete_node_ids }}"
     loop_control:
       loop_var: dd
-      index_var: q_counter

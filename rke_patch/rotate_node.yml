@@ -4,7 +4,7 @@
       curl
       -s -u {{ rancher_user }}:{{ rancher_password}}
       {{ rancher_url }}/v3/nodePools/{{ item }}:{{ cc }}
-      | jq -r '.quantity = {{ delete_node_ids | length | int + q_counter + 1 }}'
+      | jq -r '.quantity = {{ delete_node_ids | length + 1 }}'
     register: update_nodepool_quantity
 
   - name: "Pass updated payload to {{ rancher_url }}/v3/nodePools/{{ item }}:{{ cc }} to replace node: {{ dd }}"
