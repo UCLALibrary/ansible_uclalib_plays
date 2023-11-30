@@ -8,9 +8,7 @@
   gather_facts: false
 
   vars:
-    #retry_limit: 20
-    # Retry up to 6 hours because vSphere cloning has issues at random slow cloning times...
-    retry_limit: 360
+    retry_limit: 20
 
   tasks:
     - name: "Updating clusters: {{ rancher_cluster_ids }}"
