@@ -16,80 +16,8 @@
     vars:
       query: "data[].id"
 
-  - name: "Update nodepool id {{ cc }} from quantity {{ delete_node_ids | length }} to {{ delete_node_ids | length * 2 }}"
-    shell: >
-      curl
-      -s -u {{ rancher_user }}:{{ rancher_password}}
-      {{ rancher_url }}/v3/nodePools/{{ item }}:{{ cc }}
-      | jq -r '.quantity = {{ delete_node_ids | length * 2 }}'
-    register: update_nodepool_quantity
-
-  - name: "Pass updated payload to {{ rancher_url }}/v3/nodePools/{{ item }}:{{ cc }}"
-    uri:
-      url: "{{ rancher_url }}/v3/nodePools/{{ item }}:{{ cc }}"
-      method: PUT
-      status_code: [200]
-      return_content: true
-      user: "{{ rancher_user }}"
-      password: "{{ rancher_password }}"
-      force_basic_auth: true
-      headers:
-        Accept: application/json
-        Accept-Language: en-US,en;q=0.5
-        Accept-Encoding: gzip, deflate, br
-        Content-Type: application/json
-      body_format: json
-      body: "{{ update_nodepool_quantity.stdout }}"
-    register: nodes_resp
-
-  - name: Pause for 10 seconds to allow Rancher to trigger update
-    pause:
-      seconds: 10
-
-  - name: "Waiting for nodepool {{ cc }} to be healthy"
-    uri:
-      url: "{{ rancher_url }}/v3/nodes?nodePoolId={{ item }}%3A{{ cc }}"
-      method: GET
-      status_code: [200]
-      return_content: true
-      user: "{{ rancher_user }}"
-      password: "{{ rancher_password }}"
-      force_basic_auth: true
-    register: result
-    until: result.content | from_json | json_query(query) | length == 0
-    retries: "{{ retry_limit }}"
-    delay: 60
-    vars:
-      query: "data[?state!='active']"
-
-  - name: Delete old nodes
-    uri:
-      url: "{{ rancher_url }}/v3/nodes/{{ qq }}?action=scaledown"
-      method: POST
-      status_code: [200]
-      user: "{{ rancher_user }}"
-      password: "{{ rancher_password }}"
-      force_basic_auth: true
+  - name: "Updating nodes in Nodepool ID: {{ cc }}"
+    include_tasks: "rotate_node.yml"
     loop: "{{ delete_node_ids }}"
     loop_control:
-      loop_var: qq
-
-  - name: Pause for 10 seconds to allow Rancher to trigger update
-    pause:
-      seconds: 10
-
-  - name: "Waiting for nodepool {{ cc }} to be healthy"
-    uri:
-      url: "{{ rancher_url }}/v3/nodes?nodePoolId={{ item }}%3A{{ cc }}"
-      method: GET
-      status_code: [200]
-      return_content: true
-      user: "{{ rancher_user }}"
-      password: "{{ rancher_password }}"
-      force_basic_auth: true
-    register: result
-    until: result.content | from_json | json_query(query) | length == 0
-    retries: "{{ retry_limit }}"
-    delay: 60
-    vars:
-      query: "data[?state!='active']"
+      loop_var: dd
