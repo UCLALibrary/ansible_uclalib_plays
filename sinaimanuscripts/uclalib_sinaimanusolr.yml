@@ -12,4 +12,4 @@
     - { role: uclalib_role_uclalibrepo }
     - { role: uclalib_role_java, openjdk_java_version: '1.8.0' }
     - { role: uclalib_role_apache }
-    - { role: uclalib_role_solr7, solr_version: '7.4.0' }
+    - { role: uclalib_role_solr }
