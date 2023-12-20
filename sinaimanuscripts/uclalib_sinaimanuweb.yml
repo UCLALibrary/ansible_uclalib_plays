@@ -12,6 +12,7 @@
     - { role: uclalib_role_uclalibrepo }
     - { role: uclalib_role_samvera_basepackages }
     - { role: uclalib_role_apache }
+    - : role: uclalib_role_certbot }
     - { role: uclalib_role_pip }
     - { role: uclalib_role_ruby, ruby_version: '2.5.9' }
     - { role: uclalib_role_passenger, passenger_version: '5.3.3' }
