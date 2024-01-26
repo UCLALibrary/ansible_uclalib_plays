@@ -1,0 +1,38 @@
+---
+
+- name: uclalib_create_vendoraccounts.yml
+  become: yes
+  become_method: sudo
+  hosts: all
+
+  tasks:
+    - name: "Creating group: {{ group_name }}"
+      group:
+        name: "{{ group_name }}"
+        gid: "{{ group_id }}"
+        state: present
+
+    - name: "Add {{ group_name }} to sudoers"
+      copy:
+        dest: "/etc/sudoers.d/{{ group_name }}"
+        mode: "0660"
+        owner: root
+        group: root
+        content: |
+          # Ansible managed - DO NOT EDIT
+          %{{ group_name }} ALL=(ALL) NOPASSWD: ALL
+
+    - name: "Creating username: {{ item }}"
+      user:
+        name: "{{ item.username }}"
+        uid: "{{ item.uid }}"
+        groups: "{{ group_name }}"
+        append: yes
+      loop: "{{ users }}"
+
+    - name: "Set authorized_keys for: {{ item.username }}"
+      authorized_key:
+        user: "{{ item.username }}"
+        state: present
+        key: "{{ item.authorized_keys }}"
+      loop: "{{ users }}"
