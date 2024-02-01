@@ -3,19 +3,11 @@
 - name: lib_fedora.yml
   become: yes
   hosts: all
-  vars:
-    project_name: avalon
-    env_name: avalon
-    tomcat_applications:
-      - app_name: fedora
-        shut_port: 8008
-        conn_port: 8081
-        rproxy_path: fcrepo
 
   roles:
     - { role: uclalib_role_epel }
     - { role: uclalib_role_uclalibrepo }
-    - { role: uclalib_role_java, openjdk_java_version: '1.8.0' }
+    - { role: uclalib_role_java }
     - { role: uclalib_role_apache }
     - { role: uclalib_role_tomcat }
-    - { role: uclalib_role_fedora4, fedora_version: '4.7.5' }
+    - { role: uclalib_role_fedora4 }
