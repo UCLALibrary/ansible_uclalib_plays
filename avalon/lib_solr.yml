@@ -4,14 +4,9 @@
   become_method: sudo
   hosts: all
 
-  vars:
-    solr_cores:
-      - ident: "avalon"
-        type: "avalon"
-
   roles:
     - { role: uclalib_role_epel }
     - { role: uclalib_role_uclalibrepo }
-    - { role: uclalib_role_java, openjdk_java_version: '1.8.0' }
+    - { role: uclalib_role_java }
     - { role: uclalib_role_apache }
-    - { role: uclalib_role_solr7, solr_version: '7.1.0' }
+    - { role: uclalib_role_solr }
