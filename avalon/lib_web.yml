@@ -3,19 +3,20 @@
 - name: lib_web.yml
   become: yes
   become_method: sudo
-  hosts: all
-
-  vars:
-    ffmpeg_download_url: http://pkgs.library.ucla.edu/ffmpeg/ffmpeg-4.1-64bit-static.tar.xz
+  hosts: "[dp]-w-avalonaweb*"
 
   roles:
-    - { role: uclalib_role_rhel7repos }
     - { role: uclalib_role_epel }
     - { role: uclalib_role_uclalibrepo }
-    - { role: uclalib_role_java, openjdk_java_version: '1.8.0' }
+    - { role: uclalib_role_samvera_basepackages } # Update this role to support RHEL8 - adjust package list for RHEL8
+    - { role: uclalib_role_java }
     - { role: uclalib_role_apache }
+    - { role: uclalib_role_pip }
+    - { role: uclalib_role_imagemagick }
     - { role: uclalib_role_ffmpeg }
-    - { role: uclalib_role_ruby, ruby_version: '2.5.1' }
-    - { role: uclalib_role_passenger, passenger_version: '5.3.3' }
+    - { role: uclalib_role_ruby } # Update this role to support RHEL8 - need to build rpm of ruby for RHEL8
+    - { role: uclalib_role_passenger } # Update this role to support RHEL8 - set passenger version to 6.0.20
+    - { role: uclalib_role_nodejs }
+    - { role: uclalib_role_yarn }
     - { role: uclalib_role_redis }
-    - { role: uclalib_role_avalonrails }
+#    - { role: uclalib_role_samvera_capdeploy }
