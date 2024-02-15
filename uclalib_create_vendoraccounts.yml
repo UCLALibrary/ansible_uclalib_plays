@@ -22,9 +22,10 @@
           # Ansible managed - DO NOT EDIT
           %{{ group_name }} ALL=(ALL) NOPASSWD: ALL
 
-    - name: "Creating username: {{ item }}"
+    - name: "Creating user account for: {{ item }}"
       user:
         name: "{{ item.username }}"
+        comment: "{{ item.comment }}"
         uid: "{{ item.uid }}"
         groups: "{{ group_name }}"
         append: yes
