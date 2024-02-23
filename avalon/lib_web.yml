@@ -6,17 +6,17 @@
   hosts: "[dp]-w-avalonaweb*"
 
   roles:
-    - { role: uclalib_role_epel }
-    - { role: uclalib_role_uclalibrepo }
-    - { role: uclalib_role_samvera_basepackages }
-    - { role: uclalib_role_java }
-    - { role: uclalib_role_apache }
-    - { role: uclalib_role_pip }
-    - { role: uclalib_role_imagemagick }
-    - { role: uclalib_role_ffmpeg }
-    - { role: uclalib_role_ruby }
-    - { role: uclalib_role_passenger }
-    - { role: uclalib_role_nodejs }
-    - { role: uclalib_role_yarn }
-    - { role: uclalib_role_redis }
-    - { role: uclalib_role_samvera_capdeploy, tags: ["cap-setup", "sidekiq-setup"] } 
+    - { role: uclalib_role_epel, tags: ["always"] }
+    - { role: uclalib_role_uclalibrepo, tags: ["always"] }
+    - { role: uclalib_role_samvera_basepackages, tags: ["always"] }
+    - { role: uclalib_role_java, tags: ["always"] }
+    - { role: uclalib_role_apache, tags: ["always"] }
+    - { role: uclalib_role_pip, tags: ["always"] }
+    - { role: uclalib_role_imagemagick, tags: ["always"] }
+    - { role: uclalib_role_ffmpeg, tags: ["always"] }
+    - { role: uclalib_role_ruby, tags: ["always"] }
+    - { role: uclalib_role_passenger, tags: ["always"] }
+    - { role: uclalib_role_nodejs, tags: ["always"] }
+    - { role: uclalib_role_yarn, tags: ["always"] }
+    - { role: uclalib_role_redis, tags: ["always"] }
+    - { role: uclalib_role_samvera_capdeploy } # only run tags: "cap-setup" and "sidekiq-setup" - skip all other tags
