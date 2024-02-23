@@ -3,7 +3,7 @@
 - name: lib_web.yml
   become: yes
   become_method: sudo
-  hosts: "[dp]-w-avalonaweb*"
+  hosts: "~[dp]-w-avalonaweb*"
 
   roles:
     - { role: uclalib_role_epel, tags: ["always"] }
