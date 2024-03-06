@@ -10,10 +10,9 @@
     - { role: uclalib_role_rhel7repos }
     - { role: uclalib_role_epel }
     - { role: uclalib_role_uclalibrepo }
-    - { role: uclalib_role_java,
-        java_platform: 'oracle', oracle_java_version: '1.8.0_191' }
+    - { role: uclalib_role_java }
     - { role: uclalib_role_apache }
-    - { role: uclalib_role_solr7, solr_version: '7.4.0' }
+    - { role: uclalib_role_solr }
 
 
 - name: uclalib_californicasolr.yml
