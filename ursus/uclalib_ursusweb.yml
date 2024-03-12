@@ -12,10 +12,21 @@
     - { role: uclalib_role_uclalibrepo }
     - { role: uclalib_role_samvera_basepackages }
     - { role: uclalib_role_apache }
+    - { role: uclalib_role_certbot }
     - { role: uclalib_role_pip }
-    - { role: uclalib_role_ruby, ruby_version: '2.5.1' }
-    - { role: uclalib_role_passenger, passenger_version: '5.3.3' }
-    - { role: uclalib_role_nodejs, nodejs_version: '10' }
+    - { role: uclalib_role_ruby }
+    - { role: uclalib_role_passenger }
+    - { role: uclalib_role_nodejs }
     - { role: uclalib_role_yarn }
     - { role: uclalib_role_redis }
     - { role: uclalib_role_blacklight_capdeploy }
+
+  tasks:
+    - name: Open firewall for web access
+      firewalld:
+        rich_rule: >
+          rule family=ipv4 source address={{ item[1] }}/24 service name={{ item[0] }} accept
+        permanent: true
+        state: enabled
+      loop: '{{ ["http", "https"] | product(["164.67.40.0", "164.67.48.0"]) | list }}'
+

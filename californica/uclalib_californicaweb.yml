@@ -14,16 +14,27 @@
     - { role: uclalib_role_java,
         java_platform: 'oracle', oracle_java_version: '1.8.0_191' }
     - { role: uclalib_role_apache }
+    - { role: uclalib_role_certbot }
     - { role: uclalib_role_clamav }
     - { role: uclalib_role_pip }
     - { role: uclalib_role_imagemagick }
     - { role: uclalib_role_libreoffice, libreoffice_version: '6.0.7' }
     - { role: uclalib_role_ffmpeg }
     - { role: uclalib_role_fits, fits_version: '1.3.0' }
-    - { role: uclalib_role_ruby, ruby_version: '2.5.1' }
+    - { role: uclalib_role_ruby, ruby_version: '2.5.9' }
     - { role: uclalib_role_passenger, passenger_version: '5.3.3' }
-    - { role: uclalib_role_nodejs, nodejs_version: '8' }
+    - { role: uclalib_role_nodejs, nodejs_version: '16' }
     - { role: uclalib_role_yarn }
     - { role: uclalib_role_redis }
     - { role: uclalib_role_nfsmount }
     - { role: uclalib_role_samvera_capdeploy }
+
+  tasks:
+    - name: Open firewall for web access
+      firewalld:
+        rich_rule: >
+          rule family=ipv4 source address={{ item[1] }}/24 service name={{ item[0] }} accept
+        permanent: true
+        state: enabled
+      loop: '{{ ["http", "https"] | product(["164.67.40.0", "164.67.48.0"]) | list }}'
+
