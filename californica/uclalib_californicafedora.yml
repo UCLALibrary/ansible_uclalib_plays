@@ -10,8 +10,7 @@
     - { role: uclalib_role_rhel7repos }
     - { role: uclalib_role_epel }
     - { role: uclalib_role_uclalibrepo }
-    - { role: uclalib_role_java,
-        java_platform: 'oracle', oracle_java_version: '1.8.0_191' }
+    - { role: uclalib_role_java, openjdk_java_version: '1.8.0' }
     - { role: uclalib_role_apache }
     - { role: uclalib_role_tomcat }
     - { role: uclalib_role_nfsmount }
