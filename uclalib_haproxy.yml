@@ -8,29 +8,26 @@
   hosts: all
 
   tasks:
-    - name: Install it
-      yum:
-        name: http://yum.library.ucla.edu/rhel7/haproxy-1.8.13-1.x86_64.rpm
+    - name: Install HAProxy
+      dnf:
+        name: haproxy
         state: present
+        disable_excludes: all
       become: true
+      when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] == "8"
 
-    - name: Role Group
-      group:
-        name: "{{ haproxy_group | default (haproxy_user|default('haproxy') ) }}"
+    - name: Install sysctl if not present
+      dnf:
+        name: procps-ng
         state: present
-        system: true
-        # local: true
+        disable_excludes: all
       become: true
+      when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] == "8"
 
-    - name: Role User
-      user:
-        name: "{{ haproxy_user|default('haproxy') }}"
-        group: "{{ haproxy_group | default (haproxy_user|default('haproxy') ) }}"
-        comment: "HAProxy User"
-        state: present
-        system: true
-        shell: /sbin/nologin
-        # local: true
+    - name: Start HAProxy on boot
+      service:
+        name: haproxy
+        enabled: true
       become: true
 
     - name: Allow bind to non-local IPs (keepalived)
