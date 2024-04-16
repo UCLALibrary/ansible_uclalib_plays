@@ -1,0 +1,21 @@
+---
+
+- name: uclalib_oom-reboot.yml
+  hosts: all
+
+  # https://www.debuntu.org/how-to-reboot-on-oom/
+
+  tasks:
+
+    - name: Set oom to panic, reboot on panic keys
+      ansible.posix.sysctl:
+        name: '{{ item.name }}'
+        value: '{{ item.value }}'
+        reload: true
+        state: present
+        sysctl_file: /etc/sysctl.d/oom_reboot.conf
+        sysctl_set: true
+      become: true
+      with_items:
+        - { name: 'vm.panic_on_oom', value: '1' }
+        - { name: 'kernel.panic', value: '10' }
