@@ -8,7 +8,8 @@
   tasks:
 
     - name: Set oom to panic, reboot on panic keys
-      ansible.posix.sysctl:
+      # ansible.posix.sysctl:
+      sysctl:
         name: '{{ item.name }}'
         value: '{{ item.value }}'
         reload: true
