@@ -12,5 +12,6 @@
     - { role: uclalib_role_uclalibrepo }
     - { role: uclalib_role_java }
     - { role: uclalib_role_apache }
+    - { role: uclalib_role_certbot }
     - { role: uclalib_role_tomcat }
     - { role: uclalib_role_cantaloupe }
