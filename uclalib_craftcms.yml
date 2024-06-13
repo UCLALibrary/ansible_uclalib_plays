@@ -8,7 +8,7 @@
   roles:
     - { role: uclalib_role_firewalld }
     - { role: uclalib_role_postgresql }
-    - { role: uclalib_role_rhelscl }
+    - { role: uclalib_role_php }
     - { role: uclalib_role_apache }
     - { role: uclalib_role_redis }
     - { role: uclalib_role_craftcms }
