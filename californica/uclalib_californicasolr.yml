@@ -19,6 +19,7 @@
       firewalld:
         rich_rule: >
           rule family=ipv4 source address={{ item[1] }}/24 service name={{ item[0] }} accept
+        immediate: true
         permanent: true
         state: enabled
       loop: '{{ ["http", "https"] | product(["164.67.40.0", "164.67.48.0"]) | list }}'
@@ -31,3 +32,13 @@
 
   roles:
     - role: uclalib_role_rsyncd
+
+  tasks:
+    - name: Open firewall for rsync daemon access
+      firewalld:
+        rich_rule: >
+          rule family=ipv4 source address=164.67.48.0/24 service name=rsyncd accept
+        immediate: true
+        permanent: true
+        state: enabled
+
