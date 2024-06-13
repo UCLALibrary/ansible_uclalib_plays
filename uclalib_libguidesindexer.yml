@@ -6,5 +6,5 @@
   hosts: all
 
   roles:
-    - { role: uclalib_role_rhelscl }
+    - { role: uclalib_role_pip }
     - { role: uclalib_role_libguidesindexer }
