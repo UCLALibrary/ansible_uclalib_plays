@@ -69,7 +69,7 @@
           become: true
           become_user: "{{ ansible_username }}"
           shell: >
-            BRANCH={{ git_repo_branch }} bundle exec cap localhost deploy
+            ssh-agent sh -c 'ssh-add; BRANCH={{ git_repo_branch }} bundle exec cap localhost deploy'
           args:
             chdir: /home/{{ ansible_username }}/{{ project_name }}
           changed_when: true
