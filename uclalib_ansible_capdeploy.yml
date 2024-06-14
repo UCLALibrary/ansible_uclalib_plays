@@ -1,9 +1,7 @@
 ---
 
 - name: uclalib_ansible_capdeploy.yml
-  become: true
   hosts: all
-  become_user: ansible
 
   tasks:
     - name: Ensure ansible user is defined
@@ -89,12 +87,16 @@
           file:
             path: "{{ cap_base }}/{{ project_name }}/current/public/robots.txt"
             state: "absent"
+          become: true
+          become_user: "{{ capistrano_user }}"
 
         - name: Allow search engine crawling of this site
           file:
             src: "{{ cap_base }}/{{ project_name }}/current/public/robots_allow.txt"
             path: "{{ cap_base }}/{{ project_name }}/current/public/robots.txt"
             state: "link"
+          become: true
+          become_user: "{{ capistrano_user }}"
           when: allow_web_crawl == "yes"
 
         - name: Disallow search engine crawling of this site
@@ -102,6 +104,8 @@
             src: "{{ cap_base }}/{{ project_name }}/current/public/robots_disallow.txt"
             path: "{{ cap_base }}/{{ project_name }}/current/public/robots.txt"
             state: "link"
+          become: true
+          become_user: "{{ capistrano_user }}"
           when: allow_web_crawl == "no"
 
         - name: Enable Stack Tracing
@@ -111,6 +115,8 @@
             regexp: '(\s*config.consider_all_requests_local\s*=\s*)false'
             backrefs: true
             state: present
+          become: true
+          become_user: "{{ capistrano_user }}"
           when:
             - (allow_stack_trace|default('false')) | bool
             - (stack_trace|default('false')) | bool
@@ -119,7 +125,9 @@
           systemd:
             name: httpd
             state: restarted
-      always:
+          become: true
+
+      always: # deploy block
         - name: Clean-up ansible user project deploy directory
           file:
             path: "/home/{{ ansible_username }}/{{ project_name }}"
