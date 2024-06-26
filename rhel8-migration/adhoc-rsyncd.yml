@@ -64,6 +64,10 @@
             path = /sftp
             comment = (/sftp) sftp data
             read only
+          [ansible]
+            path = /etc/ansible
+            comment = (/etc/ansible) ansible data
+            read only
         owner: root
         group: root
         mode: '0644'
