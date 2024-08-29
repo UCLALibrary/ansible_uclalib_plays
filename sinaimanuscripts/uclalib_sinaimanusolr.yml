@@ -22,5 +22,5 @@
         immediate: true
         permanent: true
         state: enabled
-      loop: '{{ ["http", "https"] | product(["164.67.40.0", "164.67.48.0"]) | li
-st }}'
+      loop: '{{ ["http", "https"] | product(["164.67.40.0", "164.67.48.0"]) | list }}'
+
