@@ -13,3 +13,14 @@
     - { role: uclalib_role_java }
     - { role: uclalib_role_apache }
     - { role: uclalib_role_solr }
+
+  tasks:
+    - name: Open firewall for web access
+      firewalld:
+        rich_rule: >
+          rule family=ipv4 source address={{ item[1] }}/24 service name={{ item[0] }} accept
+        immediate: true
+        permanent: true
+        state: enabled
+      loop: '{{ ["http", "https"] | product(["164.67.40.0", "164.67.48.0"]) | li
+st }}'
