@@ -3,7 +3,7 @@
 - name: uclalib_californicaweb.yml
   become: yes
   become_method: sudo
-  hosts: "[pstd]-w-californicaweb*"
+  hosts: "[pstd]-w-californica*"
   user: ansible
 
   roles:
