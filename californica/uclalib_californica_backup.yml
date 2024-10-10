@@ -46,7 +46,7 @@
 
     - name: Dump Californica Rails App database
       shell: >
-        mysqldump californicadb{{ server_environ }} >
+        mysqldump --no-tablespaces californicadb{{ server_environ }} >
         /mnt/samvera_backup/californica_{{ env_date_time }}/californicadb{{ server_environ }}_{{ansible_date_time.date}}.sql
 
     - name: Copy Redis database
@@ -95,7 +95,7 @@
 
     - name: Dump fedora database
       shell: >
-        mysqldump fedora_californica_{{ server_environ }} >
+        mysqldump --no-tablespaces fedora_californica_{{ server_environ }} >
         /mnt/samvera_backup/californica_{{ env_date_time }}/fedora_californica_{{ server_environ }}_{{ansible_date_time.date}}.sql
 
     - name: Create fedora data store backup directory in backup mount
