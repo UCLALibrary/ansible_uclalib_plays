@@ -32,6 +32,10 @@
         fact_path: omit
         gather_subset: "!all,virtual"
 
+    - name: Use standard python
+      set_fact:
+        ansible_python_interpreter: /usr/libexec/platform-python
+
     - name: Get Snapshots
       vmware_guest_snapshot_info:
         datacenter: "{{ vsphere_datacenter }}"
