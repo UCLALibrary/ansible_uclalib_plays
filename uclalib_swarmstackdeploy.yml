@@ -27,7 +27,7 @@
 - name: uclalib_swarmstackdeploy.yml
   become: yes
   become_method: sudo
-  hosts: "{{ rhel_inventory_host_group }}"
+  hosts: "{{ rhel_inventory_host_group | default("None") }}"
   vars_files:
     - ../group_vars/{{ rhel_inventory_host_group }}/main.yml
     - ../group_vars/{{ rhel_inventory_host_group }}/main.vault.yml
