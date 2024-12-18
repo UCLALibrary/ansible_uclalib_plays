@@ -30,19 +30,6 @@
   gather_facts: false
 
   tasks:
-    - name: Get RHEL Subscription Status
-      command: >
-        subscription-manager list --consumed --pool-only
-      changed_when: false
-      check_mode: false
-      become: true
-      register: subscription_status
-
-    - name: Fail if host not attached to RHEL Subscription
-      fail:
-        msg: "This host is not attached to a RHEL Subscription"
-      when: subscription_status.stdout | length == 0
-
     - name: Execute RHEL yum update
       yum:
         name: "*"
