@@ -1,6 +1,8 @@
 ---
 
 - name: uclalib_ansible_capdeploy.yml
+  become: yes
+  become_method: sudo
   hosts: all
 
   tasks:
