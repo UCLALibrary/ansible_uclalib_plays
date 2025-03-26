@@ -19,8 +19,8 @@
     vsphere_username: "{{ vmware_user }}@{{ vsphere_domain }}"
     vsphere_password: "{{ vmware_password }}"
     vsphere_folder: "/"
-    # for python3
-    # date_format_snapshot: "%Y-%m-%dT%H:%M:%S.%f%z"
+    # for python3.12+
+    # date_format_snapshot: "%Y-%m-%dT%H:%M:%S.%f%:z"
     # for python2, assuming UTC
     date_format_snapshot: "%Y-%m-%dT%H:%M:%S.%f+00:00"
     date_format_display: "%Y-%m-%d %H:%M"
@@ -57,7 +57,7 @@
     - name: Save Report
       lineinfile:
         line: '{{ inventory_hostname }}: ({{ (item.creation_time | to_datetime(date_format_snapshot)).strftime(date_format_display) }}) {{ item.name }}'
-        # Python3 will be able to convert to the local timezone
+        # Python3.12+ will be able to convert to the local timezone
         #msg: '{{ inventory_hostname }}: ({{ (item.creation_time | to_datetime(date_format_snapshot)).astimezone().strftime(date_format_display) }}) {{ item.name }}'
         path: '{{ report_pathname }}'
         create: true
