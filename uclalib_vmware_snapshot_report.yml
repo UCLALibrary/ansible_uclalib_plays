@@ -63,12 +63,25 @@
         create: true
         state: present
       connection: local
-      notify: Print Report
+      notify:
+        - Read Report
+        - Print Report
+        - Print Report Path
       loop: '{{ snapshots.guest_snapshots.snapshots }}'
+
+    - name: Read Report
+      slurp:
+        src: '{{ report_pathname }}'
+      register: snapshot_report
+      run_once: true
+      connection: local
 
     - name: Print Report
       debug:
-        msg: '{{ item }}'
-      with_file:
-        - '{{ report_pathname }}'
+        msg: '{{ snapshot_report.content | b64decode }}'
+      run_once: true
+
+    - name: Print Report Path
+      debug:
+        msg: 'Report saved to "{{ report_pathname }}"'
       run_once: true
