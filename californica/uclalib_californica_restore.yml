@@ -1,6 +1,6 @@
 ---
 
-- hosts: "californica{{ server_environ }}fedora:californica{{ server_environ }}solr:californica{{ server_environ }}web"
+- hosts: "californica{{ server_environ | default('None') }}fedora:californica{{ server_environ | default('None') }}solr:californica{{ server_environ | default('None') }}web"
   become: true
   become_method: sudo
   user: ansible
@@ -37,7 +37,7 @@
 
 ##############################################################################
 
-- hosts: "californica{{ server_environ }}fedora"
+- hosts: "californica{{ server_environ | default('None') }}fedora"
   become: yes
   become_method: sudo
   user: ansible
@@ -116,7 +116,7 @@
 
 ##############################################################################
 
-- hosts: "californica{{ server_environ }}solr"
+- hosts: "californica{{ server_environ | default('None') }}solr"
   become: yes
   become_method: sudo
   user: ansible
@@ -171,7 +171,7 @@
 
 ##############################################################################
 
-- hosts: "californica{{ server_environ }}web"
+- hosts: "californica{{ server_environ | default('None') }}web"
   become: yes
   become_method: sudo
   user: ansible
