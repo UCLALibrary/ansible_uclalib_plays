@@ -1,6 +1,6 @@
 ---
 
-- hosts: "californica{{ californica_env }}fedora"
+- hosts: "californica{{ californica_env | default('None') }}fedora"
   become: yes
   become_method: sudo
   user: ansible
@@ -49,7 +49,7 @@
 
 ##############################################################################
 
-- hosts: "californica{{ californica_env }}web"
+- hosts: "californica{{ californica_env | default('None') }}web"
   become: yes
   become_method: sudo
   user: ansible
