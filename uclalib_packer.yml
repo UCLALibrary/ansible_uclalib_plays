@@ -96,6 +96,12 @@
         - vsphere_folder == ''
         - convert_to_template|bool
 
+    - name: Disable swap
+      set_fact:
+        swap: '--noswap'
+      when:
+        - convert_to_template|bool
+
     - name: Set Provisioning Script
       set_fact:
         playbook_file: '{{ (convert_to_template | bool) | ternary (provisioner.template, provisioner.vm) }}'
