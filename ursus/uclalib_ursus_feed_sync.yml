@@ -1,0 +1,24 @@
+---
+
+- name: uclalib_californica_solr_sync.yml
+  hosts: '[tsp]-u-calursussolrmaster01.library.ucla.edu'
+  become: true
+
+  tasks:
+    - name: Sync Solr Core from Feed Server
+      command:
+        cmd: /usr/local/sbin/solr-rsync-replication
+      changed_when: true
+      become: true
+      become_user: solr
+      when:
+        solr_rollback is not defined or not solr_rollback
+
+    - name: Rollback Solr Core to Previous Version
+      command:
+        cmd: /usr/local/sbin/solr-rsync-replication-rollback
+      changed_when: true
+      become: true
+      become_user: solr
+      when:
+        solr_rollback is defined and solr_rollback | bool

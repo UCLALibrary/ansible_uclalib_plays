@@ -7,6 +7,6 @@
   user: ansible
 
   roles:
-    - { role: uclalib_role_rhel7repos }
+    - { role: uclalib_role_rhel8repos }
     - { role: uclalib_role_epel }
     - { role: uclalib_role_mysql }
