@@ -1,7 +1,7 @@
 ---
 
 - name: uclalib_ursusweb.yml
-  become: yes
+  become: true
   become_method: sudo
   hosts: "[pstd]-w-ursus*"
   user: ansible
