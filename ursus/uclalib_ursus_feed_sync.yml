@@ -5,9 +5,13 @@
   become: true
 
   tasks:
+    - name: Assert a source host is provided
+      assert:
+        that: source_host is defined
+
     - name: Sync Solr Core from Feed Server
       command:
-        cmd: /usr/local/sbin/solr-rsync-replication
+        cmd: /usr/local/sbin/solr-rsync-replication {{ source_host }}
       changed_when: true
       become: true
       become_user: solr
