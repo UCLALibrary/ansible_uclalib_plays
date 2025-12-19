@@ -1,7 +1,7 @@
 ---
 
 - name: uclalib_californica_solr_sync.yml
-  hosts: '[tsp]-u-calursussolrmaster01.library.ucla.edu'
+  hosts: '[tsp]-u-calursussolrmaster01.library.ucla.edu:[ts]-u-calursussolr-feed01.library.ucla.edu'
   become: true
 
   tasks:
