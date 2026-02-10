@@ -1,0 +1,16 @@
+---
+- name: uclalib_californica_solr_sync.yml
+  hosts: p-u-ursussolr-source01.library.ucla.edu:p-u-ursussolr01.library.ucla.edu
+  become: true
+
+  tasks:
+    - name: Assert a source host is provided
+      assert:
+        that: source_host is defined
+
+    - name: Sync Solr Core to/from Source
+      command:
+        cmd: /usr/local/sbin/solr-source-copy {{ source_host }}
+      changed_when: true
+      become: true
+      become_user: solr
