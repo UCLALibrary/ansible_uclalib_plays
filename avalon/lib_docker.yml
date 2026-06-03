@@ -1,0 +1,50 @@
+---
+- name: "Install Docker Engine (Community Edition)"
+  hosts: "*avalon*"
+  become: true
+
+  vars:
+    docker_incompatible_packages:
+      - docker-client
+      - docker-client-latest
+      - docker-common
+      - docker-engine
+      - docker-latest
+      - docker-latest-logrotate
+      - docker-logrotate
+      - podman
+      - runc
+    docker_prerequisite_packages:
+      - dnf-plugins-core
+    docker_repo: https://download.docker.com/linux/rhel/docker-ce.repo
+    docker_packages:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+
+  tasks:
+    - name: Remove docker_incompatible_packages
+      package:
+        name: "{{ docker_incompatible_packages }}"
+        state: absent
+
+    - name: Add docker_prerequisite_packages
+      package:
+        name: "{{ docker_prerequisite_packages }}"
+        state: present
+
+    - name: Add docker_repo
+      command:
+        argv:
+          - /usr/bin/dnf
+          - config-manager
+          - --add-repo
+          - "{{ docker_repo }}"
+        creates: /etc/yum.repos.d/{{ docker_repo | basename }}
+
+    - name: Install docker_packages
+      package:
+        name: "{{ docker_packages }}"
+        state: present
