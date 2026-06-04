@@ -1,0 +1,19 @@
+---
+- name: Ensure host has FQDN
+  hosts: all
+  gather_facts: false
+
+  pre_tasks:
+    - name: Gathering Facts (minus /etc/facts.d)
+      setup:
+        fact_path: /nonexistent
+
+  tasks:
+    - name: Append domain to /etc/hostname
+      lineinfile:
+        path: /etc/hostname
+        state: present
+        backrefs: true
+        line: '\1.library.ucla.edu'
+        regexp: '^([^.]*).*\n'
+        create: false
