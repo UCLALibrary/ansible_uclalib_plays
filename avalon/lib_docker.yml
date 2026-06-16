@@ -49,3 +49,13 @@
       package:
         name: "{{ docker_packages }}"
         state: present
+
+    - name: Enable docer service
+      service:
+        name: docker
+        enabled: true
+
+    - name: Start docker service
+      service:
+        name: docker
+        state: started
