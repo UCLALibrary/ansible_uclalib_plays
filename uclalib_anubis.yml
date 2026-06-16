@@ -25,4 +25,4 @@
   handlers:
     - name: Alert
       debug:
-        msg: "Anubis installed. Adjust Apache accordingly."
+        msg: "Anubis installed. Adjust Apache and /etc/anubis/default.env's REDIRECT_DOMAINS accordingly."
