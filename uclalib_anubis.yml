@@ -1,0 +1,16 @@
+---
+- name: Install UCLA Branded Anubis
+  hosts: all
+
+  tasks:
+    - name: Install UCLA Anubis Package
+      package:
+        name: anubis-ucla
+        state: present
+      become: true
+      notify: Alert
+
+  handlers:
+    - name: Alert
+      debug:
+        msg: "Anubis installed. Adjust Apache accordingly."
