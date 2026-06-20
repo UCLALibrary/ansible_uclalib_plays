@@ -18,7 +18,7 @@
 # ---
 
 - name: 'Playbook uclalib_role_packer.yml pt 2'
-  hosts: '{{ vm_name }}'
+  hosts: '{{ vm_name | default ("None") }}'
   gather_facts: false
 
   pre_tasks:

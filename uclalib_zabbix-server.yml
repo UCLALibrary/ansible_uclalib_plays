@@ -6,7 +6,9 @@
 
   roles:
     - role: uclalib_role_rhelscl
+      when: ansible_distribution_major_version == '7'
     - role: uclalib_role_apache
+    - role: uclalib_role_certbot
     - role: uclalib_role_postgresql
     - role: uclalib_role_zabbix
     - role: uclalib_role_firewalld
