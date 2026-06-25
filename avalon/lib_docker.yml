@@ -50,7 +50,7 @@
         name: "{{ docker_packages }}"
         state: present
 
-    - name: Enable docer service
+    - name: Enable docker service
       service:
         name: docker
         enabled: true
