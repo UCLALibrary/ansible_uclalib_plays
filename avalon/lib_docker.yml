@@ -59,3 +59,24 @@
       service:
         name: docker
         state: started
+
+    - name: Create docker user groups
+      group:
+        name: '{{ item }}' 
+        state: present
+        system: yes
+      loop: '{{ docker_users }}'
+
+    - name: Create docker users
+      user:
+        name: '{{ item }}'
+        comment: '{{ item }}'
+        create_home: true
+        group: '{{ item }}'
+        groups:
+          - docker
+        home: '/var/lib/{{ item }}'
+        password: '!!'
+        shell: '/sbin/nologin'
+        state: present
+
