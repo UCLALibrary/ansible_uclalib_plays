@@ -76,9 +76,10 @@
         groups:
           - docker
         home: '/var/lib/{{ item }}'
-        password: '!!'
+        password: '!'
         shell: '/sbin/nologin'
         state: present
+      loop: '{{ docker_users }}'
 
     - name: Add volume mount points
       mount:
