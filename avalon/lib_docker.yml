@@ -80,3 +80,11 @@
         shell: '/sbin/nologin'
         state: present
 
+    - name: Add volume mount points
+      mount:
+        path: /srv/{{ item }}
+        state: mounted
+        fstype: xfs
+        src: 'LABEL={{ item | upper }}'
+      loop: '{{ avalon_mounts }}'
+
