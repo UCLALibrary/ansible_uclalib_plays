@@ -23,9 +23,9 @@ services:
       - SETTINGS__DROPBOX__PATH=/masterfiles/dropbox
       - SETTINGS__DROPBOX__UPLOAD_URI=./masterfiles/dropbox
       - SETTINGS__ENCODING__WORKING_FILE_PATH=/masterfiles
-      - SETTINGS__EMAIL__COMMENTS
-      - SETTINGS__EMAIL__NOTIFICATION
-      - SETTINGS__EMAIL__SUPPORT
+      - EMAIL__COMMENTS
+      - EMAIL__NOTIFICATION
+      - EMAIL__SUPPORT
       - ENCODE_WORK_DIR=/streamfiles
       - FEDORA_BASE_PATH
       - FEDORA_NAMESPACE=avalon
