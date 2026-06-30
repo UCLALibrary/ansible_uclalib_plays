@@ -1,0 +1,48 @@
+---
+
+- name: Create and mount volume mounts
+  hosts: "*avalon*"
+  become: true
+
+  vars:
+    volume_devices:
+      - /dev/sdc
+      - /dev/sdd
+      - /dev/sde
+
+  tasks:
+    - name: Create volume partition
+      parted:
+        device: '{{ volume_devices[i] }}'
+        # fs_type: linux # not supported in ansible 2.9.27
+        label: msdos
+        number: 1
+        part_start: '0%'
+        part_end: '100%'
+        part_type: primary
+        state: present
+      loop: '{{ avalon_mounts }}'
+      loop_control:
+        index_var: i
+
+    - name: Format volume partition
+      filesystem:
+        dev: '{{ volume_devices[i] }}1'
+        fstype: xfs
+        opts: '-L {{ item | upper }}'
+      loop: '{{ avalon_mounts }}'
+      loop_control:
+        index_var: i
+      register: mkfs
+      ignore_errors: true
+      failed_when:
+        - failed is defined
+        - '"Device {{ volume_devices[1] }}1 not found." not in mkfs.msg'
+
+    - name: Mount volume
+      mount:
+        path: /srv/{{ item }}
+        src: LABEL={{ item | upper }}
+        fstype: xfs
+        state: mounted
+      loop: '{{ avalon_mounts }}'

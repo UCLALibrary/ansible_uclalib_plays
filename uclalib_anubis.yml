@@ -1,0 +1,28 @@
+---
+- name: Install UCLA Branded Anubis
+  hosts: all
+
+  tasks:
+    - name: Install UCLA Anubis Package
+      package:
+        name: anubis-ucla
+        state: present
+      become: true
+      notify: Alert
+
+    - name: Enable Anubis
+      service:
+        name: "anubis@default"
+        state: enabled
+      become: true
+
+    - name: Start Anubis
+      service:
+        name: "anubis@default"
+        state: started
+      become: true
+
+  handlers:
+    - name: Alert
+      debug:
+        msg: "Anubis installed. Adjust Apache and /etc/anubis/default.env's REDIRECT_DOMAINS accordingly."

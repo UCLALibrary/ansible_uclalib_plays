@@ -1,0 +1,25 @@
+---
+
+name: avalon-db
+
+services:
+  db:
+    ports:
+      - "0.0.0.0:5432:5432"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: 2
+          memory: 2G
+    extends:
+      file: base.yaml
+      service: db
+
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /srv/db_data

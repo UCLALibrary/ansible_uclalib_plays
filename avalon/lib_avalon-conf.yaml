@@ -1,0 +1,60 @@
+---
+
+- name: Deploy Avalon Configs
+  hosts: '?-w-avalon*'
+  become: true
+
+  tasks:
+    - name: Create temporary build directory
+      tempfile:
+        state: directory
+        suffix: '-avalon.conf.d'
+      register: avalon_repo
+      become: false
+      connection: local
+      check_mode: false
+      changed_when: false
+
+    - name: Clone Avalon 8 configuration repository
+      git:
+        repo: git@github.com:UCLALibrary/avalon8-dev.git
+        dest: '{{ avalon_repo.path }}'
+        depth: 1
+        recursive: false
+        # single_branch: true # Ansible 2.11
+        version: '{{ avalon_conf_version | default("main") }}'
+      become: false
+      connection: local
+      check_mode: false
+      changed_when: false
+
+    - name: Deploy and Clean up
+      block:
+        - name: Deploy the Configs
+          synchronize:
+            dest: /var/lib/avalon/volumes/avalon/
+            src: '{{ avalon_repo.path }}/{{ item }}'
+            archive: false
+            recursive: true
+            checksum: true
+            owner: false
+            group: false
+            times: false
+            delete: true
+          remote_user: avalon
+          become: false
+          when: avalon_repo.path is defined
+          loop:
+            - app
+            - config
+
+      always:
+        - name: Clean up Repo
+          file:
+            path: '{{ avalon_repo.path }}'
+            state: absent
+          connection: local
+          become: false
+
+
+

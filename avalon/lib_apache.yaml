@@ -1,0 +1,67 @@
+---
+
+- name: Install Apache and Anubis
+  hosts: ?-w-avalon??.library.ucla.edu:*-w-avalonweb??.library.ucla.edu
+  become: true
+
+  vars:
+    apache_hostnames: '{{ (certbot_certificates | dict2items)[0].value.domains }}'
+
+  roles:
+    - role: uclalib_role_apache
+    - role: uclalib_role_certbot
+
+  tasks:
+    - name: Install Abubis
+      package:
+        name: anubis-ucla
+        state: present
+
+    - name: Install Apache vhost
+      template:
+        src: httpd/avalon.conf.j2
+        dest: /etc/httpd/vhosts.d/{{ apache_hostnames[0] }}.conf
+        owner: root
+        group: root
+        mode: '0444'
+      notify: Restart Apache Webserver Service
+
+    - name: Make Avalon Web Log Directory
+      file:
+        path: /var/log/httpd/avalon
+        state: directory
+        owner: root
+        group: root
+        mode: '0700'
+
+    - name: Install Anubis configuration
+      template:
+        src: anubis/default.env.j2
+        dest: /etc/anubis/default.env
+        owner: anubis
+        group: anubis
+        mode: '0444'
+      notify: Restart Anubis Service
+
+    - name: Enable Abubis
+      service:
+        name: anubis@default
+        enabled: true
+        state: started
+
+    - name: Enable Apache Webserver
+      service:
+        name: httpd
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Restart Apache Webserver Service
+      service:
+        name: httpd
+        state: restarted
+
+    - name: Restart Anubis Service
+      service:
+        name: anubis@default
+        state: restarted

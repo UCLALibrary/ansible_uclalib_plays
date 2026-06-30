@@ -1,0 +1,25 @@
+---
+
+name: avalon-fedora
+
+services:
+  fedora:
+    ports:
+      - "127.0.0.1:8080:8080"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: 4
+          memory: 4G
+    extends:
+      file: base.yaml
+      service: fedora
+
+volumes:
+  fedora_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /srv/fedora_data

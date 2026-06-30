@@ -1,0 +1,26 @@
+<VirtualHost *:80>
+
+  ServerName {{ ansible_fqdn }}
+
+  ErrorLog /var/log/httpd/fedora/error_log
+  CustomLog /var/log/httpd/fedora/access_log combined
+
+  HostnameLookups Off
+
+  UseCanonicalName On
+
+  ProxyRequests Off
+  <Proxy *>
+    Require all granted
+  </Proxy>
+
+  ProxyPreserveHost On
+
+  ProxyPass /fcrepo http://localhost:8080/fcrepo
+  ProxyPassReverse /fcrepo http://localhost:8080/fcrepo
+  ProxyTimeout 300
+  <Location /fcrepo>
+    Require all granted
+  </Location>
+
+</VirtualHost>

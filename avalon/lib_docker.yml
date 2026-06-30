@@ -1,4 +1,5 @@
 ---
+# https://docs.docker.com/engine/install/rhel/ 2026-06-11
 - name: "Install Docker Engine (Community Edition)"
   hosts: "*avalon*"
   become: true
@@ -48,3 +49,50 @@
       package:
         name: "{{ docker_packages }}"
         state: present
+
+    - name: Enable docker service
+      service:
+        name: docker
+        enabled: true
+
+    - name: Start docker service
+      service:
+        name: docker
+        state: started
+
+    - name: Create docker user groups
+      group:
+        name: '{{ item }}' 
+        state: present
+        system: yes
+      loop: '{{ docker_users }}'
+
+    - name: Create docker users
+      user:
+        name: '{{ item }}'
+        comment: '{{ item }}'
+        create_home: true
+        group: '{{ item }}'
+        groups:
+          - docker
+        home: '/var/lib/{{ item }}'
+        password: '!'
+        shell: '/usr/bin/bash' # /usr/bin/bash is what is in the rpm
+        state: present
+      loop: '{{ docker_users }}'
+
+    - name: Add deploy keys
+      authorized_key:
+        user: '{{ item[0] }}'
+        key: '{{ item[1] }}'
+      loop: '{{ docker_users | product(docker_deploy_keys) | list }}'
+      tags: ag
+
+    - name: Add volume mount points
+      mount:
+        path: /srv/{{ item }}
+        state: mounted
+        fstype: xfs
+        src: 'LABEL={{ item | upper }}'
+      loop: '{{ avalon_mounts }}'
+

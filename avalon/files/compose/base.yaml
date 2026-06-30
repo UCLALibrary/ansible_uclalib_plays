@@ -1,0 +1,106 @@
+---
+name: avalon
+
+services:
+  avalon:
+    image: avalonmediasystem/avalon:8.2
+    depends_on:
+      - hls
+      - redis
+    volumes:
+      - masterfiles:/masterfiles
+      - storage:/home/app/avalon/storage #Config another location in storage.yml
+      - streaming:/streamfiles
+      - ./volumes/avalon/app/assets/:/home/app/avalon/app/assets/:ro
+      - ./volumes/avalon/app/views/:/home/app/avalon/app/views/:ro
+      - ./volumes/avalon/config:/home/app/avalon/config:ro
+    environment:
+      - APP_NAME
+      - SECRET_KEY_BASE
+      - ASSET_HOST
+      - SETTINGS__DOMAIN
+      - DATABASE_URL=postgres://avalon:${AVALON_DB_PASSWORD}@${AVALON_DB_HOST}/avalon
+      - SETTINGS__DROPBOX__PATH=/masterfiles/dropbox
+      - SETTINGS__DROPBOX__UPLOAD_URI=./masterfiles/dropbox
+      - SETTINGS__ENCODING__WORKING_FILE_PATH=/masterfiles
+      - SETTINGS__EMAIL__COMMENTS
+      - SETTINGS__EMAIL__NOTIFICATION
+      - SETTINGS__EMAIL__SUPPORT
+      - ENCODE_WORK_DIR=/streamfiles
+      - FEDORA_BASE_PATH
+      - FEDORA_NAMESPACE=avalon
+      - FEDORA_URL=http://${FEDORA_ADMIN_USERNAME}:${FEDORA_ADMIN_PASSWORD}@${AVALON_FEDORA_HOST}/fcrepo/rest
+      - SETTINGS__FFMPEG__PATH=/usr/bin/ffmpeg
+      - MASTER_FILE_PATH
+      - SETTINGS__MASTER_FILE_MANAGEMENT__STRATEGY=delete
+      - MEDIAINFO_PATH=/usr/bin/mediainfo
+      - PIDFILE=tmp/pids/server.pid
+      - PUMA_STATE_PATH=tmp/puma.state
+      - RAILS_ADDITIONAL_HOSTS=avalon
+      - RAILS_ENV=production
+      - RAILS_LOG_TO_STDOUT=true
+      - RAILS_SERVE_STATIC_FILES=true
+      - SETTINGS__REDIS__URL=redis://redis:6379/0
+      - SMTP_ADDRESS
+      - SMTP_AUTHENTICATION
+      - SETTINGS__STREAMING__STREAM_TOKEN_TTL=20
+      - SMTP_DOMAIN
+      - SMTP_ENABLE_STARTTLS_AUTO
+      - SMTP_OPENSSL_VERIFY_MODE
+      - SMTP_PASSWORD
+      - SMTP_PORT
+      - SMTP_USER_NAME
+      - SOLR_URL=http://${AVALON_SOLR_HOST}/solr/avalon
+      - SETTINGS__STREAMING__CONTENT_PATH=/streamfiles
+      - SETTINGS__STREAMING__HTTP_BASE=http://${STREAMING_HOST}:8880/avalon
+      - SETTINGS__STREAMING__SERVER=nginx
+      - SYSTEM_GROUPS=administrator,group_manager,manager
+      - Z3950_ATTRIBUTE
+      - Z3950_DATABASE
+      - Z3950_HOST
+      - Z3950_PORT
+    command: bash -c "bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0"
+  db:
+    image: postgres:14-alpine
+    volumes:
+      - ./volumes/db/init-db:/docker-entrypoint-initdb.d:ro
+      - db_data:/data
+    environment:
+      - AVALON_DB_PASSWORD
+      - FEDORA_DB_PASSWORD
+      - PGDATA=/data
+      - POSTGRES_USER=postgres
+      - POSTGRES_HOST_AUTH_METHOD=trust
+  fedora:
+    image: fcrepo/fcrepo:6-tomcat9
+    volumes:
+      - fedora_data:/data
+    environment:
+      - FEDORA_ADMIN_USERNAME
+      - FEDORA_ADMIN_PASSWORD
+      - FEDORA_DB_PASSWORD
+      - CATALINA_OPTS=-Dfcrepo.autoversioning.enabled=false -Dfcrepo.db.password=${FEDORA_DB_PASSWORD} -Dfcrepo.db.user=fedora -Dfcrepo.db.url=jdbc:postgresql://${AVALON_DB_HOST}:5432/fcrepo_cache -Dfcrepo.home=/data
+  hls:
+    image: avalonmediasystem/nginx:avalon-8.2
+    volumes:
+      - streaming:/data
+      - ./volumes/nginx/nginx.conf.template:/etc/nginx/nginx.conf.template:ro
+    environment:
+      - AVALON_DOMAIN=http://avalon:3000
+      - VOD_MODE=local
+  redis:
+    image: redis:alpine
+  solr:
+    image: solr:9
+    volumes:
+      - ./volumes/solr/conf:/opt/solr/avalon_conf:ro
+      - solr_data:/var/solr
+    environment:
+      - SOLR_MODULES=analysis-extras,extraction
+    command:
+      - solr-precreate
+      - avalon
+      - /opt/solr/avalon_conf
+  worker:
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    extends: avalon

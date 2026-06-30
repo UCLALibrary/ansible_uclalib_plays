@@ -1,0 +1,26 @@
+<VirtualHost *:80>
+
+  ServerName {{ ansible_fqdn }}
+
+  ErrorLog /var/log/httpd/solr/error_log
+  CustomLog /var/log/httpd/solr/access_log combined
+
+  HostnameLookups Off
+
+  UseCanonicalName On
+
+  ProxyRequests Off
+  <Proxy *>
+    Require all granted
+  </Proxy>
+
+  ProxyPreserveHost On
+
+  ProxyPass /solr http://localhost:8983/solr
+  ProxyPassReverse /solr http://localhost:8983/solr
+  ProxyTimeout 300
+  <Location /solr>
+    Require all granted
+  </Location>
+
+</VirtualHost>

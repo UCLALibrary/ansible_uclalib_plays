@@ -1,0 +1,38 @@
+---
+
+- name: Install Apache
+  hosts: ?-u-avalonsolr??.library.ucla.edu
+  become: true
+
+  roles:
+    - role: uclalib_role_apache
+
+  tasks:
+    - name: Install Apache vhost
+      template:
+        src: httpd/solr.conf.j2
+        dest: /etc/httpd/vhosts.d/solr.conf
+        owner: root
+        group: root
+        mode: '0444'
+      notify: Restart Apache Webserver Service
+
+    - name: Make Solr Web Log Directory
+      file:
+        path: /var/log/httpd/solr
+        state: directory
+        owner: root
+        group: root
+        mode: '0700'
+
+    - name: Enable Apache Webserver
+      service:
+        name: httpd
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Restart Apache Webserver Service
+      service:
+        name: httpd
+        state: restarted
