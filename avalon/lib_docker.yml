@@ -77,9 +77,16 @@
           - docker
         home: '/var/lib/{{ item }}'
         password: '!'
-        shell: '/sbin/nologin'
+        shell: '/usr/bin/bash' # /usr/bin/bash is what is in the rpm
         state: present
       loop: '{{ docker_users }}'
+
+    - name: Add deploy keys
+      authorized_key:
+        user: '{{ item[0] }}'
+        key: '{{ item[1] }}'
+      loop: '{{ docker_users | product(docker_deploy_keys) | list }}'
+      tags: ag
 
     - name: Add volume mount points
       mount:

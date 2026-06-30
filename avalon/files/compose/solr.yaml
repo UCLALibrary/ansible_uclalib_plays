@@ -1,0 +1,25 @@
+---
+
+name: avalon-solr
+
+services:
+  solr:
+    ports:
+      - "127.0.0.1:8983:8983"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: 2
+          memory: 6G
+    extends:
+      file: base.yaml
+      service: solr
+
+volumes:
+  solr_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /srv/solr_data

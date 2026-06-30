@@ -1,0 +1,70 @@
+<VirtualHost *:80>
+  Header set Access-Control-Allow-Origin "*"
+  ServerName {{ apache_hostnames[0] }}
+  ErrorLog /etc/httpd/logs/{{ apache_hostnames[0] }}_80-error.log
+  CustomLog /etc/httpd/logs/{{ apache_hostnames[0] }}-access.log combined
+  Redirect permanent / https://{{ apache_hostnames[0] }}
+</VirtualHost>
+
+# HTTPS listener that forwards to Anubis
+<VirtualHost *:443>
+  ServerName {{ apache_hostnames[0] }}
+
+  ErrorLog /var/log/httpd/avalon/anubis-{{ apache_hostnames[0] }}_error_log
+  CustomLog /var/log/httpd/avalon/anubis-{{ apache_hostnames[0] }}_access_log combined
+
+  # Protocol, CipherSuite, and OCSP config in /etc/httpd/conf.d/ssl.conf
+
+  SSLEngine on
+  SSLCertificateFile /etc/letsencrypt/live/{{ (certbot_certificates | dict2items)[0].key }}/cert.pem
+  SSLCertificateKeyFile /etc/letsencrypt/live/{{ (certbot_certificates | dict2items)[0].key }}/privkey.pem
+  SSLCertificateChainFile /etc/letsencrypt/live/{{ (certbot_certificates | dict2items)[0].key }}/chain.pem
+
+  # These headers need to be set or else Anubis will
+  # throw an "admin misconfiguration" error.
+  RequestHeader set "X-Real-Ip" expr=%{REMOTE_ADDR}
+  RequestHeader set X-Forwarded-Proto "https"
+
+  ProxyPreserveHost On
+
+  ProxyRequests Off
+  ProxyVia Off
+
+  AllowEncodedSlashes NoDecode
+
+## TURN BACK ON FOR SHIB
+# <Location / >
+#    AuthType Shibboleth
+#    ShibRequireSession Off
+#    ShibUseHeaders On
+#    require shibboleth
+# </Location>
+
+# <Location /Shibboleth.sso >
+#    SetHandler shib
+#    AuthType Shibboleth
+#    ShibRequireSession Off
+#    ShibUseHeaders On
+#    require shibboleth
+# </Location>
+
+# <Location /users/auth/shibboleth/callback >
+#     AuthType Shibboleth
+#     ShibRequireSession On
+#     require shibboleth
+#     ShibUseHeaders On
+# </Location>
+
+# <Location /shibboleth-login >
+#     AuthType Shibboleth
+#     ShibRequireSession On
+#     ShibUseHeaders On
+#     require shibboleth
+# </Location>
+## TURN BACK ON FOR SHIB
+
+
+  # Replace 9000 with the port Anubis listens on
+  ProxyPass / http://localhost:{{ anubis_listen_port | default(9000) }}/ nocanon
+  ProxyPassReverse / http://localhost:{{ anubis_listen_port | default(9000) }}/ nocanon
+</VirtualHost>

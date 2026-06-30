@@ -1,0 +1,46 @@
+---
+# Omnibus playbook for all Avalon 8
+- name: Ensure docker is available
+  hosts: "avalon_test"
+  become: false
+
+  tasks:
+    - name: Ensure docker is running
+      service:
+        name: docker
+        state: started
+
+- name: Avalon Frontend Composure
+  hosts: "avalon_test"
+  become: true
+
+  tasks:
+    - name: Populate volumes
+      copy:
+        src: volumes/{{ item }}/
+        dest: /var/lib/{{ docker_users[0] }}/volumes/{{ item }}/
+        owner: '{{ docker_users[0] }}'
+        group: '{{ docker_users[0] }}'
+        directory_mode: '0755'
+        mode: '0444'
+      loop: '{{ docker_volumes }}'
+      when: docker_volumes is defined
+
+    - name: Copy Compose files
+      copy:
+        src: compose/{{ item[0] }}
+        dest: /var/lib/{{ docker_users[0] }}/{{ item[1] }}
+        owner: '{{ docker_users[0] }}'
+        group: '{{ docker_users[0] }}'
+        mode: '0444'
+      loop:
+        - [ "base.yaml", "base.yaml" ]
+        - [ "{{ docker_users[0] }}.yaml", "compose.yaml" ]
+
+    - name: Copy environmental file
+      template:
+        src: env.j2
+        dest: /var/lib/{{ docker_users[0] }}/.env
+        owner: '{{ docker_users[0] }}'
+        group: '{{ docker_users[0] }}'
+        mode: '0400'

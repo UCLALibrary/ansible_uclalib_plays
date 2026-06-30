@@ -1,0 +1,9 @@
+---
+
+- name: Apply firewalld rules
+  hosts: '*avalon*'
+  become: true
+
+  roles:
+    - role: uclalib_role_firewalld
+

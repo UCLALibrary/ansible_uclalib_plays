@@ -1,0 +1,38 @@
+---
+
+- name: Install Apache
+  hosts: ?-u-avalonfedora??.library.ucla.edu
+  become: true
+
+  roles:
+    - role: uclalib_role_apache
+
+  tasks:
+    - name: Install Apache vhost
+      template:
+        src: httpd/fedora.conf.j2
+        dest: /etc/httpd/vhosts.d/fedora.conf
+        owner: root
+        group: root
+        mode: '0444'
+      notify: Restart Apache Webserver Service
+
+    - name: Make Fedora Web Log Directory
+      file:
+        path: /var/log/httpd/fedora
+        state: directory
+        owner: root
+        group: root
+        mode: '0700'
+
+    - name: Enable Apache Webserver
+      service:
+        name: httpd
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Restart Apache Webserver Service
+      service:
+        name: httpd
+        state: restarted

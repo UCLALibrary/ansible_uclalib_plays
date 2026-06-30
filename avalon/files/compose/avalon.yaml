@@ -1,0 +1,75 @@
+---
+
+name: avalon
+
+services:
+  avalon:
+    ports:
+      - "127.0.0.1:3000:3000"
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          cpus: "0.50"
+          memory: 500M
+    extends:
+      file: base.yaml
+      service: avalon
+
+  hls:
+    ports:
+      - "127.0.0.1:8880:80"
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          cpus: "0.50"
+          memory: 500M
+    extends:
+      file: base.yaml
+      service: hls
+
+  redis:
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          cpus: "0.50"
+          memory: 20M
+    extends:
+      file: base.yaml
+      service: redis
+
+  worker:
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: 4
+          memory: 14G
+        reservations:
+          cpus: "0.50"
+          memory: 500M
+    extends:
+      file: base.yaml
+      service: worker
+
+volumes:
+  masterfiles:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /srv/masterfiles
+  streaming:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /srv/streaming
+  storage:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /srv/storage
