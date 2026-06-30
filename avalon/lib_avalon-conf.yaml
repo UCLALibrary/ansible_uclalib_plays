@@ -23,6 +23,7 @@
         recursive: false
         # single_branch: true # Ansible 2.11
         version: '{{ avalon_conf_version | default("main") }}'
+        key_file: ~/.ssh/id_ed25519-avalon-conf
       become: false
       connection: local
       check_mode: false
