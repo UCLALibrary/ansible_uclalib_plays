@@ -5,6 +5,30 @@
 The docker containers are set to restart unless stopped. If the host is
 rebooted, the containers will come back up.
 
+## Configuration Deployment
+
+If the configurations have been updated in the
+[avalon8-dev](https://github.com/UCLALibrary/avalon8-dev "Avalon v8 UCLA
+Development") repository, then the `lib_avalon-docker.yaml` playbook can
+distribute them.
+
+```bash
+ansible-playbook /etc/ansible/plays/avalon/lib_avalon-conf.yaml \
+  --limit avalon_test
+```
+
+Currently, limiting to the `avalon_test` group is important, as the playbook
+isn't limited enough in scope to avoid the legacy Avalon 7 systems.
+
+The containers should be restarted after a configuration change.
+
+```shell
+ansible t-w-avalon01.library.ucla.edu \
+  --args 'docker compose restart' \
+  --become \
+  --become-user avalon
+```
+
 ## Servers
 
 The Avalon 8 service is split among four hosts:
@@ -30,25 +54,14 @@ Runs the Fedora Commons repository
 
 Runs the Solr indexer
 
-
 ## Compose
 
 The containers on a host are managed by a `compose.yaml` file that references a
 unified `base.yaml` file. The base compose file is based strongly on the
-upstream avalon-docker.
-
-If there is a `compose-<service>.yaml` file present, it can be safely removed.
-
-## Configuration deployment
-
-If the configurations have been updated in the (avalon8-dev)[https://github.com/UCLALibrary/avalon8-dev "Avalon v8 UCLA Development"] repository, then the `lib_avalon-docker.yaml` playbook can distribute them.
-
-```bash
-ansible-playbook -DvC /etc/ansible/plays/avalon/lib_avalon-conf.yaml -l avalon_test
-```
-
-Currently, limiting to the `avalon_test` group is important, as the playbook
-isn't limited enough in scope to avoid the legacy Avalon 7 systems.
+upstream [avalon-docker](https://github.com/avalonmediasystem/avalon-docker
+"Dockerfiles for Avalon Media
+System")/[`docker-compose.yml`](https://raw.githubusercontent.com/avalonmediasystem/avalon-docker/refs/heads/main/docker-compose.yml
+"Docker Compose (raw)").
 
 ## Playbooks
 
@@ -72,7 +85,7 @@ performs a "`lib_avalon.yaml`" function but with a different name.
 - `lib_solr.yaml`
   Installs Apache proxy.
 - `lib_avalon8.yml`
-  Installs Docker compose files, and bind mount volume data.
+  Installs Docker compose files, environment, and bind mount volume data.
 - `lib_avalon-conf.yaml`
   Installs the Avalon configurations from the avalon-dev repository.
 
@@ -81,8 +94,14 @@ performs a "`lib_avalon.yaml`" function but with a different name.
 No playbook, _at this time_, actually starts the containers. It must be done
 manually after all the above playbooks have been run.
 
-```
+```shell
 docker compose up --detatch
+```
+
+From the Ansible controller:
+
+```shell
+ansible avalon_test -a 'sudo su - {{ docker_users[0] }} -c "docker compose up -d"'
 ```
 
 Sadly, not enough time was permitted to allow making one "site.yaml" file to
