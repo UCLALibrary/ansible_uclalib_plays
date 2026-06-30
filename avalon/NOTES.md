@@ -20,11 +20,15 @@ ansible-playbook /etc/ansible/plays/avalon/lib_avalon-conf.yaml \
 Currently, limiting to the `avalon_test` group is important, as the playbook
 isn't limited enough in scope to avoid the legacy Avalon 7 systems.
 
-The containers should be restarted after a configuration change.
+The containers should be force restarted after a configuration change.
 
 ```shell
 ansible t-w-avalon01.library.ucla.edu \
-  --args 'docker compose restart' \
+  --args 'docker compose down' \
+  --become \
+  --become-user avalon
+ansible t-w-avalon01.library.ucla.edu \
+  --args 'docker compose up' \
   --become \
   --become-user avalon
 ```
