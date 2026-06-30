@@ -50,12 +50,11 @@
             - config
 
       always:
-        - name: Clean up Repo
+        - name: Clean up Repo (logs suppresed)
           file:
             path: '{{ avalon_repo.path }}'
             state: absent
           connection: local
           become: false
-
-
-
+          changed_when: false
+          no_log: true # this is a very noisy task with any verbosity
