@@ -86,7 +86,7 @@
         user: '{{ item[0] }}'
         key: '{{ item[1] }}'
       loop: '{{ docker_users | product(docker_deploy_keys) | list }}'
-      tags: ag
+      when: docker_deploy_keys is defined
 
     - name: Add volume mount points
       mount:
