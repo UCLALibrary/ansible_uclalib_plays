@@ -112,3 +112,19 @@ Sadly, not enough time was permitted to allow making one "site.yaml" file to
 complete the install, configuration, and service launching with complete
 verification that required hardware was present.
 
+## Timezone
+
+Currently the services are set to UTC timezome. To adjust to the hosts's
+timezone (America/Los Angeles) we can match the hosts setting.
+
+```yaml
+volumes:
+  - /etc/localtime:/etc/localtime:ro
+```
+
+To set it absolutely:
+
+```yaml
+volumes:
+  - /usr/share/zoneinfo/America/Los_Angeles:/etc/localtime:ro
+```
