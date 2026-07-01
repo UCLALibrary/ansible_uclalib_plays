@@ -128,3 +128,9 @@ To set it absolutely:
 volumes:
   - /usr/share/zoneinfo/America/Los_Angeles:/etc/localtime:ro
 ```
+
+## SSO
+
+The included `omniauth-saml` gem and IAMUCLA both supoprt SAML2. Now it's
+jsut a matter of getting the configurations set to be able to provide
+the required metadata generated and provided to IAMUCLA.
