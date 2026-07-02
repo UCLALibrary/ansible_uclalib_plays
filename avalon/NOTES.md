@@ -134,3 +134,60 @@ volumes:
 The included `omniauth-saml` gem and IAMUCLA both supoprt SAML2. Now it's
 jsut a matter of getting the configurations set to be able to provide
 the required metadata generated and provided to IAMUCLA.
+
+### Samvera Slack #avalon
+
+[SAML at Indiana University](https://samvera.slack.com/archives/C1C3C4F5L/p1664987898199329?thread_ts=1664986958.268939&cid=C1C3C4F5L "We've setup SAML at IU")
+
+`config/settings/production.local.yml`
+
+```yaml
+    - :name: IU SAML
+      :logo: iu_logo.png
+      :provider: :saml
+      :hidden: false
+      :params:
+        :sp_entity_id: mco-staging.dlib.indiana.edu
+        :idp_sso_service_url: https://idp-stg.login.iu.edu/idp/profile/SAML2/Redirect/SSO
+        :issuer: MCO Staging
+        :attribute_service_name: mco-staging.dlib.indiana.edu
+        :uid_attribute:
+          - "urn:oid:2.5.4.3"
+          - "urn:oid:0.9.2342.19200300.100.1.3"
+        :security:
+          :authn_requests_signed: true
+          :metadata_signed: true
+          :algorithm: http://www.w3.org/2000/09/xmldsig#rsa-sha1
+          :digest_method: http://www.w3.org/2000/09/xmldsig#sha1
+          :signature_method: http://www.w3.org/2000/09/xmldsig#rsa-sha1
+        :idp_cert: >
+          -----BEGIN CERTIFICATE-----
+          -----END CERTIFICATE-----
+        :certificate: >
+          -----BEGIN CERTIFICATE-----
+          -----END CERTIFICATE-----
+        :private_key: >
+          -----BEGIN PRIVATE KEY-----
+          -----END PRIVATE KEY-----
+```
+
+Initializer:
+
+```yaml
+User.instance_eval do
+  def self.find_for_saml(access_token, signed_in_resource=nil)
+    logger.debug "#{access_token.inspect}"
+    username = access_token.uid
+
+    user = User.where(:username => username).first
+
+    unless user
+      email = username if username.include?('@') # if ony email is returned by SAML service
+      user = User.find_or_create_by_username_or_email(username, email)
+      raise "Creating user (#{ user }) failed: #{ user.errors.full_messages }" unless user.persisted?
+    end
+
+    user
+  end
+end
+```
