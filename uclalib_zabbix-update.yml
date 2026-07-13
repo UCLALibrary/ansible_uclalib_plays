@@ -1,0 +1,32 @@
+---
+
+- name: Update Zabbix Server
+  hosts: p-w-zabbix01.library.ucla.edu
+
+  tasks:
+    - name: Update Zabbix Server Packages
+      dnf:
+        name:
+          - zabbix-apache-conf
+          - zabbix-get
+          - zabbix-release
+          - zabbix-selinux-policy
+          - zabbix-server-pgsql
+          - zabbix-sql-scripts
+          - zabbix-web
+          - zabbix-web-deps
+          - zabbix-web-pgsql
+        state: latest
+        update_only: true
+      become: true
+
+- name: Update Zabbix Agents
+  hosts: all
+
+  tasks:
+    - name: Update Zabbix Agent Package
+      yum: # update to dnf module once all RHEL 7 systems are gone
+        name: zabbix-agent
+        state: latest
+        update_only: true
+      become: true
