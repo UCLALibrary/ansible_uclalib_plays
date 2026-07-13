@@ -9,7 +9,6 @@
         name:
           - zabbix-apache-conf
           - zabbix-get
-          - zabbix-release
           - zabbix-selinux-policy
           - zabbix-server-pgsql
           - zabbix-sql-scripts
