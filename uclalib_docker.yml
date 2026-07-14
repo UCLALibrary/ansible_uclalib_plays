@@ -1,0 +1,72 @@
+---
+# https://docs.docker.com/engine/install/rhel/ 2026-06-11
+- name: "Install Docker Engine (Community Edition)"
+  hosts: docker
+  become: true
+
+  vars:
+    docker_incompatible_packages:
+      - docker-client
+      - docker-client-latest
+      - docker-common
+      - docker-engine
+      - docker-latest
+      - docker-latest-logrotate
+      - docker-logrotate
+      - podman
+      - runc
+    docker_prerequisite_packages:
+      - dnf-plugins-core
+    docker_repo: https://download.docker.com/linux/rhel/docker-ce.repo
+    docker_packages:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    docker_users: []
+
+  tasks:
+    - name: Remove Docker Incompatible Packages
+      package:
+        name: "{{ docker_incompatible_packages }}"
+        state: absent
+
+    - name: Add Docker Prerequisite Packages
+      package:
+        name: "{{ docker_prerequisite_packages }}"
+        state: present
+
+    - name: Add Docker DNF Repository
+      command:
+        argv:
+          - /usr/bin/dnf
+          - config-manager
+          - --add-repo
+          - "{{ docker_repo }}"
+        creates: /etc/yum.repos.d/{{ docker_repo | basename }}
+        warn: false
+
+    - name: Install Docker Packages
+      package:
+        name: "{{ docker_packages }}"
+        state: present
+
+    - name: Enable Docker Service
+      service:
+        name: docker
+        enabled: true
+
+    - name: Start Docker Service
+      service:
+        name: docker
+        state: started
+
+    - name: Add Docker Users to Docker Group
+      user:
+        name: '{{ item }}'
+        append: true
+        groups:
+          - docker
+        state: present
+      loop: '{{ docker_users }}'
