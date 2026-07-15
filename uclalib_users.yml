@@ -1,0 +1,6 @@
+- name: uclalib_users.yml
+  hosts: all
+  become: yes
+
+  roles:
+    - role: uclalib_role_users
