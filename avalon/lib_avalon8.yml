@@ -25,6 +25,7 @@
         mode: '0444'
       loop: '{{ docker_volumes }}'
       when: docker_volumes is defined
+      notify: Restart Container
 
     - name: Copy Compose files
       copy:
@@ -34,8 +35,9 @@
         group: '{{ docker_users[0] }}'
         mode: '0444'
       loop:
-        - [ "base.yaml", "base.yaml" ]
-        - [ "{{ docker_users[0] }}.yaml", "compose.yaml" ]
+        - ["base.yaml", "base.yaml"]
+        - ["{{ docker_users[0] }}.yaml", "compose.yaml"]
+      notify: Restart Container
 
     - name: Copy environmental file
       template:
@@ -44,3 +46,29 @@
         owner: '{{ docker_users[0] }}'
         group: '{{ docker_users[0] }}'
         mode: '0400'
+      notify: Restart Container
+
+  handlers:
+    - name: Stop Container
+      command:
+        argv:
+          - /usr/bin/docker
+          - compose
+          - down
+          - --remove-orphans
+        become: true
+        become_user: '{{ docker_users[0] }}'
+      changed_when: true
+      listen: Restart Container
+
+    - name: Start Container
+      command:
+        argv:
+          - /usr/bin/docker
+          - compose
+          - up
+          - --detach
+        become: true
+        become_user: '{{ docker_users[0] }}'
+      changed_when: true
+      listen: Restart Container
