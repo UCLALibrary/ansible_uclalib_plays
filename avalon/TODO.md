@@ -6,12 +6,13 @@ List of TODOs. Written in GitHub Flavored Markdown.
 <summary>Adding a TODO</summary>
 
 Make an H2 subheading (`##`) with the current date, and a line record with
-an unchecked box, with the description of the item:
+an unchecked box, with the description of the item. Add any relevant ticket /
+issue references.
 
 ```markdown
 ## 1970-01-01
 
-- [ ] Inspect codebase for Y2K
+- [ ] Inspect codebase for Y2K / JIRA-1999
 ```
 
 </details>
@@ -23,7 +24,7 @@ record to the end of the file. If there are no more TODOs for the given date,
 then remove the subheading:
 
 ```markdown
-- [x] Inspect codebase for Y2k
+- [x] Inspect codebase for Y2k / JIRA-1999
 ```
 
 </details>
