@@ -53,7 +53,7 @@ services:
       - SMTP_USER_NAME
       - SOLR_URL=http://${AVALON_SOLR_HOST}/solr/avalon
       - SETTINGS__STREAMING__CONTENT_PATH=/streamfiles
-      - SETTINGS__STREAMING__HTTP_BASE=http://${STREAMING_HOST}:8880/avalon
+      - SETTINGS__STREAMING__HTTP_BASE=https://${STREAMING_HOST}/avalon
       - SETTINGS__STREAMING__SERVER=nginx
       - SYSTEM_GROUPS=administrator,group_manager,manager
       - Z3950_ATTRIBUTE
