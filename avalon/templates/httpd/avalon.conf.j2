@@ -2,8 +2,8 @@
   Header set Access-Control-Allow-Origin "*"
   ServerName {{ apache_hostnames[0] }}
   ErrorLog /etc/httpd/logs/{{ apache_hostnames[0] }}_80-error.log
-  CustomLog /etc/httpd/logs/{{ apache_hostnames[0] }}-access.log combined
-  Redirect permanent / https://{{ apache_hostnames[0] }}
+  CustomLog /etc/httpd/logs/{{ apache_hostnames[0] }}_80-access.log combined
+  Redirect permanent / https://{{ apache_hostnames[0] }}/
 </VirtualHost>
 
 # HTTPS listener that forwards to Anubis
@@ -32,39 +32,25 @@
 
   AllowEncodedSlashes NoDecode
 
-## TURN BACK ON FOR SHIB
-# <Location / >
-#    AuthType Shibboleth
-#    ShibRequireSession Off
-#    ShibUseHeaders On
-#    require shibboleth
-# </Location>
-
-# <Location /Shibboleth.sso >
-#    SetHandler shib
-#    AuthType Shibboleth
-#    ShibRequireSession Off
-#    ShibUseHeaders On
-#    require shibboleth
-# </Location>
-
-# <Location /users/auth/shibboleth/callback >
-#     AuthType Shibboleth
-#     ShibRequireSession On
-#     require shibboleth
-#     ShibUseHeaders On
-# </Location>
-
-# <Location /shibboleth-login >
-#     AuthType Shibboleth
-#     ShibRequireSession On
-#     ShibUseHeaders On
-#     require shibboleth
-# </Location>
-## TURN BACK ON FOR SHIB
-
-
-  # Replace 9000 with the port Anubis listens on
   ProxyPass / http://localhost:{{ anubis_listen_port | default(9000) }}/ nocanon
   ProxyPassReverse / http://localhost:{{ anubis_listen_port | default(9000) }}/ nocanon
+</VirtualHost>
+
+Listen 3001
+<VirtualHost localhost:3001>
+  # Anubis callback
+  ServerName avalon-test.library.ucla.edu
+
+  ErrorLog /var/log/httpd/avalon/{{ apache_hostnames[0] }}_3001-error_log
+  CustomLog /var/log/httpd/avalon/{{ apache_hostnames[0] }}_3001-access_log combined
+
+  ProxyPreserveHost On
+
+  # HLS
+  ProxyPass /avalon/ http://localhost:8880/avalon/
+  ProxyPassReverse /avalon/ http://localhost:8880/avalon/
+
+  # Avalon
+  ProxyPass / http://localhost:3000/
+  ProxyPassReverse / http://localhost:3000/
 </VirtualHost>
