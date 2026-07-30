@@ -62,10 +62,10 @@ Runs the Solr indexer
 
 The containers on a host are managed by a `compose.yaml` file that references a
 unified `base.yaml` file. The base compose file is based strongly on the
-upstream [avalon-docker](https://github.com/avalonmediasystem/avalon-docker
-"Dockerfiles for Avalon Media
-System")/[`docker-compose.yml`](https://raw.githubusercontent.com/avalonmediasystem/avalon-docker/refs/heads/main/docker-compose.yml
-"Docker Compose (raw)").
+upstream [avalon-docker][AMS]/[`docker-compose.yml`][DCY].
+
+[AMS]: https://github.com/avalonmediasystem/avalon-docker "Dockerfiles for Avalon Media System"
+[DCY]: https://raw.githubusercontent.com/avalonmediasystem/avalon-docker/refs/heads/main/docker-compose.yml "Docker Compose (raw)"
 
 ## Playbooks
 
@@ -77,13 +77,13 @@ In order they should be applied (as best as I can remember):
   Installs Docker Engine and creates dedicated service users.
 - `lib_firewall.yaml`
   Updates the firewalls. Might have been done at Packer build if the firewall
-was anabled in the host vars.
+  was anabled in the host vars.
 - `lib_mounts.yaml`
   Creates paritions for named volume mounts. Uses `/dev/sdc` through `/dev/sde`
-as required for the named volumes. These drives must exist first.
+  as required for the named volumes. These drives must exist first.
 - `lib_apache.yaml`
   Installs and configures Apache Webserver, Certbot, and Anubis. Basically
-performs a "`lib_avalon.yaml`" function but with a different name.
+  performs a "`lib_avalon.yaml`" function but with a different name.
 - `lib_fedora.yaml`
   Installs Apache proxy.
 - `lib_solr.yaml`
@@ -142,6 +142,8 @@ the required metadata generated and provided to IAMUCLA.
 `config/settings/production.local.yml`
 
 ```yaml
+- ??
+  - ??
     - :name: IU SAML
       :logo: iu_logo.png
       :provider: :saml
@@ -190,4 +192,18 @@ User.instance_eval do
     user
   end
 end
+```
+
+## Validating Files
+
+### Compose Files
+
+```shell
+docker run -t --rm -v ${PWD}:/app zavoloklom/dclint $(echo files/compose/*)
+```
+
+### Markdown
+
+```shell
+markdownlint-cli2 "**/*.md" "#node_modules"
 ```

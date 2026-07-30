@@ -34,8 +34,8 @@
         group: '{{ docker_users[0] }}'
         mode: '0444'
       loop:
-        - [ "base.yaml", "base.yaml" ]
-        - [ "{{ docker_users[0] }}.yaml", "compose.yaml" ]
+        - ["base.yaml", "base.yaml"]
+        - ["{{ docker_users[0] }}.yaml", "compose.yaml"]
 
     - name: Copy environmental file
       template:
