@@ -207,3 +207,31 @@ docker run -t --rm -v ${PWD}:/app zavoloklom/dclint $(echo files/compose/*)
 ```shell
 markdownlint-cli2 "**/*.md" "#node_modules"
 ```
+
+## Deploying
+
+Deployment is done on-demand via GitHub Action. The action calls back to
+the `lib_avalon-conf.sh` script. A dedicated ssh key is used. Currently
+the same keyis used for the jump host and ansible controller, but this
+doesn't need to be the case. Currently (2026-07-31) the key is 
+unrestricted, but that should be changed. Especially on the jump system.
+
+The workflow sets the `DEPLOY_TO` environmental variable. For purposes
+of restricted keys, I don't trust positional paramters to be able to
+be passed reliably.
+
+The following action secret tokens are set:
+- `SSH_HOST`: ansible controller hostname
+- `SSH_USERNAME`: ansible username
+- `SSH_KEY`: contents of the dedicated ssh secret key file
+- `SSH_KEY_PASSPHRASE`: passphrase for the key. In 1Password.
+- `SSH_PORT`: standard ssh port
+- `PROXY_HOST`: jump hostname
+- `PROXY_USERNAME`: ansible username, same as `SSH_USERNAME`
+- `PROXY_KEY`: contents of the dedicated ssh secret key file. Same as `SSH_KEY`
+- `PROXY_KEY_PASSPHRASE`: analogous, and identical, to `SSH_KEY_PASSPHRASE`
+- `PROXY_PORT`: ssh port for jump server
+
+As of 2026-07-31, the script is hardcoded to the test avalon8 system, and
+check mode is enforced. Future enhancements include querying the `DEPLOY_TO`
+value to determine host to deploy configurations to.
