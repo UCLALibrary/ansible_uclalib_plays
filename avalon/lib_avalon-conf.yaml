@@ -6,7 +6,7 @@
 
   tasks:
     - name: Install rsync
-      packages:
+      package:
         name: rsync
         state: present
 
