@@ -11,7 +11,7 @@
         state: started
 
 - name: Avalon Frontend Composure
-  hosts: "avalon_test"
+  hosts: "avalon"
   become: true
 
   tasks:
