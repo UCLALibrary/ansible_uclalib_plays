@@ -15,6 +15,11 @@
   become: true
 
   tasks:
+    - name: Install rsync
+      packages:
+        name: rsync
+        state: present
+
     - name: Populate volumes
       copy:
         src: volumes/{{ item }}/
