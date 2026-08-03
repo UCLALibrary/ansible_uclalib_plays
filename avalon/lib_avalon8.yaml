@@ -1,7 +1,7 @@
 ---
 # Omnibus playbook for all Avalon 8
 - name: Ensure docker is available
-  hosts: "avalon_test"
+  hosts: "avalon"
   become: false
 
   tasks:
