@@ -5,6 +5,11 @@
   become: true
 
   tasks:
+    - name: Install rsync
+      packages:
+        name: rsync
+        state: present
+
     - name: Create temporary build directory
       tempfile:
         state: directory
