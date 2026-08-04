@@ -49,6 +49,7 @@
           loop:
             - app
             - config
+          notify: Restart Avalon
 
       always:
         - name: Clean up Repo (logs suppresed)
@@ -59,3 +60,20 @@
           become: false
           changed_when: false
           no_log: true # this is a very noisy task with any verbosity
+
+  handlers:
+    - name: Stop Containers
+      command:
+        cmd: docker compose down --remove-orphans
+      changed_when: true
+      become: true
+      become_user: avalon
+      listen: Restart Avalon
+
+    - name: Start Containers
+      command:
+        cmd: docker compose up --detatch
+      changed_when: true
+      become: true
+      become_user: avalon
+      listen: Restart Avalon
