@@ -12,7 +12,6 @@ printf 'DEPLOY_TO="%s"\n' "$DEPLOY_TO"
 printf 'AVALON_ENVIRONMENT="%s"\n' "$AVALON_ENVIRONMENT"
 
 /usr/bin/ansible-playbook \
-	--check \
 	--diff \
 	--limit "$AVALON_ENVIRONMENT" \
 	--verbose \
