@@ -3,8 +3,9 @@
 set -eu
 
 case $DEPLOY_TO in
-  main) AVALON_ENVIRONMENT=avalon_prod ;;
-  *) AVALON_ENVIRONMENT=avalon_test ;;
+  Production) AVALON_ENVIRONMENT=avalon_prod ;;
+  Test) AVALON_ENVIRONMENT=avalon_test ;;
+  *) printf 'Invalid environment: %s\n' "$DEPLOY_TO"; exit 1 ;;
 esac
 
 printf 'DEPLOY_TO="%s"\n' "$DEPLOY_TO"
