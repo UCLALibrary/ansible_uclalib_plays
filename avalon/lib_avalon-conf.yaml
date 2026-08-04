@@ -72,7 +72,7 @@
 
     - name: Start Containers
       command:
-        cmd: docker compose up --detatch
+        cmd: docker compose up --detach
       changed_when: true
       become: true
       become_user: avalon
