@@ -7,7 +7,7 @@ case $DEPLOY_TO in
   *) AVALON_ENVIRONMENT=avalon_test ;;
 esac
 
-printf 'DEPLOY_TO="%s"\n' "$DEPOLY_TO"
+printf 'DEPLOY_TO="%s"\n' "$DEPLOY_TO"
 printf 'AVALON_ENVIRONMENT="%s"\n' "$AVALON_ENVIRONMENT"
 
 /usr/bin/ansible-playbook \
