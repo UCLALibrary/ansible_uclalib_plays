@@ -1,14 +1,10 @@
 ---
 
 - name: Deploy Avalon Configs
-  hosts: '?-w-avalon*'
+  hosts: 'avalon:&?-w-*'
   become: true
 
   tasks:
-    - name: Install rsync
-      package:
-        name: rsync
-        state: present
 
     - name: Create temporary build directory
       tempfile:
@@ -22,7 +18,7 @@
 
     - name: Clone Avalon 8 configuration repository
       git:
-        repo: git@github.com:UCLALibrary/avalon8-dev.git
+        repo: git@github.com:UCLALibrary/avalon-ucla.git
         dest: '{{ avalon_repo.path }}'
         depth: 1
         recursive: false
