@@ -42,6 +42,9 @@ services:
       - RAILS_LOG_TO_STDOUT=true
       - RAILS_SERVE_STATIC_FILES=true
       - SETTINGS__REDIS__URL=redis://redis:6379/0
+      - SAML_IDP_CERT
+      - SAML_SP_CERT
+      - SAML_SP_KEY
       - SMTP_ADDRESS
       - SMTP_AUTHENTICATION
       - SETTINGS__STREAMING__STREAM_TOKEN_TTL=20
@@ -60,6 +63,7 @@ services:
       - Z3950_DATABASE
       - Z3950_HOST
       - Z3950_PORT
+
     command: bash -c "bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0"
   db:
     image: postgres:14-alpine
