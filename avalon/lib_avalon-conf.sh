@@ -3,7 +3,8 @@
 set -eu
 
 case $DEPLOY_TO in
-  Production) AVALON_ENVIRONMENT=avalon_prod ;;
+  Production) AVALON_ENVIRONMENT=avalon_prod;
+	 printf 'Job disabled.\n'; exit 0 ;;
   Test) AVALON_ENVIRONMENT=avalon_test ;;
   *) printf 'Invalid environment: %s\n' "$DEPLOY_TO"; exit 1 ;;
 esac
