@@ -9,9 +9,11 @@ case $DEPLOY_TO in
 esac
 
 printf 'DEPLOY_TO="%s"\n' "$DEPLOY_TO"
+printf 'BRANCH="%s"\n' "$BRANCH"
 printf 'AVALON_ENVIRONMENT="%s"\n' "$AVALON_ENVIRONMENT"
 
 /usr/bin/ansible-playbook \
+	--extra-vars "avalon_conf_version=$BRANCH" \
 	--diff \
 	--limit "$AVALON_ENVIRONMENT" \
 	--verbose \
