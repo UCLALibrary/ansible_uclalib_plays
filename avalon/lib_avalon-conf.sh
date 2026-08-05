@@ -8,9 +8,16 @@ case $DEPLOY_TO in
   *) printf 'Invalid environment: %s\n' "$DEPLOY_TO"; exit 1 ;;
 esac
 
-printf 'DEPLOY_TO="%s"\n' "$DEPLOY_TO"
-printf 'BRANCH="%s"\n' "$BRANCH"
-printf 'AVALON_ENVIRONMENT="%s"\n' "$AVALON_ENVIRONMENT"
+printf 'I: DEPLOY_TO="%s"\n' "$DEPLOY_TO"
+printf 'I: BRANCH="%s"\n' "$BRANCH"
+printf 'I: AVALON_ENVIRONMENT="%s"\n' "$AVALON_ENVIRONMENT"
+
+if [ "$DEPLOY_TO" = "Production" ] && [ "$BRANCH" != "main" ]; then
+  printf '\nE: Cravenly refusing to push %s to %s.\nExiting.\n' \
+    "$BRANCH" \
+    "$DEPLOY_TO"
+  exit 1
+fi
 
 /usr/bin/ansible-playbook \
 	--extra-vars "avalon_conf_version=$BRANCH" \
