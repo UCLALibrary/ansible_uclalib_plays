@@ -56,7 +56,7 @@ services:
       - SMTP_USER_NAME
       - SOLR_URL=http://${AVALON_SOLR_HOST}/solr/avalon
       - SETTINGS__STREAMING__CONTENT_PATH=/streaming_derivatives
-      - SETTINGS__STREAMING__HTTP_BASE="https://wowza.library.ucla.edu/avalon_media/_definst_"
+      - SETTINGS__STREAMING__HTTP_BASE="https://wowza.library.ucla.edu/avalon_media_test/_definst_"
       - SETTINGS__STREAMING__SERVER=wowza
       - SETTINGS__STREAMING__AUTH_REFERER=https://avalon-test.library.ucla.edu
       - SETTINGS__STREAMING__STREAM_TOKEN_TTL=20
