@@ -14,6 +14,7 @@ services:
       - ./volumes/avalon/app/assets/:/home/app/avalon/app/assets/:ro
       - ./volumes/avalon/app/views/:/home/app/avalon/app/views/:ro
       - ./volumes/avalon/config:/home/app/avalon/config:ro
+      - avalon_nfs:/streaming_derivatives
     environment:
       - APP_NAME
       - SECRET_KEY_BASE
@@ -27,7 +28,7 @@ services:
       - SETTINGS__EMAIL__NOTIFICATION
       - SETTINGS__EMAIL__SUPPORT
       - SETTINGS__EMAIL__CONFIG__ADDRESS
-      - ENCODE_WORK_DIR=/streamfiles
+      - ENCODE_WORK_DIR=/streaming_derivatives
       - FEDORA_BASE_PATH
       - FEDORA_NAMESPACE=avalon
       - FEDORA_URL=http://${FEDORA_ADMIN_USERNAME}:${FEDORA_ADMIN_PASSWORD}@${AVALON_FEDORA_HOST}/fcrepo/rest
@@ -47,7 +48,6 @@ services:
       - SAML_SP_KEY
       - SMTP_ADDRESS
       - SMTP_AUTHENTICATION
-      - SETTINGS__STREAMING__STREAM_TOKEN_TTL=20
       - SMTP_DOMAIN
       - SMTP_ENABLE_STARTTLS_AUTO
       - SMTP_OPENSSL_VERIFY_MODE
@@ -55,9 +55,11 @@ services:
       - SMTP_PORT
       - SMTP_USER_NAME
       - SOLR_URL=http://${AVALON_SOLR_HOST}/solr/avalon
-      - SETTINGS__STREAMING__CONTENT_PATH=/streamfiles
-      - SETTINGS__STREAMING__HTTP_BASE=https://${STREAMING_HOST}/avalon
-      - SETTINGS__STREAMING__SERVER=nginx
+      - SETTINGS__STREAMING__CONTENT_PATH=/streaming_derivatives
+      - SETTINGS__STREAMING__HTTP_BASE="https://wowza.library.ucla.edu/avalon_media/_definst_"
+      - SETTINGS__STREAMING__SERVER=wowza
+      - SETTINGS__STREAMING__AUTH_REFERER=https://avalon-test.library.ucla.edu
+      - SETTINGS__STREAMING__STREAM_TOKEN_TTL=20
       - SYSTEM_GROUPS=administrator,group_manager,manager
       - Z3950_ATTRIBUTE
       - Z3950_DATABASE
@@ -85,10 +87,10 @@ services:
       - FEDORA_ADMIN_PASSWORD
       - FEDORA_DB_PASSWORD
       - CATALINA_OPTS=-Dfcrepo.autoversioning.enabled=false
-          -Dfcrepo.db.password=${FEDORA_DB_PASSWORD}
-          -Dfcrepo.db.user=fedora_cache
-          -Dfcrepo.db.url=jdbc:postgresql://${AVALON_DB_HOST}:5432/fcrepo_cache
-          -Dfcrepo.home=/data
+        -Dfcrepo.db.password=${FEDORA_DB_PASSWORD}
+        -Dfcrepo.db.user=fedora_cache
+        -Dfcrepo.db.url=jdbc:postgresql://${AVALON_DB_HOST}:5432/fcrepo_cache
+        -Dfcrepo.home=/data
   hls:
     image: avalonmediasystem/nginx:avalon-8.2
     volumes:

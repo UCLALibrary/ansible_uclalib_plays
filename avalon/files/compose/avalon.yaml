@@ -1,5 +1,4 @@
 ---
-
 name: avalon
 
 services:
@@ -73,3 +72,9 @@ volumes:
       type: none
       o: bind
       device: /srv/storage
+  avalon_nfs:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=avalon.in.library.ucla.edu,rw,nfsvers=3
+      device: ":/streaming_derivatives/test"
