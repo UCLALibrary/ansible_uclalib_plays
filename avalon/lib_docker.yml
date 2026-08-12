@@ -24,6 +24,8 @@
       - containerd.io
       - docker-buildx-plugin
       - docker-compose-plugin
+    docker_volume_packages:
+      - nfs-utils
 
   tasks:
     - name: Remove docker_incompatible_packages
@@ -48,6 +50,11 @@
     - name: Install docker_packages
       package:
         name: "{{ docker_packages }}"
+        state: present
+
+    - name: Install docker_volume_packages
+      package:
+        name: "{{ docker_volume_packages }}"
         state: present
 
     - name: Enable docker service
