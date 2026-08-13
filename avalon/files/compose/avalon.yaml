@@ -15,19 +15,6 @@ services:
       file: base.yaml
       service: avalon
 
-  hls:
-    ports:
-      - "127.0.0.1:8880:80"
-    restart: unless-stopped
-    deploy:
-      resources:
-        reservations:
-          cpus: "0.50"
-          memory: 500M
-    extends:
-      file: base.yaml
-      service: hls
-
   redis:
     restart: unless-stopped
     deploy:
@@ -63,18 +50,12 @@ volumes:
   streaming:
     driver: local
     driver_opts:
-      type: none
-      o: bind
-      device: /srv/streaming
+      type: nfs
+      o: addr=avalon.in.library.ucla.edu,rw,nfsvers=3
+      device: ":/streaming_derivatives/test"
   storage:
     driver: local
     driver_opts:
       type: none
       o: bind
       device: /srv/storage
-  avalon_nfs:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: addr=avalon.in.library.ucla.edu,rw,nfsvers=3
-      device: ":/streaming_derivatives/test"

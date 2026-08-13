@@ -5,16 +5,14 @@ services:
   avalon:
     image: avalonmediasystem/avalon:8.2
     depends_on:
-      - hls
       - redis
     volumes:
-      - masterfiles:/masterfiles
-      - storage:/home/app/avalon/storage # Config another location in storage.yml
-      - streaming:/streamfiles
       - ./volumes/avalon/app/assets/:/home/app/avalon/app/assets/:ro
       - ./volumes/avalon/app/views/:/home/app/avalon/app/views/:ro
       - ./volumes/avalon/config:/home/app/avalon/config:ro
-      - avalon_nfs:/streaming_derivatives
+      - masterfiles:/masterfiles
+      - storage:/home/app/avalon/storage # Config another location in storage.yml
+      - streaming:/streaming_derivatives
     environment:
       - APP_NAME
       - ASSET_HOST
@@ -86,14 +84,6 @@ services:
       - FEDORA_ADMIN_PASSWORD
       - FEDORA_ADMIN_USERNAME
       - FEDORA_DB_PASSWORD
-  hls:
-    image: avalonmediasystem/nginx:avalon-8.2
-    volumes:
-      - streaming:/data
-      - ./volumes/nginx/nginx.conf.template:/etc/nginx/nginx.conf.template:ro
-    environment:
-      - AVALON_DOMAIN
-      - VOD_MODE
   redis:
     image: redis:alpine
   solr:
