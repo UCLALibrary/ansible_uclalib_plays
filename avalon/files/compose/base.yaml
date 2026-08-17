@@ -8,9 +8,9 @@ services:
       - redis
     volumes:
       - ./volumes/avalon/app/assets/:/home/app/avalon/app/assets/:ro
-      - ./volumes/avalon/app/assets/builds:/home/app/avalon/app/assets/builds:rw
       - ./volumes/avalon/app/views/:/home/app/avalon/app/views/:ro
       - ./volumes/avalon/config:/home/app/avalon/config:ro
+      - builds:/home/app/avalon/app/assets/builds:rw
       - masterfiles:/masterfiles
       - storage:/home/app/avalon/storage # Config another location in storage.yml
       - streaming:/streaming_derivatives
