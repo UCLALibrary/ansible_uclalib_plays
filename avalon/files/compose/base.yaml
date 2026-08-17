@@ -25,6 +25,7 @@ services:
       - FEDORA_URL
       - MASTER_FILE_PATH
       - MEDIAINFO_PATH
+      - NODE_OPTIONS
       - PIDFILE
       - PUMA_STATE_PATH
       - RAILS_ADDITIONAL_HOSTS
