@@ -13,6 +13,7 @@ services:
       - masterfiles:/masterfiles
       - storage:/home/app/avalon/storage # Config another location in storage.yml
       - streaming:/streaming_derivatives
+
     environment:
       - APP_NAME
       - ASSET_HOST
@@ -63,7 +64,7 @@ services:
       - Z3950_DATABASE
       - Z3950_HOST
       - Z3950_PORT
-    command: bash -c "bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0"
+    command: bash -c "bundle exec rails assets:precompile && bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0"
   db:
     image: postgres:14-alpine
     volumes:
