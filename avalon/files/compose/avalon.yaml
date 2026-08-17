@@ -41,6 +41,7 @@ services:
       service: worker
 
 volumes:
+  builds:
   masterfiles:
     driver: local
     driver_opts:
