@@ -66,7 +66,7 @@ services:
       - Z3950_DATABASE
       - Z3950_HOST
       - Z3950_PORT
-    command: bash -c "bundle exec rails assets:precompile && bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0"
+    command: bash -c "bundle exec rake db:migrate && bundle exec rails server -b 0.0.0.0"
   db:
     image: postgres:14-alpine
     volumes:
