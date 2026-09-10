@@ -1,3 +1,5 @@
+ANSIBLE_LINT := 0
+
 .PHONY: menu
 menu:
 	@printf 'validate: validates the stuff\n'
@@ -10,10 +12,12 @@ validate:
 	@docker run -t --rm -v ${PWD}:/app zavoloklom/dclint $$(echo files/compose/*)
 	@printf '==> Validating Markdown files (.markdownlint.yaml)\n'
 	@markdownlint-cli2 "**/*.md" "#node_modules"
-ifeq (0,1)
 	@# Ansible lint can't even find the existing parted module.
 	@printf '\n==> Validating Ansible files\n'
+ifeq ($(ANSIBLE_LINT),1)
 	@ansible-lint .
+else
+	@printf 'Skipped. Append "ANSIBLE_LINT=1" to run these checks.\n'
 endif
 	@printf '\nAll validations passed\n'
 
