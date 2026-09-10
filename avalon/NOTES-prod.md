@@ -1,4 +1,4 @@
-# Installing Prod Setup.
+# Installing Prod Setup
 
 Verified order:
 
@@ -6,7 +6,8 @@ Verified order:
 2. `lib_mounts.yaml`
 3. `lib_docker.yml` Fails on pre-install check, as Docker repo isn't installed
 4. `lib_firewall.yaml` Not sure this was necessary; set up at build time
-5. `lib_apache.yaml` Certbot role fails pre-instal check. "[uclalib role certbot : Stop process bound to port 80]"
+5. `lib_apache.yaml` Certbot role fails pre-instal check.
+   "[uclalib role certbot : Stop process bound to port 80]"
 6. `lib_fedora.yaml`
 7. `lib_solr.yaml`
 8. `lib_avalon8.yaml`
