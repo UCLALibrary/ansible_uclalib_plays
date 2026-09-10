@@ -1,0 +1,35 @@
+#!/bin/sh
+# ANSIBLE MANAGED - DO NOT EDIT
+
+set -eu
+
+backup_dir="$HOME/fcrepo-backup"
+data_dir="$HOME/.local/share/fedora" # XDG_DATA_HOME
+jar_file='fcrepo-import-export.jar'
+
+uid="$(id -u)"
+gid="$(id -g)"
+
+eval "$(grep -E '^FEDORA_ADMIN_(USERNAME|PASSWORD)' "$HOME/.env")"
+
+if ! [ -d "$backup_dir" ]; then
+  mkdir "$backup_dir"
+fi
+
+docker compose run \
+  --rm \
+  --user "$uid:$gid" \
+  --volume "$data_dir/$jar_file:/$jar_file:ro" \
+  --volume "$HOME/$backup_dir:/fcrepo-backup" \
+  fedora java \
+    -jar "/$jar_file" \
+      --acls \
+      --binaries \
+      --dir '/fcrepo-backup' \
+      --external \
+      --membership \
+      --mode 'export' \
+      --resource 'http://fedora:8080/fcrepo/rest' \
+      --user "$FEDORA_ADMIN_USERNAME:$FEDORA_ADMIN_PASSWORD" \
+      --versions \
+      --writeConfig '/fcrepo-backup/fcrepo-import-export.cfg'

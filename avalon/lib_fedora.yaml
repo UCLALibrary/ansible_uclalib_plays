@@ -31,6 +31,28 @@
         enabled: true
         state: started
 
+    - name: Install import/export jar
+      get_url:
+        url: http://pkgs.library.ucla.edu/fedora/{{ item }}-{{ avalon_fedora_import_export_version }}.jar
+        # XDG_DATA_HOME
+        dest: .local/share/{{ item }}.jar
+        mode: '0555'
+      become: true
+      become_user: fedora
+      loop:
+        - fcrepo-import-export
+
+    - name: Install Fedora Commons Backup Script
+      copy:
+        src: fedora/{{ item }}
+        # XDG_BIN_HOME
+        dest: .local/bin/{{ item }}
+        mode: '0555'
+      become: true
+      become_user: fedora
+      loop:
+        - fedora-backup
+
   handlers:
     - name: Restart Apache Webserver Service
       service:
