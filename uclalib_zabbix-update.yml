@@ -2,6 +2,12 @@
 
 - name: Update Zabbix Server
   hosts: p-w-zabbix01.library.ucla.edu
+  gather_facts: false
+
+  pre_tasks:
+    - name: Gathering Facts (minus /etc/facts.d)
+      setup:
+        fact_path: /nonexistent
 
   tasks:
     - name: Update Zabbix Server Packages
@@ -21,6 +27,12 @@
 
 - name: Update Zabbix Agents
   hosts: all
+  gather_facts: false
+
+  pre_tasks:
+    - name: Gathering Facts (minus /etc/facts.d)
+      setup:
+        fact_path: /nonexistent
 
   tasks:
     - name: Update Zabbix Agent Package
