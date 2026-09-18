@@ -36,6 +36,7 @@
         url: http://pkgs.library.ucla.edu/fedora/{{ item }}-{{ avalon_fedora_import_export_version }}.jar
         # XDG_DATA_HOME
         dest: .local/share/{{ item }}.jar
+        checksum: sha256:http://pkgs.library.ucla.edu/fedora/SHA256SUMS
         mode: '0555'
       become: true
       become_user: fedora
