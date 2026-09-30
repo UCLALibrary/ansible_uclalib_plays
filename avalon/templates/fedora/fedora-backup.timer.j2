@@ -1,0 +1,12 @@
+# ANSIBLE MANAGED - DO NOT EDIT
+
+[Unit]
+Description=Back Up Fedora Commons Nightly
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+RandomizedDelaySec=30m
+
+[Install]
+WantedBy=timers.target
