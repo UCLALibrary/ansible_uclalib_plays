@@ -1,0 +1,13 @@
+# ANSIBLE MANAGED - DO NOT EDIT
+
+[Unit]
+Description=Back Up Fedora Commons
+
+[Service]
+Type=oneshot
+TimeoutStartSec=30min
+ExecStart={{ fedora_base_dir }}/bin/fedora-backup
+User={{ fedora_username }}
+
+[Install]
+WantedBy=multi-user.target

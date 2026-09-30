@@ -7,6 +7,17 @@
   roles:
     - role: uclalib_role_apache
 
+  vars:
+    fedora_backup_script_name: fedora-backup
+    fedora_base_dir: /opt/fedora
+    fedora_data_dir: '{{ fedora_base_dir }}/share'
+    fedora_username: fedora
+    fcrepo_jar_slug: fcrepo-import-export
+    fcrepo_jar_checksum: 'sha256:e767f43b0b4f639042b0e399ebfebdf61957515d585b7f0d2d8aeb9f877b12a0'
+    fcrepo_jar_version: '{{ avalon_fedora_import_export_version  }}'
+    # Use the below once Ansible can find the checkum in the file:
+    # fcrepo_jar_checksum: 'sha256:http://pkgs.library.ucla.edu/fedora/SHA256SUMS'
+
   tasks:
     - name: Install Apache vhost
       template:
@@ -31,8 +42,72 @@
         enabled: true
         state: started
 
+    - name: Create Fedora Data Directory
+      file:
+        path: '{{ fedora_base_dir }}/{{ item }}'
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      loop:
+        - bin
+        - share
+
+    - name: Install import/export jar
+      get_url:
+        url: http://pkgs.library.ucla.edu/fedora/{{ fcrepo_jar_slug }}-{{ fcrepo_jar_version }}.jar
+        dest: '{{ fedora_data_dir }}/{{ fcrepo_jar_slug }}-{{ fcrepo_jar_version }}.jar'
+        checksum: '{{ fcrepo_jar_checksum }}'
+        mode: '0444'
+      ignore_errors: '{{ ansible_check_mode }}'
+
+    - name: Link Unversioned Name
+      file:
+        path: '{{ fedora_data_dir }}/{{ fcrepo_jar_slug }}.jar'
+        src: '{{ fcrepo_jar_slug }}-{{ fcrepo_jar_version }}.jar'
+        state: link
+      ignore_errors: '{{ ansible_check_mode }}'
+
+    - name: Install Fedora Commons Backup Script
+      template:
+        src: fedora/{{ fedora_backup_script_name }}.j2
+        dest: '{{ fedora_base_dir }}/bin/{{ fedora_backup_script_name }}'
+        mode: '0555'
+      become: true
+
+    - name: Install Fedora Commons Backup Systemd Unit Files
+      template:
+        src: fedora/{{ fedora_backup_script_name }}.{{ item }}.j2
+        dest: /etc/systemd/system/{{ fedora_backup_script_name }}.{{ item }}
+        mode: '0444'
+      become: true
+      notify: Reload Systemd
+      loop:
+        - service
+        - timer
+
+    - name: Restart Systemd, if necessary
+      meta: flush_handlers
+
+    - name: Enable Fedora Common Backup
+      systemd:
+        enabled: true
+        name: '{{ fedora_backup_script_name }}.{{ item }}'
+      loop:
+        - service
+        - timer
+
+    - name: Start Fedora Common Backup Timer
+      systemd:
+        state: started
+        name: '{{ fedora_backup_script_name}}.timer'
+
   handlers:
     - name: Restart Apache Webserver Service
       service:
         name: httpd
         state: restarted
+
+    - name: Reload Systemd
+      systemd:
+        daemon_reload: true
