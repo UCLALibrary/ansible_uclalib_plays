@@ -1,0 +1,57 @@
+#!/bin/bash
+# ANSIBLE MANAGED - DO NOT EDIT
+
+set -euo pipefail
+
+printf '%s\n' 'BEGIN BACKUP'
+
+cd "$HOME"
+
+today="$(date -I)"
+backup_age=30
+backup_base_dir="$HOME/fcrepo-backup"
+backup_dir_slug="$backup_base_dir/fcrepo-export-$today"
+data_dir='{{ fedora_data_dir }}'
+jar_file='{{ fcrepo_jar_slug }}.jar'
+
+uid="$(id -u)"
+gid="$(id -g)"
+
+eval "$(grep -E '^FEDORA_ADMIN_(USERNAME|PASSWORD)' "$HOME/.env")"
+
+suffix=0
+while [ -d "$backup_dir_slug.$suffix" ]; do
+  suffix="$(( suffix + 1))"
+done
+backup_dir="$backup_dir_slug.$suffix"
+mkdir -p "$backup_dir"
+
+docker compose run \
+  --rm \
+  --user "$uid:$gid" \
+  --volume "$data_dir/$jar_file:/$jar_file:ro" \
+  --volume "$backup_dir:/fcrepo-backup" \
+  fedora java \
+    -jar "/$jar_file" \
+      --acls \
+      --binaries \
+      --dir '/fcrepo-backup' \
+      --external \
+      --membership \
+      --mode 'export' \
+      --resource 'http://fedora:8080/fcrepo/rest' \
+      --user "$FEDORA_ADMIN_USERNAME:$FEDORA_ADMIN_PASSWORD" \
+      --versions \
+      --writeConfig '/fcrepo-backup/fcrepo-import-export.cfg'
+
+# Remove older backups
+printf '%s\n' 'Begin removing older backups'
+find -L "$backup_base_dir" \
+  -maxdepth 1 \
+  -mtime +"${backup_age}" \
+  -type d \
+  -print0 \
+  | xargs -0 \
+    rm -rf
+
+printf '%s\n' 'END BACKUP'
