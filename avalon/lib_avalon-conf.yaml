@@ -6,8 +6,7 @@
 
   tasks:
 
-    - name: Create temporary build directory
-      tempfile:
+    - tempfile:
         state: directory
         suffix: '-avalon.conf.d'
       register: avalon_repo

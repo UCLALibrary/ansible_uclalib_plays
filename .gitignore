@@ -1,0 +1,5 @@
+# Ignore Vagrant's work products
+.vagrant/
+
+# Ignore mise files for personal configurations
+mise.local.toml

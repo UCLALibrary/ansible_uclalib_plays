@@ -1,0 +1,23 @@
+[env]
+ANSIBLE_VERSION="2.9.27"
+DNF_PYTHON_PACKAGE="python36.x86_64"
+PYTHON_CRYPTO_VERSION="3.2.1"
+UBI_IMAGE_TAG="latest"
+UBI_VERSION=8
+UBI_IMAGE_URL="registry.access.redhat.com/ubi${UBI_VERSION}/ubi"
+REPO_TEMPLATE_VERSION="0.0.1"
+
+[tasks.ansible-lint]
+alias = "lint"
+description = "Run ansible-lint against this repository. Use blind double dash to pass arguments."
+run = 'docker run --rm -it -v ./:/local ucla-lib-ansible-dev-env:UBI-${UBI_VERSION}_RT-${REPO_TEMPLATE_VERSION} /local/bin/ansible-lint'
+
+[tasks.prepare-dev-env]
+alias = "prepare"
+description = "Set up the development environment in this repoisotory."
+run = '${MISE_CONFIG_ROOT}/bin/prepare-dev-env'
+
+[tasks.enter-build-env]
+alias = "enter"
+description = "Start a shell within the docker dev environment."
+run = 'docker run -i -t --rm -v ${MISE_CONFIG_ROOT}:/local ucla-lib-ansible-dev-env:UBI-${UBI_VERSION}_RT-${REPO_TEMPLATE_VERSION} bash'

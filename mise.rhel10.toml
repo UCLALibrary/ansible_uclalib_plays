@@ -1,0 +1,6 @@
+[env]
+UBI_VERSION=10
+UBI_IMAGE_URL="registry.access.redhat.com/ubi${UBI_VERSION}/ubi"
+ANSIBLE_VERSION="10.7"
+DNF_PYTHON_PACKAGE="python3.14.x86_64"
+PYTHON_CRYPTO_VERSION="3.2.1"

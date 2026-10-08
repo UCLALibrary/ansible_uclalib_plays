@@ -1,0 +1,14 @@
+#! /usr/bin/env bash
+
+if ! docker desktop start; then
+  printf "I couldn't start docker desktop, maybe this is linux? Continuing..."
+fi
+
+if ! docker inspect ucla-lib-ansible-dev-env:UBI-${UBI_VERSION}_RT-${REPO_TEMPLATE_VERSION} >/dev/null; then
+  docker build --tag ucla-lib-ansible-dev-env:UBI-${UBI_VERSION}_RT-${REPO_TEMPLATE_VERSION} \
+  --build-arg ANSIBLE_VERSION=${ANSIBLE_VERSION} \
+  --build-arg PYTHON_CRYPTO_VERSION=${PYTHON_CRYPTO_VERSION} \
+  --build-arg DNF_PYTHON_PACKAGE=${DNF_PYTHON_PACKAGE} \
+  --build-arg UBI_IMAGE_TAG=${UBI_IMAGE_TAG} \
+  --build-arg UBI_IMAGE_URL=${UBI_IMAGE_URL} ${MISE_CONFIG_ROOT}
+fi
