@@ -11,6 +11,7 @@ services:
       - ./volumes/avalon/app/views:/home/app/avalon/app/views:ro
       - ./volumes/avalon/config:/home/app/avalon/config:ro
       - assets:/home/app/avalon/public/assets:rw
+      - dropbox:/masterfiles/dropbox
       - builds:/home/app/avalon/app/assets/builds:rw
       - masterfiles:/masterfiles
       - storage:/home/app/avalon/storage # Config another location in storage.yml
