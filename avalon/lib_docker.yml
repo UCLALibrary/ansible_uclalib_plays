@@ -25,6 +25,7 @@
       - docker-buildx-plugin
       - docker-compose-plugin
     docker_volume_packages:
+      - cifs-utils
       - nfs-utils
 
   tasks:
