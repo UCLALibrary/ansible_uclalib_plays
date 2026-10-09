@@ -43,6 +43,17 @@ services:
 volumes:
   assets:
   builds:
+  dropbox:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "\
+        uid=1000,\
+        username=${DROPBOX_SHARE_USERNAME},\
+        password=${DROPBOX_SHARE_PASSWORD},\
+        vers=3.0\
+        "
+      device: //avalon.in.library.ucla.edu/media_streaming_dropbox
   masterfiles:
     driver: local
     driver_opts:
