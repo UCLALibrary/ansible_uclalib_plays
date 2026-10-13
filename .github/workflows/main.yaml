@@ -17,11 +17,12 @@ jobs:
       - uses: actions/checkout@v6 #checkout the repo_template repo's code
         with:
           repository: UCLALibrary/repo_template
-          path: ../repo_template
+          path: repo_template
           ref: ${{ env.REPO_TEMPLATE_VERSION }}
       - name: "Update template"
         run: |
-          cp -a ../repo_template/ ./
+          cp -a ./repo_template/ ./
+          rm -rf ./repo_template #remove the clone of repo_template before committing
           git config user.name "github-actions[bot]"
           git config user.email "dummy@library.ucla.edu"
           git add .
