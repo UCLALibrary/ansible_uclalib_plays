@@ -19,8 +19,9 @@ jobs:
           repository: UCLALibrary/repo_template
           path: ../repo_template
           ref: ${{ env.REPO_TEMPLATE_VERSION }}
-      - name: "gather info"
+      - name: "Update template"
         run: |
+          pwd
           cp -a ../repo_template/ ./
           git config user.name "github-actions[bot]"
           git config user.email "dummy@library.ucla.edu"
