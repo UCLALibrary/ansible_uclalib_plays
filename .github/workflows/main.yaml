@@ -7,7 +7,7 @@ on:
       - rg/** #TODO: remove this line. it is for testing only.
 
 env:
-  REPO_TEMPLATE_VERSION: "v0.1.0
+  REPO_TEMPLATE_VERSION: "v0.1.0"
 
 jobs:
   update_repo_tempate:
@@ -19,7 +19,7 @@ jobs:
           repository: UCLALibrary/repo_template
           path: ../repo_template
           ref: ${{ env.REPO_TEMPLATE_VERSION }}
-      - name: Update template
+      - name: "Update template"
         run: |
           cp -a ../repo_template/ ./
           git config user.name "github-actions[bot]"
