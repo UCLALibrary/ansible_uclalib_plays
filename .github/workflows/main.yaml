@@ -28,8 +28,8 @@ jobs:
           rm -rf ./repo_template #remove the clone of repo_template before committing
           tar -xvf snapshot.tar
           rm snapshot.tar
-          git config user.name "github-actions[bot]"
-          git config user.email "dummy@library.ucla.edu"
+          git config --set user.name "github-actions[bot]"
+          git config --set user.email "dummy@library.ucla.edu"
           git config
           git add .
           git commit -m "Merge version ${REPO_TEMPLATE_VERSION} of repo-template"
