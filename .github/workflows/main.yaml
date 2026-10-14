@@ -19,12 +19,13 @@ jobs:
           repository: UCLALibrary/repo_template
           path: repo_template
           ref: ${{ env.REPO_TEMPLATE_VERSION }}
+          ssh-key: ${{ secrets.DEV_ENV_REPO_TEMPLATE_PRIVATE_KEY }}
       - name: "Update template"
         env:
-          DEV_ENV_REPO_TEMPLATE_PRIVATE_KEY: ${{ secrets.DEV_ENV_REPO_TEMPLATE_PRIVATE_KEY }}
+          #DEV_ENV_REPO_TEMPLATE_PRIVATE_KEY: ${{ secrets.DEV_ENV_REPO_TEMPLATE_PRIVATE_KEY }}
           #GIT_SSH_COMMAND: ssh -i
         run: |
-          ssh-add - << "$DEV_ENV_REPO_TEMPLATE_PRIVATE_KEY"
+          #ssh-add - << "$DEV_ENV_REPO_TEMPLATE_PRIVATE_KEY"
           cp -a ./repo_template/ ./
           rm -rf ./repo_template #remove the clone of repo_template before committing
           git config user.name "github-actions[bot]"
