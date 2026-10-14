@@ -21,11 +21,12 @@ jobs:
           ref: ${{ env.REPO_TEMPLATE_VERSION }}
           ssh-key: ${{ secrets.DEV_ENV_REPO_TEMPLATE_PRIVATE_KEY }}
       - name: "Update template"
-        #env:
-          #DEV_ENV_REPO_TEMPLATE_PRIVATE_KEY: ${{ secrets.DEV_ENV_REPO_TEMPLATE_PRIVATE_KEY }}
-          #GIT_SSH_COMMAND: ssh -i
         run: |
-          #ssh-add - << "$DEV_ENV_REPO_TEMPLATE_PRIVATE_KEY"
+          echo ==
+          pwd && ls
+          echo ==
+          cd .. && pwd && ls
+          echo ==
           cp -a ./repo_template/ ./
           rm -rf ./repo_template #remove the clone of repo_template before committing
           git config user.name "github-actions[bot]"
