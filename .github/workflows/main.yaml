@@ -21,7 +21,7 @@ jobs:
           ref: ${{ env.REPO_TEMPLATE_VERSION }}
           ssh-key: ${{ secrets.DEV_ENV_REPO_TEMPLATE_PRIVATE_KEY }}
       - name: "Update template"
-        env:
+        #env:
           #DEV_ENV_REPO_TEMPLATE_PRIVATE_KEY: ${{ secrets.DEV_ENV_REPO_TEMPLATE_PRIVATE_KEY }}
           #GIT_SSH_COMMAND: ssh -i
         run: |
