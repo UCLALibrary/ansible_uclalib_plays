@@ -22,13 +22,12 @@ jobs:
           ssh-key: ${{ secrets.DEV_ENV_REPO_TEMPLATE_PRIVATE_KEY }}
       - name: "Update template"
         run: |
-          echo ==
-          pwd && ls
-          echo ==
-          cd .. && pwd && ls
-          echo ==
-          cp -a ./repo_template/ ./
+          cd repo_template
+          git archive --format tar -o ../snapshot.tar HEAD
+          cd ..
           rm -rf ./repo_template #remove the clone of repo_template before committing
+          tar -xvf snapshot.tar
+          rm snapshot.tar
           git config user.name "github-actions[bot]"
           git config user.email "dummy@library.ucla.edu"
           git config
