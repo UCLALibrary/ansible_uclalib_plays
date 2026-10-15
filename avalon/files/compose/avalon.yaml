@@ -53,7 +53,7 @@ volumes:
         password=${DROPBOX_SHARE_PASSWORD},\
         vers=3.0\
         "
-      device: //avalon.in.library.ucla.edu/media_streaming_dropbox
+      device: ${DROPBOX_SHARE}
   masterfiles:
     driver: local
     driver_opts:
