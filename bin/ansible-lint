@@ -1,0 +1,7 @@
+#! /usr/bin/env bash
+
+cd /local
+ansible-lint ${@}
+
+# per https://docs.ansible.com/projects/lint/usage/#linting-playbooks-and-roles
+# `ansible-lint` should only be run from the root of the project.
