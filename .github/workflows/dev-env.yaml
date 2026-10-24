@@ -6,10 +6,10 @@ on:
       - main
       - rg/** #TODO: remove this line. it is for testing only.
 
-env:
-  # uncomment the following to uncouple this repo's DEV_REPO_TEMPLATE_VERSION
-  # from the value specified in the organization-wide variable
-  #DEV_REPO_TEMPLATE_VERSION: "v0.1.0"
+# uncomment the following to uncouple this repo's DEV_REPO_TEMPLATE_VERSION
+# from the value specified in the organization-wide variable
+#env:
+#  DEV_REPO_TEMPLATE_VERSION: "v0.1.0"
 
 jobs:
   update_repo_tempate:
