@@ -1,0 +1,55 @@
+name: Dev Environment
+on:
+  push:
+    branches:
+      - master
+      - main
+      - rg/** #TODO: remove this line. it is for testing only.
+
+# uncomment the following to uncouple this repo's DEV_REPO_TEMPLATE_VERSION
+# from the value specified in the organization-wide variable
+#env:
+#  DEV_REPO_TEMPLATE_VERSION: "v0.1.0"
+
+jobs:
+  update_repo_tempate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6 #checkout the current repo's code
+      - uses: actions/checkout@v6 #checkout the repo_template repo's code
+        with:
+          repository: UCLALibrary/repo_template
+          path: repo_template
+          ref: ${{ env.DEV_REPO_TEMPLATE_VERSION }}
+          ssh-key: ${{ secrets.DEV_REPO_TEMPLATE_PRIVATE_KEY }}
+      - name: "Update template"
+        run: |
+          # Determine current version of dev_repo_template in target repository
+          if [[ -f .dev_repo_template_version ]]; then
+            current_dev_repo_template_version="$(cat .dev_repo_template_version)"
+          else
+            current_dev_repo_template_version="v0.0.0"
+          fi
+          # TODO: write function to compare semantic versions.
+          if [[ "${current_dev_repo_template_version}" != "${DEV_REPO_TEMPLATE_VERSION}" ]]; then
+            if [[ -f .gitignore-opt-in ]]; then
+              printf "Target repository has opted in to global gitignore.\n"
+              cp -a ./repo_template/gitignore.global .gitignore
+            else
+              printf "Target repository HAS NOT opted in to global gitignore.\n"
+            fi
+            cd repo_template
+            for template_file in $(find . -name -%t%-\*); do
+              filename=$(echo ${template_file}|sed s/-%t%-//g)
+              cp -a $template_file ../$filename
+            done
+            rm -rf ./repo_template #remove the clone of repo_template before committing
+            echo "${DEV_REPO_TEMPLATE_VERSION}" > .dev_repo_template_version
+            git config set user.name "github-actions[bot]"
+            git config set user.email "dummy@library.ucla.edu"
+            git add .
+            git commit -m "Merge version ${DEV_REPO_TEMPLATE_VERSION} of repo-template"
+            git push
+          else
+            printf "\n====\ndev_repo_template version in target repository matches currently requested version.\nNothing to do!\n====\n"
+          fi
