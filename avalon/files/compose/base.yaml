@@ -25,6 +25,7 @@ services:
       - FEDORA_BASE_PATH
       - FEDORA_NAMESPACE
       - FEDORA_URL
+      - LTI_BRUINLEARN_TOKEN
       - MASTER_FILE_PATH
       - MEDIAINFO_PATH
       - NODE_OPTIONS
