@@ -1,5 +1,5 @@
 name: Dev Environment
- on:
+on:
   #schedule:
   #  - cron: "00 02 * * 1" #at 02:00 every Monday morning
   push:
