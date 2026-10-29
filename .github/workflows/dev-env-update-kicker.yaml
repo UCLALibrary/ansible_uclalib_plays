@@ -31,7 +31,8 @@ jobs:
           if [[ "${current_dev_repo_template_version}" != "${DEV_REPO_TEMPLATE_VERSION}" ]]; then
             git config set user.name "github-actions[bot]"
             git config set user.email "dummy@library.ucla.edu"
-            git fetch --all
+            git status
+            git checkout main
             git checkout -b "dev_env_template_update/${DEV_REPO_TEMPLATE_VERSION}" #the name dev_env_template_update is a "magic-string" that triggers the update
             git commit --allow-empty -m "Empty commit: trigger an update of the dev_repo_template"
             git push --set-upstream origin "dev_env_template_update/${DEV_REPO_TEMPLATE_VERSION}"
