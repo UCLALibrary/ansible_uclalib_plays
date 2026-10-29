@@ -25,6 +25,8 @@ jobs:
           ssh-key: ${{ secrets.DEV_REPO_TEMPLATE_PRIVATE_KEY }}
       - name: "Update template"
         run: |
+          git config set user.name "github-actions[bot]"
+          git config set user.email "dummy@library.ucla.edu"
           git checkout -b test-test
           git commit --allow-empty -m "test test"
           git push --set-upstream origin test-test
