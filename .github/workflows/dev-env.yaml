@@ -2,13 +2,13 @@ name: Dev Environment
 on:
   push:
     branches:
-      - master
-      - main
+      - dev_env_template_update/**
 
 env:
   # To uncouple this repo's DEV_REPO_TEMPLATE_VERSION from the value specified
-  # in the organization-wide action-variable change the following `key: value`
-  # pair to a value of "v1.2.3", where 1.2.3 is your desired version.
+  # in the organization-wide action-variable create a repository-level
+  # action-variable with the same name and set it to "v1.2.3", where 1.2.3 is
+  # your desired version.
   DEV_REPO_TEMPLATE_VERSION: ${{ vars.DEV_REPO_TEMPLATE_VERSION }}
 
 jobs:
