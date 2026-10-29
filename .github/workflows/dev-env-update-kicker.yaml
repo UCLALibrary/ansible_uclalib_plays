@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6 #checkout the current repo's code
+        with:
+          fetch-depth: 0
       - name: "Update template"
         run: |
           if [[ -f .dev_repo_template_version ]]; then
