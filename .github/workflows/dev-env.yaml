@@ -4,6 +4,7 @@ on:
     branches:
       - master
       - main
+      - rg/**
 
 env:
   # To uncouple this repo's DEV_REPO_TEMPLATE_VERSION from the value specified
@@ -24,35 +25,38 @@ jobs:
           ssh-key: ${{ secrets.DEV_REPO_TEMPLATE_PRIVATE_KEY }}
       - name: "Update template"
         run: |
-          # Determine current version of dev_repo_template in target repository
-          if [[ -f .dev_repo_template_version ]]; then
-            current_dev_repo_template_version="$(cat .dev_repo_template_version)"
-          else
-            current_dev_repo_template_version="v0.0.0"
-          fi
-          # TODO: write function to compare semantic versions.
-          if [[ "${current_dev_repo_template_version}" != "${DEV_REPO_TEMPLATE_VERSION}" ]]; then
-            if [[ -f .gitignore-opt-in ]]; then
-              printf "NOTICE: Target repository has opted in to global gitignore.\n"
-              cp -a ./repo_template/gitignore.global .gitignore
-            else
-              printf "NOTICE: Target repository HAS NOT opted in to global gitignore.\n"
-            fi
-            if ! template_files=$(find ./repo_template -name -%t%-\*); then
-              printf "ERROR: Could not find any source files.\n"
-            fi
-            for template_file in $template_files; do
-              tar --append --file temp-archive.tar --transform='s|^\./repo_template/||' --transform='flags=r;s|-%t%-||' "${template_file}"
-            done
-            rm -rf ./repo_template #remove the clone of repo_template before committing
-            tar -xv --overwrite -f temp-archive.tar
-            rm temp-archive.tar
-            echo "${DEV_REPO_TEMPLATE_VERSION}" > .dev_repo_template_version
-            git config set user.name "github-actions[bot]"
-            git config set user.email "dummy@library.ucla.edu"
-            git add .
-            git commit -m "Merge version ${DEV_REPO_TEMPLATE_VERSION} of repo_template"
-            git push
-          else
-            printf "NOTICE: dev_repo_template version in target repository matches currently requested version.\nNothing to do!\n"
-          fi
+          git checkout -b test-test
+          git commit --allow-empty -m "test test"
+          git push --set-upstream origin test-test
+          ### # Determine current version of dev_repo_template in target repository
+          ### if [[ -f .dev_repo_template_version ]]; then
+          ###   current_dev_repo_template_version="$(cat .dev_repo_template_version)"
+          ### else
+          ###   current_dev_repo_template_version="v0.0.0"
+          ### fi
+          ### # TODO: write function to compare semantic versions.
+          ### if [[ "${current_dev_repo_template_version}" != "${DEV_REPO_TEMPLATE_VERSION}" ]]; then
+          ###   if [[ -f .gitignore-opt-in ]]; then
+          ###     printf "NOTICE: Target repository has opted in to global gitignore.\n"
+          ###     cp -a ./repo_template/gitignore.global .gitignore
+          ###   else
+          ###     printf "NOTICE: Target repository HAS NOT opted in to global gitignore.\n"
+          ###   fi
+          ###   if ! template_files=$(find ./repo_template -name -%t%-\*); then
+          ###     printf "ERROR: Could not find any source files.\n"
+          ###   fi
+          ###   for template_file in $template_files; do
+          ###     tar --append --file temp-archive.tar --transform='s|^\./repo_template/||' --transform='flags=r;s|-%t%-||' "${template_file}"
+          ###   done
+          ###   rm -rf ./repo_template #remove the clone of repo_template before committing
+          ###   tar -xv --overwrite -f temp-archive.tar
+          ###   rm temp-archive.tar
+          ###   echo "${DEV_REPO_TEMPLATE_VERSION}" > .dev_repo_template_version
+          ###   git config set user.name "github-actions[bot]"
+          ###   git config set user.email "dummy@library.ucla.edu"
+          ###   git add .
+          ###   git commit -m "Merge version ${DEV_REPO_TEMPLATE_VERSION} of repo_template"
+          ###   git push
+          ### else
+          ###   printf "NOTICE: dev_repo_template version in target repository matches currently requested version.\nNothing to do!\n"
+          ### fi
