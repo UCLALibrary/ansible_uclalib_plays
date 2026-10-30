@@ -1,10 +1,7 @@
 name: Dev Environment
 on:
-  #schedule:
-  #  - cron: "00 02 * * 1" #at 02:00 every Monday morning
-  push:
-    branches:
-      - rg/**
+  schedule:
+    - cron: "00 02 * * 1" #at 02:00 every Monday morning
 
 env:
   # To uncouple this repo's DEV_REPO_TEMPLATE_VERSION from the value specified
