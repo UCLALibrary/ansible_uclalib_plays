@@ -1,0 +1,7 @@
+[env]
+ANSIBLE_VERSION="2.9.27"
+DNF_PYTHON_PACKAGE="python36.x86_64"
+PYTHON_CRYPTO_VERSION="3.2.1"
+UBI_IMAGE_TAG="latest"
+RHEL_VERSION=8
+UBI_IMAGE_URL="registry.access.redhat.com/ubi${RHEL_VERSION}/ubi"
