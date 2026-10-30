@@ -1,0 +1,21 @@
+[tasks.ansible-lint]
+alias = "lint"
+raw_args = true
+description = "Run ansible-lint against this repository. Use blind double dash to pass arguments."
+run = """
+export DEV_REPO_TEMPLATE_VERSION="$(cat .dev_repo_template_version)"
+docker run --rm -it -v ./:/local ucla-lib-ansible-dev-env:UBI-${RHEL_VERSION}_RT-${DEV_REPO_TEMPLATE_VERSION} /local/bin/ansible-lint"""
+
+[tasks.prepare-dev-env]
+alias = "prepare"
+description = "Set up the development environment in this repoisotory."
+run = """
+export DEV_REPO_TEMPLATE_VERSION="$(cat .dev_repo_template_version)"
+${MISE_CONFIG_ROOT}/bin/prepare-dev-env"""
+
+[tasks.enter-build-env]
+alias = "enter"
+description = "Start a shell within the docker dev environment."
+run = """
+export DEV_REPO_TEMPLATE_VERSION="$(cat .dev_repo_template_version)"
+docker run -i -t --rm -v ${MISE_CONFIG_ROOT}:/local ucla-lib-ansible-dev-env:UBI-${RHEL_VERSION}_RT-${DEV_REPO_TEMPLATE_VERSION} bash"""
