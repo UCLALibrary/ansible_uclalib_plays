@@ -1,0 +1,8 @@
+---
+- name: CrowdStrike Falcon Sensor
+  hosts: all
+  become: yes
+  become_method: sudo
+
+  roles:
+    - { role: uclalib_role_crowdstrike }
